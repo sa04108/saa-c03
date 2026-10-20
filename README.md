@@ -1,23 +1,21 @@
-# SAA-C03 학습 자료
+# [saa-c03.hyunbbai.com](https://saa-c03.hyunbbai.com)
 
-빌드나 서버 없이 실행하는 정적 웹사이트입니다.
+AWS SAA-C03(Solutions Architect – Associate) 자격증을 준비하기 위한 한국어 학습 사이트입니다. 핵심 개념을 찾아보고, 문제를 풀며 정답과 해설로 복습할 수 있습니다. 로그인 없이 브라우저에 풀이 기록을 저장하며, GitHub Pages로 배포합니다.
 
-- `/concepts/`: 개념 위키와 개념별 문제 풀이
-- `/dumps/`: 684문제 문제집
-- `/`: 두 페이지로 이동하는 시작 화면
+## 학습 자료
 
-GitHub Pages 프로젝트 사이트에서는 저장소 이름이 앞에 붙습니다.
+- [개념 위키](https://saa-c03.hyunbbai.com/concepts/): 핵심 개념 62개와 개념별 문제 풀이
+- [문제집](https://saa-c03.hyunbbai.com/dumps/): 684문제와 정답·해설, 풀이 기록 자동저장
+- [시작 화면](https://saa-c03.hyunbbai.com/): 두 학습 페이지로 이동하는 첫 화면
 
-- `https://sa04108.github.io/saa-c03/concepts/`
-- `https://sa04108.github.io/saa-c03/dumps/`
-
-페이지 사이의 이동은 상대 경로를 사용하므로 다른 저장소 이름이나 사용자 지정 도메인에서도 동작합니다. 개념 위키 내부의 개념·문제 이동은 기존 해시 경로를 사용합니다.
+페이지 우상단 버튼으로 개념 위키와 문제집을 오갈 수 있습니다.
 
 ## GitHub Pages 배포
 
 1. 저장소의 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정합니다.
-2. `devel`의 변경을 검토한 뒤 `main`에 병합합니다. 아직 `main`이 없는 빈 저장소라면 검토 후 `devel`에서 `main` 브랜치를 생성합니다.
-3. **Actions → Deploy GitHub Pages**의 배포가 완료되면 위 주소로 접속합니다.
+2. **Settings → Pages → Custom domain**에 `saa-c03.hyunbbai.com`을 등록하고, 도메인의 DNS에서 해당 서브도메인의 CNAME이 `sa04108.github.io`를 가리키도록 설정합니다.
+3. `devel`의 변경을 검토한 뒤 `main`에 병합합니다. 아직 `main`이 없는 빈 저장소라면 검토 후 `devel`에서 `main` 브랜치를 생성합니다.
+4. **Actions → Deploy GitHub Pages**의 배포와 도메인 연결이 완료되면 위 주소로 접속합니다. Pages 설정에서 **Enforce HTTPS**도 활성화합니다.
 
 워크플로는 `main`에 푸시할 때 배포합니다. `devel`은 검토용이며 배포하지 않습니다. `main`에서 수동으로 워크플로를 실행해 다시 배포할 수도 있습니다. 실제 공개 배포는 저장소의 Pages 사용 가능 여부와 설정에 따릅니다.
 
