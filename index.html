@@ -31,13 +31,21 @@
     <span class="eyebrow">AWS CERTIFICATION</span>
     <h1>SAA-C03 학습 자료</h1>
     <p>AWS Certified Solutions Architect · Associate</p>
-    <section class="account-panel" data-account-ui aria-label="GitHub 계정">
-      <div class="account-controls">
-        <button class="account-button" type="button" data-github-login disabled>GitHub로 로그인</button>
-        <span class="account-name" data-account-name hidden></span>
-        <button class="account-button" type="button" data-account-logout hidden>로그아웃</button>
+    <section id="social-accounts" class="account-panel" data-account-ui aria-labelledby="social-accounts-title">
+      <h2 id="social-accounts-title" class="account-heading">소셜 계정</h2>
+      <p class="account-description">계정을 연동해 이어서 공부하세요.</p>
+      <div class="social-account-row">
+        <div class="social-provider">
+          <img class="github-icon" src="assets/github.svg" width="32" height="32" alt="" aria-hidden="true">
+          <div class="social-provider-copy">
+            <span class="social-provider-name">GitHub</span>
+            <span class="account-name" data-account-name hidden></span>
+          </div>
+        </div>
+        <button class="account-button" type="button" data-github-login disabled>계정 연동</button>
+        <button class="account-button account-button-secondary" type="button" data-account-logout hidden>로그아웃</button>
       </div>
-      <p class="account-message" data-account-message>로그인 연결을 확인하는 중…</p>
+      <p class="account-message" data-account-message role="status" aria-live="polite">계정 연결을 확인하는 중…</p>
       <p class="account-message" data-account-progress hidden></p>
     </section>
     <nav aria-label="학습 자료">

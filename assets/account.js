@@ -31,15 +31,25 @@
       const logout = panel.querySelector('[data-account-logout]');
       const name = panel.querySelector('[data-account-name]');
       const note = panel.querySelector('[data-account-message]');
+      const manage = panel.querySelector('[data-account-manage]');
       if (login) { login.hidden = !!user; login.disabled = !configured || !!error; }
       if (logout) logout.hidden = !user;
       if (name) {
         name.hidden = !user;
         name.textContent = user ? (user.user_metadata?.user_name || user.user_metadata?.preferred_username || 'GitHub 사용자') : '';
       }
+      if (manage) {
+        manage.hidden = !user;
+        const label = user ? `GitHub 계정 관리: ${user.user_metadata?.user_name || user.user_metadata?.preferred_username || 'GitHub 사용자'}` : 'GitHub 계정 관리';
+        manage.setAttribute('aria-label', label);
+        manage.title = label;
+      }
+      if (login?.classList.contains('account-icon-button')) {
+        login.title = error ? 'GitHub 연결을 확인해 주세요' : !configured ? 'GitHub 계정 연동 준비 중' : 'GitHub 계정 연동';
+      }
       if (note) note.textContent = message || (error ? '로그인 연결을 확인하지 못했습니다. 새로고침해 주세요.'
-        : !configured ? 'GitHub 로그인은 준비 중입니다. 로그인 없이 기기에 저장하며 이용할 수 있습니다.'
-        : user ? 'GitHub 계정으로 다른 기기에서도 이어서 풀 수 있습니다.' : '로그인하면 풀이 기록을 계정에 저장합니다.');
+        : !configured ? '계정 연동을 준비하고 있습니다. 기기에 저장하며 먼저 공부할 수 있습니다.'
+        : user ? '연동된 계정으로 다른 기기에서도 이어서 풀 수 있습니다.' : '계정을 연동하면 문제집 풀이 기록이 자동으로 동기화됩니다.');
     }
   }
 
