@@ -70,17 +70,4 @@ window.SAA_ACCOUNT_CONFIG = Object.freeze({
 - 서로 다른 기기의 저장 버전이 충돌하면 서버 기록을 덮어쓰지 않습니다. 현재 기기 기록을 백업한 뒤 **서버 기록 불러오기**로 최신 진도를 불러옵니다.
 - 진행 포함 HTML을 다운로드하면 로그인 자산을 제거하고 진도만 포함합니다. 다운로드 파일은 기존처럼 기기 저장으로 실행됩니다.
 
-## 개발 검증
-
-Supabase 프로젝트가 없어도 다음 검증을 실행할 수 있습니다. 자동 check 워크플로는 추가하지 않습니다.
-
-```sh
-npm ci
-npm test
-python3 -m pip install -r requirements-dev.txt
-python3 -m unittest discover -s tests -v
-```
-
-DB 테스트는 PGlite의 PostgreSQL 엔진에서 실제 SQL과 RLS 권한을 검사합니다. 브라우저의 계정 테스트는 Auth/DB 어댑터를 대체하므로 실제 GitHub 승인 화면과 새 Supabase 프로젝트 연결은 위 절차로 별도 확인해야 합니다.
-
 공식 안내: [GitHub 로그인 공급자](https://supabase.com/docs/guides/auth/social-login/auth-github), [행 수준 보안](https://supabase.com/docs/guides/database/postgres/row-level-security).
