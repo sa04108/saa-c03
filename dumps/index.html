@@ -15,13 +15,47 @@
 @media print{.top,.side,.crumb,.qactions,.nextbar,.footnote,.toast{display:none}.layout{display:block;padding:0}.panel{border:0}.question{overflow:visible}body{background:white}}
 .top .wiki-link{display:inline-flex;align-items:center;min-height:34px;padding:6px 10px;border-radius:9px;color:#bfcbdc;font-size:.82rem;white-space:nowrap;text-decoration:none}.top .wiki-link:hover{background:#334c6b;color:#fff}.top .wiki-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="../assets/account.css" data-account-assets>
+<link rel="stylesheet" href="../assets/account.css?v=20261030-2" data-account-assets>
 <script defer src="../assets/account-config.js" data-account-assets></script>
 <script defer src="../assets/vendor/supabase.js" data-account-assets></script>
-<script defer src="../assets/account.js" data-account-assets></script>
+<script defer src="../assets/account.js?v=20261030-2" data-account-assets></script>
+<style id="study-header-styles">
+/* The title and page switch share a row; study controls sit below on mobile. */
+.top .brand-copy { min-width:0; }
+.top .brand-title-line { display:flex; align-items:center; gap:10px; min-width:0; }
+.top .brand-title-line h1 { flex:none; font-size:1.16rem; line-height:1.4; white-space:nowrap; }
+.top .brand-title-line .page-switch { display:inline-flex; align-items:center; justify-content:center; flex:none; min-height:36px; padding:6px 9px; border:1px solid #52647a; border-radius:8px; background:#263c56; color:#ffe0ae; font-size:.8rem; line-height:1.4; text-decoration:none; white-space:nowrap; }
+.top .brand-title-line .page-switch:hover { border-color:#8cabc9; background:#344c6c; }
+.top .top-actions { margin-left:auto; gap:12px; }
+@media screen and (max-width:1000px) {
+ .top { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:12px; min-height:0; padding:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 18px calc(24px + env(safe-area-inset-left,0px)); }
+ .top .brand { width:100%; min-width:0; min-height:44px; padding-right:56px; }
+ .top .brand-title-line .page-switch { min-height:44px; }
+ .top .top-actions { display:flex; flex-direction:row; align-items:center; justify-content:flex-start; flex-wrap:wrap; width:100%; margin:0; gap:10px 14px; }
+ .top #open-settings { width:auto; min-height:44px; padding:10px 14px; font-size:.86rem; }
+ .top .save-pill { min-width:0; line-height:1.5; overflow-wrap:anywhere; }
+ .top .account-controls { position:fixed; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(24px + env(safe-area-inset-right,0px)); z-index:5; }
+}
+@media screen and (max-width:700px) {
+ .top { padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px calc(16px + env(safe-area-inset-left,0px)); }
+ .top .brand-title-line { gap:8px; }
+ .top .brand-title-line h1 { font-size:1rem; letter-spacing:0; }
+ .top .brand-title-line .page-switch { font-size:.76rem; padding:8px; }
+ .top .account-controls { top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); }
+}
+@media screen and (max-width:360px) {
+ .top { padding-inline:calc(12px + env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-right,0px)); }
+ .top .brand { gap:8px; padding-right:52px; }
+ .top .brand-mark { width:32px; height:32px; }
+ .top .brand-title-line { gap:6px; }
+ .top .brand-title-line h1 { font-size:.9rem; }
+ .top .brand-title-line .page-switch { font-size:.72rem; padding:8px 6px; }
+ .top .account-controls { right:calc(12px + env(safe-area-inset-right,0px)); }
+}
+</style>
 </head>
 <body>
-<header class="top"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span><div><h1>SAA-C03 <span style="font-weight:400">문제집</span></h1><p>AWS Certified Solutions Architect · Associate</p></div></div><div class="row top-actions"><span id="save-status" class="save-pill" role="status">저장 상태 확인 중</span><button id="open-settings">저장 · 백업</button><a class="wiki-link" href="../concepts/">개념 위키 ↗</a><div class="account-controls" data-account-ui><button class="account-icon-button" type="button" data-github-login aria-label="GitHub 계정 연동" title="GitHub 계정 연동" disabled><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"></button><a class="account-icon-button" href="../#social-accounts" data-account-manage aria-label="GitHub 계정 관리" title="GitHub 계정 관리" hidden><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"><span class="account-connected-dot" aria-hidden="true"></span></a></div></div></header>
+<header class="top"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span><div class="brand-copy"><div class="brand-title-line"><h1>SAA-C03 <span style="font-weight:400">문제집</span></h1><a class="wiki-link page-switch" href="../concepts/">개념 위키 ↗</a></div><p>AWS Certified Solutions Architect · Associate</p></div></div><div class="row top-actions"><button id="open-settings">저장 · 백업</button><span id="save-status" class="save-pill" role="status">저장 상태 확인 중</span></div><div class="account-controls" data-account-ui><button class="account-icon-button" type="button" data-github-login aria-label="GitHub 계정 연동" title="GitHub 계정 연동" disabled><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"></button><a class="account-icon-button" href="../#social-accounts" data-account-manage aria-label="GitHub 계정 관리" title="GitHub 계정 관리" hidden><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"><span class="account-connected-dot" aria-hidden="true"></span></a></div></header>
 <div id="storage-warning" class="storage-warning" hidden></div>
 <div id="account-warning" class="account-warning" hidden><span id="account-warning-text"></span><br><button id="load-account-progress" type="button" hidden>서버 기록 불러오기</button></div>
 <div class="layout">

@@ -6,10 +6,10 @@
   <meta name="description" content="AWS SAA-C03 개념 위키와 문제집">
   <meta name="color-scheme" content="light">
   <title>SAA-C03 학습 자료</title>
-  <link rel="stylesheet" href="assets/account.css">
+  <link rel="stylesheet" href="assets/account.css?v=20261030-2">
   <script defer src="assets/account-config.js"></script>
   <script defer src="assets/vendor/supabase.js"></script>
-  <script defer src="assets/account.js"></script>
+  <script defer src="assets/account.js?v=20261030-2"></script>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; background: #f3f7fa; color: #142d40; font: 16px/1.7 system-ui, sans-serif; }
@@ -31,19 +31,13 @@
     <span class="eyebrow">AWS CERTIFICATION</span>
     <h1>SAA-C03 학습 자료</h1>
     <p>AWS Certified Solutions Architect · Associate</p>
-    <section id="social-accounts" class="account-panel" data-account-ui aria-labelledby="social-accounts-title">
+    <section id="social-accounts" class="account-section" data-account-ui aria-labelledby="social-accounts-title">
       <h2 id="social-accounts-title" class="account-heading">소셜 계정</h2>
-      <p class="account-description">계정을 연동해 이어서 공부하세요.</p>
       <div class="social-account-row">
-        <div class="social-provider">
-          <img class="github-icon" src="assets/github.svg" width="32" height="32" alt="" aria-hidden="true">
-          <div class="social-provider-copy">
-            <span class="social-provider-name">GitHub</span>
-            <span class="account-name" data-account-name hidden></span>
-          </div>
-        </div>
-        <button class="account-button" type="button" data-github-login disabled>계정 연동</button>
-        <button class="account-button account-button-secondary" type="button" data-account-logout hidden>로그아웃</button>
+        <img class="github-icon" src="assets/github.svg" width="32" height="32" alt="GitHub">
+        <span class="account-name" data-account-name hidden></span>
+        <button class="account-button" type="button" data-github-login aria-label="GitHub 계정 연동" disabled>계정 연동</button>
+        <button class="account-button account-button-secondary" type="button" data-account-logout aria-label="GitHub 계정 로그아웃" hidden>로그아웃</button>
       </div>
       <p class="account-message" data-account-message role="status" aria-live="polite">계정 연결을 확인하는 중…</p>
       <p class="account-message" data-account-progress hidden></p>

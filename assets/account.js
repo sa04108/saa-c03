@@ -47,9 +47,11 @@
       if (login?.classList.contains('account-icon-button')) {
         login.title = error ? 'GitHub 연결을 확인해 주세요' : !configured ? 'GitHub 계정 연동 준비 중' : 'GitHub 계정 연동';
       }
-      if (note) note.textContent = message || (error ? '로그인 연결을 확인하지 못했습니다. 새로고침해 주세요.'
-        : !configured ? '계정 연동을 준비하고 있습니다. 기기에 저장하며 먼저 공부할 수 있습니다.'
-        : user ? '연동된 계정으로 다른 기기에서도 이어서 풀 수 있습니다.' : '계정을 연동하면 문제집 풀이 기록이 자동으로 동기화됩니다.');
+      if (note) {
+        note.textContent = message || (error ? '로그인 연결을 확인하지 못했습니다. 새로고침해 주세요.'
+          : !configured ? '계정 연동을 준비 중입니다.' : '');
+        note.hidden = !note.textContent;
+      }
     }
   }
 
