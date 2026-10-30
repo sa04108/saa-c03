@@ -6,6 +6,10 @@
   <meta name="description" content="AWS SAA-C03 개념 위키와 문제집">
   <meta name="color-scheme" content="light">
   <title>SAA-C03 학습 자료</title>
+  <link rel="stylesheet" href="assets/account.css">
+  <script defer src="assets/account-config.js"></script>
+  <script defer src="assets/vendor/supabase.js"></script>
+  <script defer src="assets/account.js"></script>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; background: #f3f7fa; color: #142d40; font: 16px/1.7 system-ui, sans-serif; }
@@ -22,11 +26,20 @@
     .note { margin-top: 32px; font-size: .9rem; }
   </style>
 </head>
-<body>
+<body data-page="home">
   <main>
     <span class="eyebrow">AWS CERTIFICATION</span>
     <h1>SAA-C03 학습 자료</h1>
     <p>AWS Certified Solutions Architect · Associate</p>
+    <section class="account-panel" data-account-ui aria-label="GitHub 계정">
+      <div class="account-controls">
+        <button class="account-button" type="button" data-github-login disabled>GitHub로 로그인</button>
+        <span class="account-name" data-account-name hidden></span>
+        <button class="account-button" type="button" data-account-logout hidden>로그아웃</button>
+      </div>
+      <p class="account-message" data-account-message>로그인 연결을 확인하는 중…</p>
+      <p class="account-message" data-account-progress hidden></p>
+    </section>
     <nav aria-label="학습 자료">
       <a href="concepts/">
         <h2>개념 위키 →</h2>
@@ -37,7 +50,7 @@
         <p>684문제를 풀고 정답과 해설을 확인하세요.</p>
       </a>
     </nav>
-    <p class="note">풀이 기록은 현재 기기와 브라우저에 자동으로 저장됩니다. 문제집의 저장 · 백업 메뉴에서 기록을 옮길 수 있습니다.</p>
+    <p class="note">로그인하면 풀이 기록을 계정에 저장하고 다른 기기에서 이어서 풀 수 있습니다. 로그인 없이도 현재 기기와 브라우저에 저장하며 이용할 수 있습니다.</p>
   </main>
 </body>
 </html>

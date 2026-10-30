@@ -23,7 +23,7 @@ class QuietHandler(SimpleHTTPRequestHandler):
         pass
 
 
-class SiteTests(unittest.TestCase):
+class SiteFixture(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.server_directory = tempfile.TemporaryDirectory()
@@ -98,6 +98,7 @@ class SiteTests(unittest.TestCase):
         self.page.locator('#jump-form button[type="submit"]').click()
         expect(self.page.locator("#question-title")).to_have_text(f"문제 {number:03d}")
 
+class SiteTests(SiteFixture):
     def test_paths_cross_navigation_and_concepts_search(self):
         self.page.goto(self.base + "/")
         self.page.get_by_role("link", name="개념 위키 →").click()
