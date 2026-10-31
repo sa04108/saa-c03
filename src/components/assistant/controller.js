@@ -624,7 +624,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
       if (threads.size > 20) threads.delete(threads.keys().next().value);
       historyView = false;
       render();
-      prompt.focus({ preventScroll: true });
+      $("#saa-ai-heading").focus({ preventScroll: true });
       requestAnimationFrame(() => {
         $("[data-scroll]").scrollTop = $("[data-scroll]").scrollHeight;
       });
@@ -877,7 +877,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     cancelHistory();
     historyView = false;
     render();
-    prompt.focus({ preventScroll: true });
+    $("#saa-ai-heading").focus({ preventScroll: true });
   }
   $("[data-history-toggle]").onclick = () => {
     if (historyView) return returnToChat();
