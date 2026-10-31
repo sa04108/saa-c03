@@ -13,7 +13,7 @@
   const threads = new Map();
   let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget, historyRequest, historyCursor;
   let historyView = false;
-  let historyTurns = [];
+  let historySessions = [];
   const inertBefore = new Map();
   let originalOverflow = null;
 
@@ -26,7 +26,7 @@
   panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', 'saa-ai-heading');
   panel.innerHTML = `
     <header class="saa-ai-head"><div class="saa-ai-logo">${svg('robot')}</div><div class="saa-ai-title"><h2 id="saa-ai-heading" tabindex="-1">AI 어시스턴트</h2><p>SAA-C03 학습 도우미</p></div><div class="saa-ai-head-actions"><button type="button" class="saa-ai-icon" data-history-toggle aria-label="대화 기록" title="대화 기록" aria-pressed="false" hidden>${svg('history')}</button><button type="button" class="saa-ai-icon" data-new aria-label="새 대화" title="새 대화">${svg('edit')}</button><button type="button" class="saa-ai-icon" data-close aria-label="AI 어시스턴트 닫기" title="닫기">${svg('close')}</button></div></header>
-    <section class="saa-ai-history" data-history hidden aria-label="대화 기록"><div class="saa-ai-history-head"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><p class="saa-ai-feedback" data-history-status role="status" hidden></p></div><div class="saa-ai-history-scroll" data-history-scroll><button type="button" class="saa-ai-retry saa-ai-history-more" data-history-more hidden>이전 기록 불러오기</button><div class="saa-ai-messages" data-history-list role="log" aria-label="날짜별 대화 기록" aria-live="off"></div></div></section>
+    <section class="saa-ai-history" data-history hidden aria-label="대화 기록"><div class="saa-ai-history-head"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><p class="saa-ai-feedback" data-history-status role="status" hidden></p></div><div class="saa-ai-history-scroll" data-history-scroll><div class="saa-ai-sessions" data-history-list role="list" aria-label="저장된 대화 세션"></div><button type="button" class="saa-ai-retry saa-ai-history-more" data-history-more hidden>이전 대화 불러오기</button></div></section>
     <div class="saa-ai-context-strip">${svg('book')}<div class="saa-ai-context-copy"><small>질문하는 항목</small><p data-context-title></p></div><span class="saa-ai-context-type" data-context-type></span></div>
     <div class="saa-ai-scroll" data-scroll><div class="saa-ai-welcome" data-welcome><p class="saa-ai-eyebrow">YOUR STUDY COMPANION</p><h3 data-welcome-title></h3><p class="saa-ai-description">질문을 고르거나 직접 입력해 보세요.</p><div class="saa-ai-suggestions" data-suggestions aria-label="예상 질문"></div><p class="saa-ai-suggestions-note" data-suggestion-note hidden>${svg('edit')}질문을 선택하면 입력창에만 채워져요.</p></div><div class="saa-ai-messages" data-messages role="log" aria-label="대화 내용" aria-live="polite"></div><p class="saa-ai-feedback" data-feedback role="status" hidden></p><button type="button" class="saa-ai-retry" data-retry hidden>예상 질문 다시 불러오기</button><p class="saa-ai-image-note" data-image-note hidden>이미지 속 내용이 필요하면 질문에 함께 적어 주세요.</p></div>
     <form class="saa-ai-composer-zone"><div class="saa-ai-composer"><label class="saa-ai-sr" for="saa-ai-prompt">AI 어시스턴트에게 질문</label><textarea id="saa-ai-prompt" rows="2" placeholder="궁금한 내용을 입력하세요…" maxlength="2000"></textarea><div class="saa-ai-composer-bottom"><span class="saa-ai-composer-hint" data-hint>질문을 작성한 뒤 전송하세요</span><button class="saa-ai-send" type="submit" disabled aria-label="질문 전송">${svg('up')}</button></div></div><p class="saa-ai-disclaimer">답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송되며, 검색 시 Tavily도 사용합니다.</p></form>`;
@@ -217,7 +217,7 @@
     divider.className = 'saa-ai-date'; time.dateTime = day; time.textContent = prefix + label;
     divider.append(time); return divider;
   }
-  function renderMessages(container, messages, canResume = false) {
+  function renderMessages(container, messages) {
     container.replaceChildren(); let day = '';
     for (const message of messages) {
       const messageDay = localDay(message.createdAt);
@@ -233,12 +233,6 @@
           time.title = new Date(message.createdAt).toLocaleString('ko-KR'); node.firstChild.append(time);
         }
         node.append(answerNode(message.text));
-        if (canResume) {
-          const button = document.createElement('button'); button.type = 'button'; button.className = 'saa-ai-resume';
-          button.innerHTML = '이어서 질문' + svg('arrow');
-          button.setAttribute('aria-label', message.question.slice(0, 80) + ' — 이어서 질문');
-          button.onclick = () => void openHistory(message.conversationId); node.append(button);
-        }
       }
       container.append(node);
     }
@@ -300,32 +294,56 @@
     return response.json();
   }
   function historyStatus(message) { $('[data-history-status]').textContent = message; $('[data-history-status]').hidden = !message; }
+  function renderSessions(container) {
+    container.replaceChildren(); let day = '';
+    for (const session of historySessions) {
+      const date = new Date(session.updated_at), sessionDay = localDay(session.updated_at);
+      if (sessionDay && sessionDay !== day) {
+        const divider = dateDivider(session.updated_at); divider.className = 'saa-ai-session-date';
+        divider.setAttribute('role', 'presentation'); container.append(divider); day = sessionDay;
+      }
+      const item = document.createElement('div'); item.setAttribute('role', 'listitem');
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'saa-ai-session';
+      button.dataset.conversationId = session.id;
+      if (session.id === thread.conversationId) button.setAttribute('aria-current', 'true');
+      const kind = session.kind === 'concept' ? '개념' : session.kind === 'question' ? '문제' : '자유 질문';
+      const title = session.title || '저장된 대화', topic = session.context_title || 'SAA-C03 · 자유 질문';
+      button.setAttribute('aria-label', `${title} — ${topic} 대화 이어가기`);
+      const icon = document.createElement('span'); icon.className = 'saa-ai-session-icon'; icon.innerHTML = svg(session.kind === 'general' ? 'robot' : 'book');
+      const copy = document.createElement('span'); copy.className = 'saa-ai-session-copy';
+      const meta = document.createElement('span'); meta.className = 'saa-ai-session-meta';
+      const label = document.createElement('span'); label.textContent = kind;
+      const time = document.createElement('time'); time.dateTime = session.updated_at;
+      time.textContent = Number.isFinite(date.getTime()) ? new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(date) : '';
+      time.title = Number.isFinite(date.getTime()) ? date.toLocaleString('ko-KR') : '';
+      meta.append(label, time);
+      const heading = document.createElement('strong'); heading.textContent = title;
+      const contextLabel = document.createElement('span'); contextLabel.className = 'saa-ai-session-topic'; contextLabel.textContent = topic;
+      const arrow = document.createElement('span'); arrow.className = 'saa-ai-session-arrow'; arrow.innerHTML = svg('arrow');
+      copy.append(meta, heading, contextLabel); button.append(icon, copy, arrow);
+      button.onclick = () => void openHistory(session.id); item.append(button); container.append(item);
+    }
+  }
   async function loadHistory(more = false) {
     cancelHistory(); const task = new AbortController(); historyRequest = task;
-    const list = $('[data-history-list]'), scroll = $('[data-history-scroll]');
-    if (!more) { list.replaceChildren(); historyTurns = []; historyCursor = null; }
-    const anchor = list.querySelector('[data-turn-id]');
-    const anchorId = anchor?.dataset.turnId, anchorTop = anchor?.getBoundingClientRect().top;
+    const list = $('[data-history-list]'), scroll = $('[data-history-scroll]'), previousTop = scroll.scrollTop;
+    if (!more) { list.replaceChildren(); historySessions = []; historyCursor = null; }
     $('[data-history-more]').hidden = true; historyBusy(true); historyStatus('대화 기록을 불러오고 있어요…');
     try {
       await window.SaaAccount?.ready;
-      // Read turns across every conversation, scoped to the member and protected
-      // by the existing RLS. Keep full study contexts out of the timeline payload.
-      const query = new URLSearchParams({ select: 'id,conversation_id,created_at,question,answer,ai_conversations!inner()', 'ai_conversations.user_id': 'eq.' + window.SaaAccount?.user?.id, order: 'created_at.desc,id.desc', limit: '21' });
-      if (historyCursor) query.set('or', `(created_at.lt.${historyCursor.created_at},and(created_at.eq.${historyCursor.created_at},id.lt.${historyCursor.id}))`);
-      const rows = await historyApi('ai_chat_turns?' + query, { signal: task.signal });
+      // List session metadata only; fetch its full context and turns on selection.
+      const query = new URLSearchParams({ select: 'id,title,updated_at,kind:context->>kind,context_title:context->>title', user_id: 'eq.' + window.SaaAccount?.user?.id, order: 'updated_at.desc,id.desc', limit: '21' });
+      if (historyCursor) query.set('or', `(updated_at.lt.${historyCursor.updated_at},and(updated_at.eq.${historyCursor.updated_at},id.lt.${historyCursor.id}))`);
+      const rows = await historyApi('ai_conversations?' + query, { signal: task.signal });
       if (historyRequest !== task) return;
-      const page = rows.slice(0, 20), loaded = new Set(historyTurns.map(turn => turn.id));
+      const page = rows.slice(0, 20), loaded = new Set(historySessions.map(session => session.id));
       historyCursor = page.at(-1) || historyCursor;
-      historyTurns.unshift(...page.filter(turn => !loaded.has(turn.id)).reverse());
-      renderMessages(list, unpackTurns(historyTurns, false), true);
+      historySessions.push(...page.filter(session => !loaded.has(session.id)));
+      renderSessions(list);
       $('[data-history-more]').hidden = rows.length <= 20;
-      $('[data-history-more]').textContent = '이전 기록 불러오기';
-      historyStatus(historyTurns.length ? '' : '아직 저장된 대화가 없어요. 첫 질문을 시작해 보세요.');
-      if (more && anchorId) {
-        const restored = [...list.querySelectorAll('[data-turn-id]')].find(node => node.dataset.turnId === anchorId);
-        if (restored) scroll.scrollTop += restored.getBoundingClientRect().top - anchorTop;
-      } else scroll.scrollTop = scroll.scrollHeight;
+      $('[data-history-more]').textContent = '이전 대화 불러오기';
+      historyStatus(historySessions.length ? '' : '아직 저장된 대화가 없어요. 첫 질문을 시작해 보세요.');
+      scroll.scrollTop = more ? previousTop : 0;
     } catch {
       if (historyRequest !== task) return;
       historyStatus('대화 기록을 불러오지 못했어요. 다시 시도해 주세요.');
