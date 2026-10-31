@@ -13,6 +13,7 @@
   const threads = new Map();
   let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget, historyRequest, historyCursor;
   let historyView = false;
+  let historyTurns = [];
   const inertBefore = new Map();
   let originalOverflow = null;
 
@@ -25,7 +26,7 @@
   panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', 'saa-ai-heading');
   panel.innerHTML = `
     <header class="saa-ai-head"><div class="saa-ai-logo">${svg('robot')}</div><div class="saa-ai-title"><h2 id="saa-ai-heading" tabindex="-1">AI 어시스턴트</h2><p>SAA-C03 학습 도우미</p></div><div class="saa-ai-head-actions"><button type="button" class="saa-ai-icon" data-history-toggle aria-label="대화 기록" title="대화 기록" aria-pressed="false" hidden>${svg('history')}</button><button type="button" class="saa-ai-icon" data-new aria-label="새 대화" title="새 대화">${svg('edit')}</button><button type="button" class="saa-ai-icon" data-close aria-label="AI 어시스턴트 닫기" title="닫기">${svg('close')}</button></div></header>
-    <section class="saa-ai-history" data-history hidden aria-labelledby="saa-ai-history-heading"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><h3 id="saa-ai-history-heading" tabindex="-1">대화 기록</h3><p class="saa-ai-feedback" data-history-status role="status"></p><ul class="saa-ai-history-list" data-history-list></ul><button type="button" class="saa-ai-retry" data-history-more hidden>더 보기</button></section>
+    <section class="saa-ai-history" data-history hidden aria-labelledby="saa-ai-history-heading"><div class="saa-ai-history-head"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><h3 id="saa-ai-history-heading" tabindex="-1">대화 기록</h3><p class="saa-ai-history-description">지난 질문과 답변을 시간순으로 모았어요.</p><p class="saa-ai-feedback" data-history-status role="status" hidden></p></div><div class="saa-ai-history-scroll" data-history-scroll><button type="button" class="saa-ai-retry saa-ai-history-more" data-history-more hidden>이전 기록 불러오기</button><div class="saa-ai-messages" data-history-list role="log" aria-label="날짜별 대화 기록" aria-live="off"></div></div></section>
     <div class="saa-ai-context-strip">${svg('book')}<div class="saa-ai-context-copy"><small>질문하는 항목</small><p data-context-title></p></div><span class="saa-ai-context-type" data-context-type></span></div>
     <div class="saa-ai-scroll" data-scroll><div class="saa-ai-welcome" data-welcome><p class="saa-ai-eyebrow">YOUR STUDY COMPANION</p><h3 data-welcome-title></h3><p class="saa-ai-description">질문을 고르거나 직접 입력해 보세요.</p><div class="saa-ai-suggestions" data-suggestions aria-label="예상 질문"></div><p class="saa-ai-suggestions-note" data-suggestion-note hidden>${svg('edit')}질문을 선택하면 입력창에만 채워져요.</p></div><div class="saa-ai-messages" data-messages role="log" aria-label="대화 내용" aria-live="polite"></div><p class="saa-ai-feedback" data-feedback role="status" hidden></p><button type="button" class="saa-ai-retry" data-retry hidden>예상 질문 다시 불러오기</button><p class="saa-ai-image-note" data-image-note hidden>이미지 속 내용이 필요하면 질문에 함께 적어 주세요.</p></div>
     <form class="saa-ai-composer-zone"><div class="saa-ai-composer"><label class="saa-ai-sr" for="saa-ai-prompt">AI 어시스턴트에게 질문</label><textarea id="saa-ai-prompt" rows="2" placeholder="궁금한 내용을 입력하세요…" maxlength="2000"></textarea><div class="saa-ai-composer-bottom"><span class="saa-ai-composer-hint" data-hint>질문을 작성한 뒤 전송하세요</span><button class="saa-ai-send" type="submit" disabled aria-label="질문 전송">${svg('up')}</button></div></div><p class="saa-ai-disclaimer">답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송됩니다.</p></form>`;
@@ -201,6 +202,47 @@
     }
     return node;
   }
+  function localDay(value) {
+    const date = new Date(value);
+    if (!Number.isFinite(date.getTime())) return '';
+    return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+  }
+  function dateDivider(createdAt) {
+    const date = new Date(createdAt), now = new Date(), yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const day = localDay(createdAt);
+    const prefix = day === localDay(now) ? '오늘 · ' : day === localDay(yesterday) ? '어제 · ' : '';
+    const label = new Intl.DateTimeFormat('ko-KR', { ...(date.getFullYear() !== now.getFullYear() ? { year: 'numeric' } : {}), month: 'long', day: 'numeric', weekday: 'short' }).format(date);
+    const divider = document.createElement('div'), time = document.createElement('time');
+    divider.className = 'saa-ai-date'; time.dateTime = day; time.textContent = prefix + label;
+    divider.append(time); return divider;
+  }
+  function renderMessages(container, messages, canResume = false) {
+    container.replaceChildren(); let day = '';
+    for (const message of messages) {
+      const messageDay = localDay(message.createdAt);
+      if (messageDay && messageDay !== day) { container.append(dateDivider(message.createdAt)); day = messageDay; }
+      const node = document.createElement('div'); node.className = 'saa-ai-message';
+      if (message.turnId && message.role === 'user') node.dataset.turnId = message.turnId;
+      if (message.role === 'user') { node.classList.add('saa-ai-user'); node.textContent = message.text; node.setAttribute('aria-label', '내 질문'); }
+      else {
+        node.innerHTML = `<div class="saa-ai-reply-label">${svg('robot')}AI 어시스턴트</div>`;
+        if (messageDay) {
+          const time = document.createElement('time'); time.dateTime = message.createdAt;
+          time.textContent = new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(message.createdAt));
+          time.title = new Date(message.createdAt).toLocaleString('ko-KR'); node.firstChild.append(time);
+        }
+        node.append(answerNode(message.text));
+        if (canResume) {
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'saa-ai-resume';
+          button.innerHTML = '이어서 질문' + svg('arrow');
+          button.setAttribute('aria-label', message.question.slice(0, 80) + ' — 이어서 질문');
+          button.onclick = () => void openHistory(message.conversationId); node.append(button);
+        }
+      }
+      container.append(node);
+    }
+  }
   function render() {
     const c = thread.context;
     $('[data-history]').hidden = !historyView;
@@ -223,14 +265,8 @@
       }; box.append(button);
     }
     $('[data-suggestion-note]').hidden = !thread.suggestions;
-    const messages = $('[data-messages]'); messages.replaceChildren();
-    const history = request?.kind === 'chat' ? [...thread.history, { role: 'user', text: request.question }] : thread.history;
-    for (const message of history) {
-      const node = document.createElement('div'); node.className = 'saa-ai-message';
-      if (message.role === 'user') { node.classList.add('saa-ai-user'); node.textContent = message.text; node.setAttribute('aria-label', '내 질문'); }
-      else { node.innerHTML = `<div class="saa-ai-reply-label">${svg('robot')}AI 어시스턴트</div>`; node.append(answerNode(message.text)); }
-      messages.append(node);
-    }
+    const history = request?.kind === 'chat' ? [...thread.history, { role: 'user', text: request.question, createdAt: request.createdAt }] : thread.history;
+    renderMessages($('[data-messages]'), history);
     const feedback = $('[data-feedback]');
     feedback.textContent = request ? (request.kind === 'suggestions' ? '이 항목의 예상 질문을 준비하고 있어요…' : '답변을 작성하고 있어요…') : thread.error;
     feedback.hidden = !feedback.textContent; feedback.dataset.error = String(!request && !!thread.error); feedback.classList.toggle('saa-ai-loading', !!request);
@@ -245,7 +281,12 @@
     prompt.value = thread.draft; $('[data-hint]').textContent = request?.kind === 'chat' ? '답변을 기다리고 있어요' : composerHint(); updateComposer();
   }
 
-  function cancelHistory() { historyRequest?.abort(); historyRequest = null; }
+  function historyBusy(busy) {
+    $('[data-history-list]').setAttribute('aria-busy', String(busy));
+    $('[data-history-more]').disabled = busy;
+    $('[data-history-list]').querySelectorAll('button').forEach(button => { button.disabled = busy; });
+  }
+  function cancelHistory() { historyRequest?.abort(); historyRequest = null; historyBusy(false); }
   async function historyApi(path, options = {}) {
     await window.SaaAccount?.ready;
     if (!window.SaaAccount?.user || window.SaaAccount.user.is_anonymous === true) throw new Error('unauthenticated');
@@ -258,45 +299,53 @@
     if (!response.ok) throw new Error('history_unavailable');
     return response.json();
   }
-  function historyStatus(message) { $('[data-history-status]').textContent = message; }
+  function historyStatus(message) { $('[data-history-status]').textContent = message; $('[data-history-status]').hidden = !message; }
   async function loadHistory(more = false) {
     cancelHistory(); const task = new AbortController(); historyRequest = task;
-    const list = $('[data-history-list]');
-    if (!more) { list.replaceChildren(); historyCursor = null; }
-    $('[data-history-more]').hidden = true; historyStatus('대화 기록을 불러오고 있어요…');
+    const list = $('[data-history-list]'), scroll = $('[data-history-scroll]');
+    if (!more) { list.replaceChildren(); historyTurns = []; historyCursor = null; }
+    const anchor = list.querySelector('[data-turn-id]');
+    const anchorId = anchor?.dataset.turnId, anchorTop = anchor?.getBoundingClientRect().top;
+    $('[data-history-more]').hidden = true; historyBusy(true); historyStatus('대화 기록을 불러오고 있어요…');
     try {
-      const query = new URLSearchParams({ select: 'id,title,updated_at', order: 'updated_at.desc,id.desc', limit: '21' });
-      if (historyCursor) query.set('or', `(updated_at.lt.${historyCursor.updated_at},and(updated_at.eq.${historyCursor.updated_at},id.lt.${historyCursor.id}))`);
-      const rows = await historyApi('ai_conversations?' + query, { signal: task.signal });
+      await window.SaaAccount?.ready;
+      // Read turns across every conversation, scoped to the member and protected
+      // by the existing RLS. Keep full study contexts out of the timeline payload.
+      const query = new URLSearchParams({ select: 'id,conversation_id,created_at,question,answer,ai_conversations!inner()', 'ai_conversations.user_id': 'eq.' + window.SaaAccount?.user?.id, order: 'created_at.desc,id.desc', limit: '21' });
+      if (historyCursor) query.set('or', `(created_at.lt.${historyCursor.created_at},and(created_at.eq.${historyCursor.created_at},id.lt.${historyCursor.id}))`);
+      const rows = await historyApi('ai_chat_turns?' + query, { signal: task.signal });
       if (historyRequest !== task) return;
-      for (const item of rows.slice(0, 20)) {
-        const li = document.createElement('li'), button = document.createElement('button'), title = document.createElement('span'), time = document.createElement('time');
-        button.type = 'button'; button.className = 'saa-ai-room'; title.textContent = item.title;
-        time.dateTime = item.updated_at;
-        time.textContent = new Intl.DateTimeFormat('ko-KR', { month: 'numeric', day: 'numeric' }).format(new Date(item.updated_at));
-        time.title = new Date(item.updated_at).toLocaleString('ko-KR');
-        button.append(title, time); button.insertAdjacentHTML('beforeend', svg('arrow')); button.onclick = () => void openHistory(item.id);
-        li.append(button); list.append(li);
-      }
-      historyCursor = rows.slice(0, 20).at(-1) || historyCursor;
+      const page = rows.slice(0, 20), loaded = new Set(historyTurns.map(turn => turn.id));
+      historyCursor = page.at(-1) || historyCursor;
+      historyTurns.unshift(...page.filter(turn => !loaded.has(turn.id)).reverse());
+      renderMessages(list, unpackTurns(historyTurns, false), true);
       $('[data-history-more]').hidden = rows.length <= 20;
-      $('[data-history-more]').textContent = '더 보기';
-      historyStatus(list.children.length ? '' : '아직 저장된 대화가 없어요. 첫 질문을 시작해 보세요.');
+      $('[data-history-more]').textContent = '이전 기록 불러오기';
+      historyStatus(historyTurns.length ? '' : '아직 저장된 대화가 없어요. 첫 질문을 시작해 보세요.');
+      if (more && anchorId) {
+        const restored = [...list.querySelectorAll('[data-turn-id]')].find(node => node.dataset.turnId === anchorId);
+        if (restored) scroll.scrollTop += restored.getBoundingClientRect().top - anchorTop;
+      } else scroll.scrollTop = scroll.scrollHeight;
     } catch {
       if (historyRequest !== task) return;
       historyStatus('대화 기록을 불러오지 못했어요. 다시 시도해 주세요.');
       $('[data-history-more]').hidden = false; $('[data-history-more]').textContent = '다시 불러오기';
-    } finally { if (historyRequest === task) historyRequest = null; }
+    } finally { if (historyRequest === task) { historyRequest = null; historyBusy(false); } }
   }
   function turnQuery(id, before) {
     const query = new URLSearchParams({ conversation_id: 'eq.' + id, select: 'id,created_at,question,answer', order: 'created_at.desc,id.desc', limit: '21' });
     if (before !== null) query.set('or', `(created_at.lt.${before.created_at},and(created_at.eq.${before.created_at},id.lt.${before.id}))`);
     return 'ai_chat_turns?' + query;
   }
-  function unpackTurns(rows) { return rows.slice(0, 20).reverse().flatMap(t => [{ role: 'user', text: t.question }, { role: 'model', text: t.answer }]); }
+  function unpackTurns(rows, newestFirst = true) {
+    return (newestFirst ? rows.slice(0, 20).reverse() : rows).flatMap(t => [
+      { role: 'user', text: t.question, createdAt: t.created_at, turnId: t.id },
+      { role: 'model', text: t.answer, createdAt: t.created_at, conversationId: t.conversation_id, question: t.question },
+    ]);
+  }
   async function openHistory(id) {
     cancelHistory(); const task = new AbortController(); historyRequest = task;
-    historyStatus('대화를 불러오고 있어요…');
+    historyBusy(true); historyStatus('대화를 불러오고 있어요…');
     try {
       const query = new URLSearchParams({ id: 'eq.' + id, select: 'id,context', limit: '1' });
       const [conversations, turns] = await Promise.all([
@@ -313,8 +362,8 @@
       if (threads.size > 20) threads.delete(threads.keys().next().value);
       historyView = false; render(); prompt.focus({ preventScroll: true });
       requestAnimationFrame(() => { $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight; });
-    } catch { if (historyRequest === task) historyStatus('대화를 불러오지 못했어요. 목록에서 다시 선택해 주세요.'); }
-    finally { if (historyRequest === task) historyRequest = null; }
+    } catch { if (historyRequest === task) historyStatus('대화를 불러오지 못했어요. 다시 시도해 주세요.'); }
+    finally { if (historyRequest === task) { historyRequest = null; historyBusy(false); } }
   }
   async function loadOlder() {
     cancelHistory(); const task = new AbortController(), target = thread; historyRequest = task;
@@ -385,7 +434,7 @@
   }
   function begin(kind, question = '') {
     cancelRequest(); thread.error = ''; thread.suggestionError = false;
-    const task = { kind, question, thread, controller: new AbortController() };
+    const task = { kind, question, thread, createdAt: new Date().toISOString(), controller: new AbortController() };
     request = task; task.timer = setTimeout(() => task.controller.abort('timeout'), 55000); return task;
   }
   function failed(error, task) {
@@ -416,7 +465,8 @@
       const data = await call({ action: 'chat', context: task.thread.context, question, conversationId: task.thread.conversationId, turnId: task.turnId, history: task.thread.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 2000) })) }, task);
       if (typeof data.answer !== 'string' || !data.answer.trim() || data.answer.length > 14000) throw new Error('empty_response');
       if (request === task) {
-        thread.history.push({ role: 'user', text: question }, { role: 'model', text: data.answer });
+        const createdAt = data.createdAt || task.createdAt;
+        thread.history.push({ role: 'user', text: question, createdAt }, { role: 'model', text: data.answer, createdAt });
         if (data.saved === true) thread.saved = true;
         if (data.saved === false) thread.unsaved.push({ p_conversation_id: thread.conversationId, p_turn_id: task.turnId, p_context: thread.context, p_question: question, p_answer: data.answer, p_created_at: data.createdAt });
       }
