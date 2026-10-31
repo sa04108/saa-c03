@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="../assets/account.css?v=20261030-2" data-account-assets>
 <script defer src="../assets/account-config.js" data-account-assets></script>
 <script defer src="../assets/vendor/supabase.js" data-account-assets></script>
-<script defer src="../assets/account.js?v=20261030-2" data-account-assets></script>
+<script defer src="../assets/account.js?v=20261031-1" data-account-assets></script>
 <style id="study-header-styles">
 /* The title and page switch share a row; study controls sit below on mobile. */
 .top .brand-copy { min-width:0; }
@@ -62,6 +62,9 @@
 .gpt-references{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.8rem;line-height:1.6;overflow-wrap:anywhere}
 .source-explanation h3{font-size:1rem;margin-top:22px}
 </style>
+
+<link rel="stylesheet" href="../assets/assistant.css?v=20261031-1" data-ai-assets>
+<script defer src="../assets/assistant.js?v=20261031-1" data-ai-assets></script>
 </head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span><div class="brand-copy"><div class="brand-title-line"><h1>SAA-C03 <span style="font-weight:400">문제집</span></h1><a class="wiki-link page-switch" href="../concepts/">개념 위키 ↗</a></div><p>AWS Certified Solutions Architect · Associate</p></div></div><div class="row top-actions"><button id="open-settings">저장 · 백업</button><span id="save-status" class="save-pill" role="status">저장 상태 확인 중</span></div><div class="account-controls" data-account-ui><button class="account-icon-button" type="button" data-github-login aria-label="GitHub 계정 연동" title="GitHub 계정 연동" disabled><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"></button><a class="account-icon-button" href="../#social-accounts" data-account-manage aria-label="GitHub 계정 관리" title="GitHub 계정 관리" hidden><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"><span class="account-connected-dot" aria-hidden="true"></span></a></div></header>
@@ -1455,6 +1458,7 @@ function render(){renderStats();renderMap();const ids=currentIDs(),index=ids.ind
  if(!ids.length){$('question-mount').innerHTML='<section class="panel empty"><h2>해당하는 문제가 없습니다</h2><p class="muted">학습 범위나 검색어를 바꿔 보세요.</p><button id="show-all" class="primary">전체 문제 보기</button></section>';return}
  const q=BY_ID.get(state.current),r=record(q),res=result(q),note=GPT_NOTES[q.id]||{},answer=answerFor(q),gradable=hasAnswer(q);
  $('question-mount').innerHTML='<article class="panel question" aria-labelledby="question-title"><header class="qhead"><div class="qtitle"><h2 id="question-title" tabindex="-1">문제 '+String(q.id).padStart(3,'0')+'</h2><span class="badge">'+(q.count>1?q.count+'개 선택':'단일 선택')+'</span></div><button class="flag" id="flag" aria-pressed="'+r.flagged+'">'+(r.flagged?'★ 별표':'☆ 별표')+'</button></header><div class="qbody">'+(q.notice?'<p class="notice">'+esc(q.notice)+'</p>':'')+'<div class="stem" lang="en">'+rich(q.stem)+'</div><p class="choice-hint">'+(r.checked?'선택 결과를 확인하세요.':q.count+'개의 답을 선택한 후 정답을 확인하세요.')+'</p><fieldset class="choices"><legend class="sr-only">'+q.count+'개의 답 선택</legend>'+q.options.map(o=>{const selected=r.selected.includes(o.key),correct=r.checked&&gradable&&answer.includes(o.key),wrong=r.checked&&gradable&&selected&&!correct;return '<button type="button" class="option '+(selected?'selected ':'')+(correct?'correct ':'')+(wrong?'wrong ':'')+'" data-option="'+o.key+'" aria-pressed="'+selected+'" '+(r.checked?'disabled':'')+'><span class="letter">'+o.key+'</span><span class="option-content" lang="en">'+rich(o.text)+(r.checked&&(correct||selected)?'<span class="choice-status" lang="ko">'+(correct?'✓ 정답':'')+(selected?(correct?' · 내 선택':gradable?'✕ 내 선택':'내 선택'):'')+'</span>':'')+'</span></button>'}).join('')+'</fieldset></div><div class="qactions"><span class="small muted">'+(r.checked?'선택: '+(r.selected.join(', ')||'없음'):'선택 '+r.selected.length+' / '+q.count)+'</span>'+(r.checked?'<button id="retry">이 문제 다시 풀기</button>':'<button id="check" class="primary" '+(gradable&&r.selected.length!==q.count?'disabled':'')+'>'+(gradable?'정답 · 해설 확인':'답안 · 해설 보기')+'</button>')+'</div>'+(r.checked?'<section class="explanation" aria-label="채점 결과와 해설"><div class="result-title '+res+'" role="status">'+(res==='correct'?'정답입니다.':res==='wrong'?'다시 살펴볼 문제입니다.':note.answerReview?'답안 검토가 필요한 문제입니다.':q.answerStatus==='ambiguous'?'TXT의 정답 표기가 불명확합니다.':'제공 TXT에 답안이 없습니다.')+'</div><div>'+(gradable?'정답 <strong>'+answer.join(', ')+'</strong> · 내 선택 '+r.selected.join(', '):'이 문제는 자동채점에서 제외합니다. 아래 해설과 원문을 함께 확인하세요.')+'</div><p class="answer-source">'+(note.answerOverride?'정정 답안으로 채점합니다. 원문 답안: '+q.answer.join(', ')+'.':note.answerReview?(q.answer.length?'원문 답안: '+q.answer.join(', ')+'. ':'')+'답안을 검토 중이므로 정답·오답 수에 포함하지 않습니다.':'원문 답안을 기준으로 표시합니다.')+'</p>'+gptNotesHTML(q)+sourceExplanationHTML(q)+'</section>':'')+'</article>';
+ window.SaaAssistant?.setQuestion(q,note);
 }
 function go(id){if(!BY_ID.has(id))return;state.current=id;mapPage=Math.max(0,Math.floor(currentIDs().indexOf(id)/40));persistState();render();$('sidebar').classList.remove('expanded');$('toggle-map').setAttribute('aria-expanded','false');$('main').scrollIntoView({behavior:'auto',block:'start'});$('question-title')?.focus({preventScroll:true})}
 function nav(delta){const ids=currentIDs(),i=ids.indexOf(state.current);if(ids[i+delta])go(ids[i+delta])}
@@ -1466,7 +1470,10 @@ async function exportHTML(){
  const button=$('export-html');button.disabled=true;
  try{
   const snapshot=document.documentElement.cloneNode(true);
-  for(const element of snapshot.querySelectorAll('[data-account-assets],[data-account-ui],#account-warning,#import-guest'))element.remove();
+  for(const element of snapshot.querySelectorAll('[data-account-assets],[data-account-ui],[data-ai-assets],[data-ai-ui],#account-warning,#import-guest'))element.remove();
+  snapshot.querySelector('body').classList.remove('saa-ai-open');
+  snapshot.querySelector('body').style.overflow='';
+  for(const element of snapshot.querySelectorAll('[inert]'))element.removeAttribute('inert');
   snapshot.querySelector('#account-info').textContent='이 파일의 기록은 현재 브라우저에 저장됩니다.';
   snapshot.querySelector('#saved-progress').textContent=JSON.stringify(state).replace(/</g,'\u003c');
   snapshot.querySelector('#settings').removeAttribute('open');
@@ -1477,6 +1484,7 @@ async function exportHTML(){
   download(new Blob([html],{type:'text/html;charset=utf-8'}),'SAA-C03-study-progress.html');toast('진행 상태가 포함된 HTML을 다운로드합니다.');
  }catch{toast('HTML을 다운로드하지 못했습니다. 다시 시도해 주세요.')}finally{button.disabled=false}
 }
+document.addEventListener('saa:assistant-ready',()=>{if(!booting)window.SaaAssistant?.setQuestion(BY_ID.get(state.current),GPT_NOTES[state.current]||{})});
 $('question-mount').addEventListener('click',e=>{const option=e.target.closest('[data-option]');if(option){select(option.dataset.option);return}const b=e.target.closest('button');if(!b)return;if(b.id==='flag')changeRecord(r=>r.flagged=!r.flagged);if(b.id==='check'){const q=BY_ID.get(state.current);if(hasAnswer(q)&&record(q).selected.length!==q.count)return;changeRecord(r=>r.checked=true)}if(b.id==='retry')changeRecord(r=>{r.checked=false;r.selected=[]});if(b.id==='show-all'){state.filter='all';state.query='';$('filter').value='all';$('search').value='';freshFilter();persistState();render()}});
 $('navigator').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(Number(b.dataset.go))});
 $('prev').onclick=()=>nav(-1);$('next').onclick=()=>nav(1);$('map-prev').onclick=()=>{mapPage--;renderMap()};$('map-next').onclick=()=>{mapPage++;renderMap()};

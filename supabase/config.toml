@@ -1,0 +1,4 @@
+[functions.study-assistant]
+# The function verifies the user's bearer token with Supabase Auth itself.
+# This also works with publishable API keys and the project's current JWT keys.
+verify_jwt = false

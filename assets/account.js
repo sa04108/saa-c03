@@ -189,7 +189,17 @@
     } catch { error = 'auth-unavailable'; }
     return { configured, user, error };
   })();
-  window.SaaAccount = { ready, createStore, get user() { return user; } };
+  async function getAccessToken() {
+    await ready;
+    if (!client || !user) return null;
+    let result = await client.auth.getSession();
+    if (result.data.session && result.data.session.expires_at * 1000 < Date.now() + 60000) {
+      result = await client.auth.refreshSession();
+    }
+    if (result.error || !result.data.session || result.data.session.user.id !== user.id) throw Error('auth_unavailable');
+    return result.data.session.access_token;
+  }
+  window.SaaAccount = { ready, createStore, getAccessToken, get user() { return user; } };
 
   document.addEventListener('click', event => {
     const login = event.target.closest('[data-github-login]');
