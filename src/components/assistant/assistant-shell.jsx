@@ -45,15 +45,10 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
         aria-labelledby="saa-ai-heading"
       >
         <header className="saa-ai-head">
-          <div className="saa-ai-logo">
-            <AssistantIcon name="robot" />
-          </div>
-          <div className="saa-ai-title">
-            <h2 id="saa-ai-heading" tabIndex="-1">
-              AI 어시스턴트
-            </h2>
-            <p>SAA-C03 학습 도우미</p>
-          </div>
+          <h2 className="saa-ai-type" id="saa-ai-heading" tabIndex="-1">
+            <AssistantIcon name="book" />
+            <span data-context-type>자유 질문</span>
+          </h2>
           <div className="saa-ai-head-actions">
             <button
               type="button"
@@ -193,14 +188,6 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
             </div>
           </section>
         </section>
-        <div className="saa-ai-context-strip">
-          <AssistantIcon name="book" />
-          <div className="saa-ai-context-copy">
-            <small>질문하는 항목</small>
-            <p data-context-title></p>
-          </div>
-          <span className="saa-ai-context-type" data-context-type></span>
-        </div>
         <div className="saa-ai-scroll" data-scroll>
           <div className="saa-ai-welcome" data-welcome>
             <p className="saa-ai-eyebrow">YOUR STUDY COMPANION</p>
@@ -248,23 +235,18 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
             </label>
             <textarea
               id="saa-ai-prompt"
-              rows="2"
+              rows="1"
               placeholder="궁금한 내용을 입력하세요…"
               maxLength="2000"
             ></textarea>
-            <div className="saa-ai-composer-bottom">
-              <span className="saa-ai-composer-hint" data-hint>
-                질문을 작성한 뒤 전송하세요
-              </span>
-              <button
-                className="saa-ai-send"
-                type="submit"
-                disabled
-                aria-label="질문 전송"
-              >
-                <AssistantIcon name="up" />
-              </button>
-            </div>
+            <button
+              className="saa-ai-send"
+              type="submit"
+              disabled
+              aria-label="질문 전송"
+            >
+              <AssistantIcon name="up" />
+            </button>
           </div>
           <p
             className="saa-ai-save-status"
@@ -276,10 +258,6 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
             <button type="button" data-save-retry hidden>
               다시 저장
             </button>
-          </p>
-          <p className="saa-ai-disclaimer">
-            답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송되며, 검색 시
-            Tavily도 사용합니다.
           </p>
         </form>
       </section>

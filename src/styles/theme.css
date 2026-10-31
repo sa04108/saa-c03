@@ -119,19 +119,18 @@
   :root[data-theme="dark"] .arrow { color: var(--theme-muted); }
 
   /* AI assistant: all states use the same surfaces, including history editing. */
-  :root[data-theme="dark"] :is(.saa-ai, .saa-ai-composer-zone, .saa-ai-history-footer, .saa-ai-history-more, .saa-ai .saa-ai-session, .saa-ai-suggestion, .saa-ai-context-type, .saa-ai-check, .saa-ai-delete-cancel) { color: var(--theme-ink); background: var(--theme-surface); border-color: var(--theme-line); }
-  :root[data-theme="dark"] :is(.saa-ai-head, .saa-ai-history-head, .saa-ai-composer-zone) { border-color: var(--theme-line); }
-  :root[data-theme="dark"] :is(.saa-ai-context-strip, .saa-ai-composer, .saa-ai-retry, .saa-ai-session-icon, .saa-ai-trigger, .saa-ai-answer code) { background: #152031; color: var(--theme-muted); border-color: var(--theme-line); }
-  :root[data-theme="dark"] .saa-ai-composer:focus-within { background: var(--theme-surface); border-color: var(--theme-blue); box-shadow: 0 0 0 3px #9ec6ff1f; }
-  :root[data-theme="dark"] :is(.saa-ai-title h2, .saa-ai-welcome h3, .saa-ai textarea, .saa-ai-answer, .saa-ai-answer strong, .saa-ai-session strong) { color: var(--theme-ink); }
-  :root[data-theme="dark"] :is(.saa-ai-title p, .saa-ai-description, .saa-ai-eyebrow, .saa-ai-icon, .saa-ai-context-copy small, .saa-ai-context-copy p, .saa-ai-context-type, .saa-ai-suggestions-note, .saa-ai-feedback, .saa-ai-composer-hint, .saa-ai-disclaimer, .saa-ai-reply-label, .saa-ai-reply-label time, .saa-ai .saa-ai-history-back, .saa-ai .saa-ai-history-edit, .saa-ai-session-date, .saa-ai-session-meta, .saa-ai-session-meta > span, .saa-ai-session-topic, .saa-ai-session-arrow, .saa-ai-selection, .saa-ai-date, .saa-ai-date-select, .saa-ai-date-count, .saa-ai-save-status) { color: var(--theme-muted); }
-  :root[data-theme="dark"] :is(.saa-ai-user, .saa-ai-icon[aria-pressed="true"], .saa-ai-suggestion[aria-pressed="true"], .saa-ai-session[aria-current="true"], .saa-ai .saa-ai-session[aria-checked="true"]) { background: var(--theme-bluewash); color: #c3dcff; border-color: #526b89; }
-  :root[data-theme="dark"] :is(.saa-ai-icon:hover, .saa-ai-suggestion:hover, .saa-ai .saa-ai-session:hover:not(:disabled), .saa-ai-trigger:hover, .saa-ai .saa-ai-history-edit:hover:not(:disabled)) { background: var(--theme-raised); color: var(--theme-ink); }
+  :root[data-theme="dark"] :is(.saa-ai, .saa-ai-history-footer, .saa-ai-history-more, .saa-ai .saa-ai-session, .saa-ai-suggestion, .saa-ai-check, .saa-ai-delete-cancel) { color: var(--theme-ink); background: var(--theme-surface); border-color: var(--theme-line); }
+  :root[data-theme="dark"] .saa-ai-history-head { border-color: var(--theme-line); }
+  :root[data-theme="dark"] :is(.saa-ai-retry, .saa-ai-session-icon, .saa-ai-trigger, .saa-ai-answer code) { background: #152031; color: var(--theme-muted); border-color: var(--theme-line); }
+  :root[data-theme="dark"] :is(.saa-ai-welcome h3, .saa-ai textarea, .saa-ai-answer, .saa-ai-answer strong, .saa-ai-session strong) { color: var(--theme-ink); }
+  :root[data-theme="dark"] :is(.saa-ai-description, .saa-ai-eyebrow, .saa-ai-suggestions-note, .saa-ai-feedback, .saa-ai-reply-label, .saa-ai-reply-label time, .saa-ai .saa-ai-history-back, .saa-ai .saa-ai-history-edit, .saa-ai-session-date, .saa-ai-session-meta, .saa-ai-session-meta > span, .saa-ai-session-topic, .saa-ai-session-arrow, .saa-ai-selection, .saa-ai-date, .saa-ai-date-select, .saa-ai-date-count, .saa-ai-save-status) { color: var(--theme-muted); }
+  :root[data-theme="dark"] :is(.saa-ai-user, .saa-ai-suggestion[aria-pressed="true"], .saa-ai-session[aria-current="true"], .saa-ai .saa-ai-session[aria-checked="true"]) { background: var(--theme-bluewash); color: #c3dcff; border-color: #526b89; }
+  :root[data-theme="dark"] :is(.saa-ai-suggestion:hover, .saa-ai .saa-ai-session:hover:not(:disabled), .saa-ai-trigger:hover, .saa-ai .saa-ai-history-edit:hover:not(:disabled)) { background: var(--theme-raised); color: var(--theme-ink); }
   :root[data-theme="dark"] :is(.saa-ai-answer a, .saa-ai .saa-ai-save-status button) { color: var(--theme-blue); }
   :root[data-theme="dark"] .saa-ai .saa-ai-select-all { background: transparent; color: var(--theme-ink); }
   :root[data-theme="dark"] .saa-ai .saa-ai-date-select { background: transparent; }
   :root[data-theme="dark"] .saa-ai textarea { background: transparent; }
-  :root[data-theme="dark"] :is(.saa-ai-fab, .saa-ai .saa-ai-send, .saa-ai-logo) { background: var(--theme-blue); color: #101722; border-color: var(--theme-blue); }
+  :root[data-theme="dark"] :is(.saa-ai-fab, .saa-ai .saa-ai-send) { background: var(--theme-blue); color: #101722; border-color: var(--theme-blue); }
   :root[data-theme="dark"] .saa-ai-fab:hover:not(:disabled) { background: #bdd9ff; color: #101722; }
   :root[data-theme="dark"] .saa-ai .saa-ai-send:hover:not(:disabled) { background: #bdd9ff; }
   :root[data-theme="dark"] :is(.saa-ai .saa-ai-send:disabled, .saa-ai .saa-ai-delete:disabled) { background: #2a394e; color: #91a5bf; }

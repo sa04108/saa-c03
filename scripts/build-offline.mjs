@@ -14,7 +14,7 @@ const result = await build({
 });
 const css = (
   await Promise.all(
-    ["home", "concepts", "dumps", "account", "assistant", "theme", "study-layout"].map((name) =>
+    ["home", "concepts", "dumps", "account", "assistant", "theme", "assistant-layout", "study-layout"].map((name) =>
       readFile(`src/styles/${name}.css`, "utf8"),
     ),
   )

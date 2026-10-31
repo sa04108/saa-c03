@@ -13,6 +13,8 @@ import {
   renderSessions as renderSessionList,
   disposeViews,
 } from "./views";
+import { createPanelLayout } from "./panel-layout";
+import { createPanelNavigation } from "./panel-navigation";
 
 export function createAssistantController({ fab, panel, tooltip, account }) {
   const lifetime = new AbortController();
@@ -20,10 +22,6 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
   const icons = "/assets/assistant-icons.svg";
   const mobile = matchMedia("(max-width:760px)");
   const keyboardSubmit = matchMedia("(hover: hover) and (pointer: fine)");
-  const composerHint = () =>
-    keyboardSubmit.matches
-      ? "Enter 전송 · Shift+Enter 줄바꿈"
-      : "질문을 작성한 뒤 전송하세요";
   const general = {
     id: "general",
     kind: "general",
@@ -56,6 +54,13 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
 
   const $ = (selector) => panel.querySelector(selector);
   const prompt = $("#saa-ai-prompt");
+  const layout = createPanelLayout({ panel, mobile });
+  const navigation = createPanelNavigation({
+    panel,
+    mobile,
+    show: () => open(null, fab),
+    hide: hidePanel,
+  });
 
   function hideTooltip() {
     tooltipTarget?.removeAttribute("aria-describedby");
@@ -172,12 +177,19 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     fab.querySelector("span").textContent = "AI 어시스턴트 닫기";
     render();
     modalState();
+    layout.showHeader();
+    navigation.sync();
     $("#saa-ai-heading").focus({ preventScroll: true });
     if (historyView && !historyDeleting) void loadHistory();
     else if (!thread.suggestions && !thread.history.length && !request)
       void suggestions();
   }
   function close() {
+    hidePanel();
+    navigation.sync();
+  }
+  function hidePanel() {
+    if (panel.hidden) return;
     if (!historyDeleting) exitHistoryEdit();
     cancelHistory();
     thread.draft = prompt.value;
@@ -204,8 +216,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     $(".saa-ai-send").disabled =
       !prompt.value.trim() || request?.kind === "chat";
     prompt.readOnly = request?.kind === "chat";
-    prompt.style.height = "auto";
-    prompt.style.height = Math.min(125, prompt.scrollHeight) + "px";
+    layout.resizeComposer();
   }
   function localDay(value) {
     const date = new Date(value);
@@ -226,10 +237,10 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     );
     $("[data-scroll]").hidden = historyView;
     $("form").hidden = historyView;
-    $(".saa-ai-context-strip").hidden = historyView || c.kind === "general";
-    $("[data-context-title]").textContent = c.title;
+    panel.classList.toggle("saa-ai-history-mode", historyView);
+    if (historyView) layout.showHeader();
     $("[data-context-type]").textContent =
-      c.kind === "concept" ? "개념" : c.kind === "question" ? "문제" : "학습";
+      c.kind === "concept" ? "개념" : c.kind === "question" ? "문제" : "자유 질문";
     const heading =
       c.kind === "concept"
         ? `${c.title.split(" (")[0]},\n어떤 점이 궁금한가요?`
@@ -251,9 +262,6 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
       (question) => {
         prompt.value = question;
         updateComposer();
-        $("[data-hint]").textContent = keyboardSubmit.matches
-          ? composerHint()
-          : "수정한 뒤 전송 버튼을 눌러 주세요";
         prompt.focus({ preventScroll: true });
       },
     );
@@ -293,8 +301,6 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     $("[data-save-retry]").hidden = !thread.unsaved.length;
     $("[data-save-retry]").disabled = thread.saving;
     prompt.value = thread.draft;
-    $("[data-hint]").textContent =
-      request?.kind === "chat" ? "답변을 기다리고 있어요" : composerHint();
     updateComposer();
   }
 
@@ -948,7 +954,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
       if (event.key === "Tab" && mobile.matches) {
         const focusable = [
           ...panel.querySelectorAll("button:not(:disabled),textarea,a[href]"),
-        ].filter((el) => el.getClientRects().length);
+        ].filter((el) => el.getClientRects().length && !el.closest("[inert]"));
         const first = focusable[0],
           last = focusable.at(-1);
         if (
@@ -982,6 +988,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     signal: lifetime.signal,
   });
   mobile.addEventListener("change", modalState, { signal: lifetime.signal });
+  navigation.restore();
   return {
     open,
     showTooltip,
@@ -989,6 +996,8 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     dispose() {
       disposed = true;
       lifetime.abort();
+      navigation.dispose();
+      layout.dispose();
       cancelRequest();
       cancelHistory();
       selectionRequest?.abort();
