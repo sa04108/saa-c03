@@ -12,7 +12,7 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 
 ## 1. 데이터베이스 준비
 
-기존 진도 저장 프로젝트의 SQL Editor에서 [AI 마이그레이션](../supabase/migrations/202610310001_ai_assistant.sql)을 **한 번** 실행하고, [공용 Gemini 할당량 마이그레이션](../supabase/migrations/202610310002_shared_gemini_quota.sql)을 이어서 실행합니다. 새 프로젝트라면 [진도 저장 마이그레이션](../supabase/migrations/202610300001_study_progress.sql)을 가장 먼저 실행합니다. 이미 AI 기능을 설치했다면 공용 Gemini 할당량 마이그레이션만 추가로 실행합니다.
+기존 진도 저장 프로젝트의 SQL Editor에서 [AI 마이그레이션](../supabase/migrations/202610310001_ai_assistant.sql) 전체를 **한 번** 실행합니다. 공용 Gemini 할당량 정책과 게스트 제한까지 이 파일에 포함되어 있습니다. 새 프로젝트라면 [진도 저장 마이그레이션](../supabase/migrations/202610300001_study_progress.sql)을 먼저 실행합니다.
 
 이 마이그레이션은 다음을 설정합니다.
 
@@ -21,7 +21,7 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 - 서버 전용 테이블·함수 권한: 브라우저는 직접 조회하거나 수정할 수 없음
 - 익명 AI 사용자가 계정용 풀이 기록 저장 기능에 접근하지 못하도록 제한
 
-기존 GitHub 계정의 진도 데이터와 저장 API 이름은 유지합니다. 오늘 이미 사용한 게스트의 AI 요청 횟수도 유지합니다. 새 SQL을 먼저 적용한 뒤 Edge Function을 다시 배포하세요. 이전 함수의 호출 형식도 호환되므로 SQL 적용과 함수 배포 사이에도 기존 게스트 제한이 동작합니다.
+기존 GitHub 계정의 진도 데이터와 저장 API 이름은 유지합니다. 이 SQL을 적용한 뒤 아래 절차에 따라 최신 `study-assistant` Edge Function을 배포합니다.
 
 ## 2. 게스트 사용 활성화
 
