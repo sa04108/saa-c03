@@ -391,3 +391,22 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .site-header .brand-title-line{ gap:6px; }
 :where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch{ font-size:.72rem; padding:8px 6px; }
 }
+
+/* Match the study header: account at the upper right, navigation below on mobile. */
+.site-header .header-inner { position:relative; }
+.site-header .primary-nav { margin-left:auto; }
+.site-header .account-controls { flex:none; }
+@media screen and (max-width:1000px) {
+ .site-header .header-inner { padding:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 18px calc(24px + env(safe-area-inset-left,0px)); }
+ .site-header .brand { min-height:44px; padding-right:56px; }
+ .site-header .account-controls { position:absolute; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(24px + env(safe-area-inset-right,0px)); z-index:5; }
+}
+@media screen and (max-width:700px) {
+ .site-header .header-inner { padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px calc(16px + env(safe-area-inset-left,0px)); }
+ .site-header .account-controls { top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); }
+}
+@media screen and (max-width:360px) {
+ .site-header .header-inner { padding-inline:calc(12px + env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-right,0px)); }
+ .site-header .brand { padding-right:52px; }
+ .site-header .account-controls { right:calc(12px + env(safe-area-inset-right,0px)); }
+}

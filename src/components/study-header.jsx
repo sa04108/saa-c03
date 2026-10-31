@@ -68,6 +68,7 @@ export function StudyHeader({
           </a>
           <ThemeToggle />
         </nav>
+        {!offline && <AccountControls compact />}
       </div>
     </header>
   ) : (
