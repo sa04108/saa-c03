@@ -1,0 +1,26 @@
+{
+  "name": "saa-c03",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/build-offline.mjs",
+    "build": "next build",
+    "start": "serve out"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
+    "html-react-parser": "6.1.9",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "serve": "14.2.6"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

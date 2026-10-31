@@ -1,0 +1,2 @@
+// Runs before paint; the React provider takes over after hydration.
+export const themeBootstrap = `(()=>{try{const p=localStorage.getItem('saa-c03-theme');const v=['light','dark','system'].includes(p)?p:'system';document.documentElement.dataset.themePreference=v;document.documentElement.dataset.theme=v==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):v;}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}})();`;
