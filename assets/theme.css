@@ -67,13 +67,14 @@
   :root[data-theme="dark"] ::selection { color: #f2f7ff; background: #355a87; }
   :root[data-theme="dark"] :is(input, select, textarea) { accent-color: var(--theme-blue); }
   :root[data-theme="dark"] :is(input, textarea)::placeholder { color: var(--theme-muted); opacity: 1; }
-  :root[data-theme="dark"] :is(input, select, button) { border-color: var(--theme-line); }
-  :root[data-theme="dark"] :is(button, input, select, .panel, dialog, .dictionary-intro, .wiki-toc, .skip-link) { background-color: var(--theme-surface); }
-  :root[data-theme="dark"] button:hover:not(:disabled) { background-color: var(--theme-raised); border-color: #667f9f; }
+  /* GitHub login/manage controls keep their brand colors across themes. */
+  :root[data-theme="dark"] :is(input, select, button:where(:not(.account-icon-button, [data-github-login]))) { border-color: var(--theme-line); }
+  :root[data-theme="dark"] :is(button:where(:not(.account-icon-button, [data-github-login])), input, select, .panel, dialog, .dictionary-intro, .wiki-toc, .skip-link) { background-color: var(--theme-surface); }
+  :root[data-theme="dark"] button:where(:not(.account-icon-button, [data-github-login])):hover:not(:disabled) { background-color: var(--theme-raised); border-color: #667f9f; }
   :root[data-theme="dark"] :is(button.primary, .check-answer) { background: var(--theme-blue); border-color: var(--theme-blue); color: #101722; }
   :root[data-theme="dark"] :is(button.primary, .check-answer):hover:not(:disabled) { background: #bdd9ff; border-color: #bdd9ff; }
   :root[data-theme="dark"] :is(.top, .site-header) { border-bottom: 1px solid #33445a; }
-  :root[data-theme="dark"] :is(.top, .site-header) :is(button, .theme-toggle) { background-color: #263c56; border-color: #52647a; }
+  :root[data-theme="dark"] :is(.top, .site-header) :is(button:where(:not(.account-icon-button, [data-github-login])), .theme-toggle) { background-color: #263c56; border-color: #52647a; }
   :root[data-theme="dark"] :is(.top, .site-header) .theme-toggle:hover { background-color: #344c6c; }
   :root[data-theme="dark"] .theme-control .theme-menu button { background: transparent; border: 0; }
   :root[data-theme="dark"] .theme-control .theme-menu button:hover { background: var(--theme-raised); }
@@ -84,10 +85,8 @@
   :root[data-theme="dark"] [data-page="home"] nav a { background: var(--theme-surface); border-color: var(--theme-line); }
   :root[data-theme="dark"] [data-page="home"] nav a:hover { border-color: var(--theme-blue); }
   :root[data-theme="dark"] [data-page="home"] .eyebrow { color: #f0bb78; }
-  :root[data-theme="dark"] :is(.account-section .account-heading, .account-button, .account-message[data-account-progress]) { color: var(--theme-ink); }
+  :root[data-theme="dark"] :is(.account-section .account-heading, .account-button:where(:not([data-github-login])), .account-message[data-account-progress]) { color: var(--theme-ink); }
   :root[data-theme="dark"] :is(.account-name, .account-message, .account-button-secondary) { color: var(--theme-muted); }
-  :root[data-theme="dark"] .github-icon { filter: brightness(0) invert(1); }
-  :root[data-theme="dark"] .account-connected-dot { border-color: #263c56; background: var(--good); }
   :root[data-theme="dark"] :is(.account-warning, .storage-warning, .notice) { background: #332b22; color: #f0c997; border-color: #6e5538; }
 
   /* Questions, progress, answer feedback and backup dialog. */

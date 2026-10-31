@@ -2,6 +2,8 @@
 .account-section .account-heading { margin: 0 0 18px; color: #24364b; font-size: 1.1rem; font-weight: 700; line-height: 1.4; letter-spacing: -.02em; }
 .social-account-row { display: flex; align-items: center; justify-content: center; gap: 14px; width: fit-content; max-width: 100%; margin: 0 auto; padding: 0; border: 0; border-radius: 0; background: transparent; }
 .github-icon { display: block; flex: none; }
+/* The standalone home-page logo keeps a white canvas in either theme. */
+.social-account-row > .github-icon { background: #fff; border-radius: 50%; }
 .account-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .account-button { flex: none; min-height: 44px; padding: 10px 22px; border: 1px solid #d5dce5; border-radius: 999px; background: #fff; color: #24364b; font: inherit; font-size: .9rem; font-weight: 650; line-height: 1.4; white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s; }
 .account-button:hover:not(:disabled) { border-color: #9dabbc; background: #eaf0f6; }
@@ -13,7 +15,7 @@
 .account-message[data-account-progress] { margin-top: 12px; color: #24364b; font-size: .84rem; font-weight: 600; }
 .account-warning { margin: 0 0 16px; padding: 12px 16px; background: #fff2e9; color: #743b1f; border: 1px solid #e1bfa8; border-radius: 9px; }
 .account-warning button { margin-top: 8px; }
-.top .account-icon-button { position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; min-height: 44px; padding: 9px; border: 1px solid #d8dce3; border-radius: 50%; background: #fff; text-decoration: none; cursor: pointer; }
+.top .account-icon-button { position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; min-height: 44px; padding: 9px; border: 1px solid #d8dce3; border-radius: 50%; background: #fff; color: #24292f; text-decoration: none; cursor: pointer; }
 .top .account-icon-button:hover:not(:disabled) { border-color: #fff; background: #eceef2; }
 .top .account-icon-button:focus-visible { outline: 3px solid #ffb454; outline-offset: 4px; }
 .top .account-icon-button .github-icon { width: 24px; height: 24px; }
