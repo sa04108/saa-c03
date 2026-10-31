@@ -12,6 +12,10 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 
 ## 1. 데이터베이스 준비
 
+**현재 운영 프로젝트는 005까지 적용되어 있습니다.** [GitHub Actions 자동 배포 설정](github-actions-deploy.md)에 따라 Secrets 두 개를 최초 등록하면, 이후 `main` push 시 새 SQL과 Edge Function을 자동 배포합니다. 이미 실행한 SQL을 다시 붙여 넣을 필요가 없습니다.
+
+아래 SQL Editor 절차는 자동 배포를 사용하지 않는 환경이나 별도 프로젝트의 수동 설치를 위한 참고입니다.
+
 **세션 압축 SQL `202610310004_session_compaction.sql`까지 적용한 프로젝트는 [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)을 추가 실행**하고 최신 Edge Function과 프런트엔드를 배포합니다. 003까지만 적용했다면 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 먼저 실행합니다. 002까지만 적용했다면 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)부터 순서대로 진행합니다. 이미 적용한 파일은 다시 실행하지 않습니다.
 
 `cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 모델 실패 제외 정책 SQL, 세션 압축 SQL, 대화 기록 삭제 SQL을 차례대로 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
@@ -77,6 +81,10 @@ Supabase가 제공하는 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`는 서버�
 
 ## 4. Edge Function 배포
 
+기본 배포 경로는 [GitHub Actions](github-actions-deploy.md)입니다. `main` push 시 DB 마이그레이션 성공 후 `study-assistant`를 배포하고, 마지막으로 Pages를 갱신합니다. 서버 비밀값과 인증 제공자 설정은 Supabase에서 최초 설정하며 배포 시 유지됩니다.
+
+### 수동 배포가 필요한 경우
+
 Supabase **Edge Functions → Deploy a new function → Via Editor**에서 함수 이름을 **`study-assistant`**로 지정합니다. [함수 코드](../supabase/functions/study-assistant/index.ts)를 `index.ts`에 붙여 넣고 배포합니다. 외부 패키지 설치는 필요하지 않습니다.
 
 함수의 **Verify JWT with legacy secret** 옵션은 끕니다. 이 함수는 모든 실제 요청의 Bearer 토큰을 **Supabase Auth의 `/auth/v1/user`에서 검증**하며, 인증 없이 Gemini를 호출하지 않습니다. 이 설정은 현재 Publishable key 및 JWT 서명 키 방식과 함께 동작하도록 하기 위한 것입니다. 단순히 JWT 내용을 디코딩해 신뢰하는 방식이 아닙니다.
@@ -89,7 +97,7 @@ supabase link --project-ref <프로젝트-ID>
 supabase functions deploy study-assistant
 ```
 
-`main`의 GitHub Pages 배포는 화면과 정적 자산만 갱신합니다. Edge Function·SQL·서버 비밀값은 별도로 Supabase에 적용해야 합니다.
+위 수동 절차는 자동 배포가 설정된 운영 프로젝트에서 매번 수행할 필요가 없습니다.
 
 ## 5. 동작 확인
 

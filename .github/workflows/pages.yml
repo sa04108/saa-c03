@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy Supabase and GitHub Pages
 
 on:
   push:
@@ -13,9 +13,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  supabase:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out application
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v3.0.1
+        with:
+          version: 2.122.0
+      - name: Deploy database and Edge Function
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: python3 scripts/deploy_supabase.py
+  deploy:
+    needs: supabase
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
@@ -25,6 +49,8 @@ jobs:
     steps:
       - name: Check out site
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - name: Configure Pages
         uses: actions/configure-pages@v6.0.0
       - name: Prepare static site

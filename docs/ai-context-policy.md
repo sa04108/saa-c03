@@ -11,7 +11,7 @@
 
 브라우저 요청 본문은 UTF-8 기준 64 KiB까지 허용합니다. 계정 사용자의 과거 대화는 브라우저가 다시 업로드하지 않고 서버가 DB에서 읽습니다. 문자·바이트·토큰은 서로 다른 단위이므로 실제 Gemini `countTokens` 결과로 입력 예산을 검사합니다.
 
-**이 동작을 운영에 적용하려면 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 실행하고 최신 Edge Function과 프런트엔드를 배포해야 합니다.** 저장소 변경만으로 운영 Supabase가 갱신되지는 않습니다.
+운영 프로젝트에는 세션 압축 SQL을 포함해 005까지 적용되어 있습니다. 이후 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)를 설정한 뒤 `main`에 반영하면 DB·Edge Function·프런트엔드 순서로 배포됩니다. `devel` 변경만으로는 운영 환경이 갱신되지 않습니다.
 
 ## Google에서 확인한 모델 한도
 

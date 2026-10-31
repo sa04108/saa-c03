@@ -25,7 +25,7 @@ GitHub 계정을 연동한 사용자는 대화 기록을 Supabase에 저장하�
 
 ## 적용
 
-세션 압축 SQL 004까지 적용한 프로젝트는 [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)을 추가 실행하고 최신 [study-assistant 함수](../supabase/functions/study-assistant/index.ts)와 프런트엔드를 배포합니다. 미적용 SQL이 더 있다면 [AI 연결 가이드](ai-assistant-setup.md)의 순서를 따릅니다.
+현재 운영 프로젝트는 대화 기록 삭제 SQL 005까지 적용되어 있습니다. 이후 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)를 설정한 뒤 `main`에 반영합니다. 별도 프로젝트의 수동 설치는 [AI 연결 가이드](ai-assistant-setup.md)의 순서를 따릅니다.
 
 - 답변이 완성되면 질문과 답변을 한 행에 원자적으로 저장합니다. 첫 질문을 대화 제목으로 사용하며 제목 생성에 Gemini를 호출하지 않습니다.
 - 학습 자료는 대화마다 한 번만 저장합니다. 새 대화는 새로운 ID의 자유 질문으로 시작합니다. 전송하지 않은 빈 대화는 저장하지 않습니다.
