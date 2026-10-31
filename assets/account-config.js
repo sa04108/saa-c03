@@ -1,5 +1,5 @@
 // Public browser configuration. Never put a Secret/service_role key here.
 window.SAA_ACCOUNT_CONFIG = Object.freeze({
-  supabaseUrl: "https://qhuibctgdafrelolcrfv.supabase.co",
-  supabasePublishableKey: "sb_publishable_gRAW2SzVUW2HlWDpE_yGNw_xpwRcFpd",
+  supabaseUrl: "https://ngohlplwutssofoxobrj.supabase.co",
+  supabasePublishableKey: "sb_publishable_VJ78pr0HdzfzAKEd48l-Uw_sS_-rQak",
 });
