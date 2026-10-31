@@ -6,6 +6,8 @@ class HttpError extends Error {
   constructor(public status: number, public code: string, public retryAfter = 0) { super(code); }
 }
 const env = (name: string) => Deno.env.get(name) || '';
+// Bump when the suggestion instructions or response format change.
+const suggestionPromptVersion = 'suggestions-v1';
 const system = `You are the study assistant for an AWS SAA-C03 learning site.
 Answer in Korean unless the user explicitly asks for another language. Keep AWS service names intact.
 Help users understand requirements, trade-offs, distractors and AWS concepts. Prefer concise explanations and short lists, not diagrams or tables.
@@ -112,17 +114,30 @@ export async function handleRequest(req: Request): Promise<Response> {
       if (!result.ok) throw new HttpError(503, 'not_ready');
       return result;
     };
-    let cacheKey = '';
+    let generationId = '';
     if (input.action === 'suggestions') {
-      // Only public study context is hashed/cached, never chat prompts or replies.
-      cacheKey = await digest(JSON.stringify(['suggestions-v1', model, input.context]));
-      const query = new URLSearchParams({ cache_key: 'eq.' + cacheKey, expires_at: 'gt.' + new Date().toISOString(), select: 'questions', limit: '1' });
-      const rows = await (await db('ai_suggestion_cache?' + query)).json();
-      if (Array.isArray(rows) && validQuestions(rows[0]?.questions)) return reply({ questions: rows[0].questions, cached: true });
+      // Item ID is the only cache key. Other fields determine whether its one
+      // stored list is reusable; chat prompts/replies never enter this cache.
+      const { id, kind, title, text, hasImages } = input.context;
+      const contentHash = await digest(JSON.stringify([kind, title, text, hasImages]));
+      const cache = await (await db('rpc/prepare_ai_suggestions', { method: 'POST', body: JSON.stringify({
+        p_context_id: id, p_model: model, p_prompt_version: suggestionPromptVersion,
+        p_content_hash: contentHash, p_user_id: user.id,
+        p_guest_day: user.is_anonymous === true ? limit('AI_GUEST_RPD', 10, 10000) : 10,
+      }) })).json();
+      if (cache?.allowed === false) throw new HttpError(429, 'limit_reached', Number(cache.retryAfter) || 0);
+      if (cache?.allowed !== true) throw new HttpError(503, 'not_ready');
+      if (cache.cached === true) {
+        if (!validQuestions(cache.questions)) throw new HttpError(503, 'not_ready');
+        return reply({ questions: cache.questions, cached: true });
+      }
+      if (typeof cache.generation_id !== 'string' || !/^[a-f0-9-]{36}$/i.test(cache.generation_id)) throw new HttpError(503, 'not_ready');
+      generationId = cache.generation_id;
     }
     // All callers share Google's actual project/model RPM, RPD and TPM quotas.
     // Linked accounts have no additional per-user or site-wide request cap.
-    if (user.is_anonymous === true) {
+    // Suggestion misses reserve their guest allowance atomically in the cache RPC.
+    if (input.action === 'chat' && user.is_anonymous === true) {
       const reservation = await (await db('rpc/reserve_ai_guest_request', { method: 'POST', body: JSON.stringify({
         p_user_id: user.id, p_user_day: limit('AI_GUEST_RPD', 10, 10000),
       }) })).json();
@@ -159,7 +174,10 @@ export async function handleRequest(req: Request): Promise<Response> {
     try { questions = JSON.parse(text).questions; } catch { throw new HttpError(502, 'empty_response'); }
     if (!validQuestions(questions)) throw new HttpError(502, 'empty_response');
     try {
-      await db('ai_suggestion_cache?on_conflict=cache_key', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ cache_key: cacheKey, questions, expires_at: new Date(Date.now() + 30 * 86400000).toISOString() }) });
+      // A late response from an invalidated generation must not overwrite the
+      // list being generated with a newer model, prompt version or source text.
+      const query = new URLSearchParams({ context_id: 'eq.' + input.context.id, generation_id: 'eq.' + generationId });
+      await db('ai_suggestion_cache?' + query, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ questions }) });
     } catch { console.warn('ai_suggestion_cache_write_failed'); }
     return reply({ questions, cached: false });
   } catch (error) {
