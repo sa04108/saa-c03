@@ -24,18 +24,9 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .wrap{flex-wrap:wrap}
 :where(body:has([data-page="dumps"])) .between{justify-content:space-between}
 :where(body:has([data-page="dumps"])) .sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
-:where(body:has([data-page="dumps"])) .top{background:var(--navy);color:#fff;min-height:82px;padding:18px max(24px,calc((100vw - 1360px)/2));display:flex;align-items:center;justify-content:space-between;gap:15px}
-:where(body:has([data-page="dumps"])) .brand{display:flex;align-items:center;gap:15px}
-:where(body:has([data-page="dumps"])) .brand-mark{display:grid;place-items:center;background:var(--accent);color:var(--navy);font-size:1.25rem;font-weight:850;width:42px;height:42px;border-radius:11px;flex:none}
-:where(body:has([data-page="dumps"])) .brand h1{font-size:1.16rem;letter-spacing:.035em}
-:where(body:has([data-page="dumps"])) .brand p{font-size:.8rem;color:#bfcbdc;margin:3px 0 0}
-:where(body:has([data-page="dumps"])) .top button{border-color:#52647a;background:#263c56;color:white}
-:where(body:has([data-page="dumps"])) .top button:hover:not(:disabled){background:#334c6b}
-:where(body:has([data-page="dumps"])) .save-pill{font-size:.82rem;color:#d6e1ef}
-:where(body:has([data-page="dumps"])) .save-pill.error{color:#ffd2a0}
-:where(body:has([data-page="dumps"])) .layout{max-width:1360px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:268px minmax(0,1fr);gap:26px;align-items:start}
+:where(body:has([data-page="dumps"])) .layout{max-width:var(--study-width);margin:0 auto;padding:var(--study-top-space) var(--study-gutter) 40px;display:grid;grid-template-columns:var(--study-sidebar) minmax(0,1fr);gap:var(--study-gap);align-items:start}
 :where(body:has([data-page="dumps"])) .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
-:where(body:has([data-page="dumps"])) .side{padding:22px;position:sticky;top:20px}
+:where(body:has([data-page="dumps"])) .side{padding:var(--study-sidebar-space);position:sticky;top:20px}
 :where(body:has([data-page="dumps"])) .eyebrow{text-transform:uppercase;font-size:.76rem;letter-spacing:.13em;color:var(--muted);font-weight:700}
 :where(body:has([data-page="dumps"])) .progress-title{display:flex;align-items:baseline;justify-content:space-between;margin:12px 0}
 :where(body:has([data-page="dumps"])) .progress-title strong{font-size:2rem;letter-spacing:-.05em}
@@ -53,7 +44,8 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .field-label{display:block;font-size:.875rem;font-weight:650;margin:0 0 7px}
 :where(body:has([data-page="dumps"])) .side select,:where(body:has([data-page="dumps"])) .side input{margin-bottom:12px}
 :where(body:has([data-page="dumps"])) .jump{display:flex;gap:8px}
-:where(body:has([data-page="dumps"])) .jump input{margin:0}
+:where(body:has([data-page="dumps"])) .jump input{flex:1;min-width:0;margin:0}
+:where(body:has([data-page="dumps"])) .jump button{flex:none;white-space:nowrap}
 :where(body:has([data-page="dumps"])) .navigator{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:12px 0}
 :where(body:has([data-page="dumps"])) .qnum{min-height:38px;padding:3px;font-size:.81rem;position:relative;font-variant-numeric:tabular-nums}
 :where(body:has([data-page="dumps"])) .qnum.correct{background:#e9f6ef;color:var(--good);border-color:#c3e2d1}
@@ -65,16 +57,16 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .map-pager{display:flex;align-items:center;justify-content:space-between;gap:8px}
 :where(body:has([data-page="dumps"])) .map-pager button{padding:3px 10px;min-height:34px}
 :where(body:has([data-page="dumps"])) .legend{font-size:.75rem;color:var(--muted);line-height:1.9}
-:where(body:has([data-page="dumps"])) .crumb{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:1px 0 17px;color:var(--muted);font-size:.875rem}
+:where(body:has([data-page="dumps"])) .crumb{display:flex;gap:12px;align-items:center;justify-content:space-between;min-height:28px;margin:0 0 16px;color:var(--muted);font-size:.875rem}
 :where(body:has([data-page="dumps"])) .exam-tag{font-size:.76rem;letter-spacing:.05em;font-weight:700;padding:5px 9px;border:1px solid #cbd6e5;border-radius:5px;color:#516782}
 :where(body:has([data-page="dumps"])) .question{overflow:hidden}
-:where(body:has([data-page="dumps"])) .qhead{padding:23px 30px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+:where(body:has([data-page="dumps"])) .qhead{padding:23px var(--study-card-space) 23px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
 :where(body:has([data-page="dumps"])) .qtitle{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
 :where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.45rem;letter-spacing:-.03em}
 :where(body:has([data-page="dumps"])) .badge{font-size:.8rem;color:var(--blue);padding:5px 9px;background:#edf3fe;border-radius:5px;font-weight:650}
 :where(body:has([data-page="dumps"])) .flag{font-size:.875rem}
 :where(body:has([data-page="dumps"])) .flag[aria-pressed=true]{background:#fff5db;color:#855608;border-color:#e8c16e}
-:where(body:has([data-page="dumps"])) .qbody{padding:27px 30px 30px}
+:where(body:has([data-page="dumps"])) .qbody{padding:27px var(--study-card-space) 30px}
 :where(body:has([data-page="dumps"])) .stem{font-size:1.04rem;line-height:1.85;color:#23364e;overflow-wrap:anywhere}
 :where(body:has([data-page="dumps"])) .stem p{line-height:inherit;margin:0 0 15px}
 :where(body:has([data-page="dumps"])) .source-img{display:block;max-width:100%;height:auto;margin:15px 0;border:1px solid #e4e8ee;border-radius:5px;background:white}
@@ -92,9 +84,9 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .option.wrong .letter{background:var(--bad);border-color:var(--bad);color:white}
 :where(body:has([data-page="dumps"])) .option:disabled{opacity:1}
 :where(body:has([data-page="dumps"])) .choice-status{display:block;font-size:.8rem;font-weight:700;margin-top:7px}
-:where(body:has([data-page="dumps"])) .qactions{padding:19px 30px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbfcfe}
+:where(body:has([data-page="dumps"])) .qactions{padding:19px var(--study-card-space) 19px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbfcfe}
 :where(body:has([data-page="dumps"])) .qactions .primary{min-width:138px}
-:where(body:has([data-page="dumps"])) .explanation{border-top:1px solid var(--line);padding:26px 30px;background:#fbfcff}
+:where(body:has([data-page="dumps"])) .explanation{border-top:1px solid var(--line);padding:26px var(--study-card-space) 26px;background:#fbfcff}
 :where(body:has([data-page="dumps"])) .result-title{font-weight:750;font-size:1.12rem;margin-bottom:9px}
 :where(body:has([data-page="dumps"])) .result-title.correct{color:var(--good)}
 :where(body:has([data-page="dumps"])) .result-title.wrong{color:var(--bad)}
@@ -123,24 +115,16 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .storage-warning{margin:0;padding:12px 24px;background:#fff1cf;font-size:.875rem;line-height:1.6}
 :where(body:has([data-page="dumps"])) [hidden]{display:none!important}
 @media(min-width:1100px){
-:where(body:has([data-page="dumps"])) .qbody{padding:30px 38px 35px}
-:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:38px;padding-right:38px}}
+:where(body:has([data-page="dumps"])) .qbody{padding:30px var(--study-card-space) 35px}
+:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:var(--study-card-space);padding-right:var(--study-card-space)}}
 @media(max-width:900px){
-:where(body:has([data-page="dumps"])) .layout{grid-template-columns:225px minmax(0,1fr);gap:18px;padding:20px 18px}
-:where(body:has([data-page="dumps"])) .side{padding:17px}
-:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qbody,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:22px;padding-right:22px}
-:where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.25rem}
-:where(body:has([data-page="dumps"])) .brand p{display:none}}
-@media(max-width:700px){
-:where(body:has([data-page="dumps"])) .top{padding:14px 16px;min-height:72px}
-:where(body:has([data-page="dumps"])) .brand{gap:10px}
-:where(body:has([data-page="dumps"])) .brand h1{font-size:1.05rem}
-:where(body:has([data-page="dumps"])) .brand-mark{width:36px;height:36px;font-size:1.1rem}
-:where(body:has([data-page="dumps"])) .top-actions{gap:7px;align-items:flex-end;flex-direction:column-reverse}
-:where(body:has([data-page="dumps"])) .top button{min-height:34px;font-size:.8rem;padding:6px 10px}
-:where(body:has([data-page="dumps"])) .save-pill{font-size:.7rem}
-:where(body:has([data-page="dumps"])) .layout{display:block;padding:17px 13px 30px}
-:where(body:has([data-page="dumps"])) .side{position:static;margin-bottom:15px;padding:16px}
+:where(body:has([data-page="dumps"])) .layout{grid-template-columns:var(--study-sidebar) minmax(0,1fr);gap:var(--study-gap);padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="dumps"])) .side{padding:var(--study-sidebar-space)}
+:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qbody,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:var(--study-card-space);padding-right:var(--study-card-space)}
+:where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.25rem}}
+@media(max-width:800px){
+:where(body:has([data-page="dumps"])) .layout{display:block;padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="dumps"])) .side{position:static;margin-bottom:var(--study-gap);padding:var(--study-sidebar-space)}
 :where(body:has([data-page="dumps"])) .side .eyebrow{display:none}
 :where(body:has([data-page="dumps"])) .side .progress-title{margin:0 0 10px}
 :where(body:has([data-page="dumps"])) .progress-title strong{font-size:1.35rem}
@@ -154,19 +138,19 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 :where(body:has([data-page="dumps"])) .map-wrap .divider{margin:15px 0}
 :where(body:has([data-page="dumps"])) .qnum{min-height:38px}
 :where(body:has([data-page="dumps"])) .crumb{font-size:.8rem;margin-bottom:12px}
-:where(body:has([data-page="dumps"])) .qhead{padding:18px 17px;align-items:flex-start}
+:where(body:has([data-page="dumps"])) .qhead{padding:18px var(--study-card-space) 18px;align-items:center}
 :where(body:has([data-page="dumps"])) .qtitle{gap:7px}
 :where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.22rem}
-:where(body:has([data-page="dumps"])) .flag{font-size:.8rem;padding:7px 9px;min-height:36px;white-space:nowrap}
+:where(body:has([data-page="dumps"])) .flag{font-size:.8rem;padding:7px 9px;min-height:44px;white-space:nowrap}
 :where(body:has([data-page="dumps"])) .badge{font-size:.73rem;padding:4px 7px}
-:where(body:has([data-page="dumps"])) .qbody{padding:20px 17px}
+:where(body:has([data-page="dumps"])) .qbody{padding:20px var(--study-card-space) 20px}
 :where(body:has([data-page="dumps"])) .stem{font-size:1rem;line-height:1.8}
 :where(body:has([data-page="dumps"])) .option{padding:14px 12px;gap:10px;font-size:.96rem}
 :where(body:has([data-page="dumps"])) .letter{width:26px;height:27px;margin-top:2px}
-:where(body:has([data-page="dumps"])) .qactions{padding:15px 17px;align-items:stretch;flex-wrap:wrap}
+:where(body:has([data-page="dumps"])) .qactions{padding:15px var(--study-card-space) 15px;align-items:stretch;flex-wrap:wrap}
 :where(body:has([data-page="dumps"])) .qactions .primary{flex:1}
 :where(body:has([data-page="dumps"])) .qactions .small{flex-basis:100%;font-size:.8rem}
-:where(body:has([data-page="dumps"])) .explanation{padding:21px 17px}
+:where(body:has([data-page="dumps"])) .explanation{padding:21px var(--study-card-space) 21px}
 :where(body:has([data-page="dumps"])) .nextbar{margin-top:14px}
 :where(body:has([data-page="dumps"])) .nextbar button{flex:1;min-height:47px}
 :where(body:has([data-page="dumps"])) .footnote{font-size:.75rem}
@@ -177,45 +161,11 @@ body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--
 @media(prefers-reduced-motion:reduce){
 :where(body:has([data-page="dumps"])),:where(body:has([data-page="dumps"])) *{scroll-behavior:auto!important;transition:none!important}}
 @media print{
-:where(body:has([data-page="dumps"])) .top,:where(body:has([data-page="dumps"])) .side,:where(body:has([data-page="dumps"])) .crumb,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .nextbar,:where(body:has([data-page="dumps"])) .footnote,:where(body:has([data-page="dumps"])) .toast{display:none}
+:where(body:has([data-page="dumps"])) .side,:where(body:has([data-page="dumps"])) .crumb,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .nextbar,:where(body:has([data-page="dumps"])) .footnote,:where(body:has([data-page="dumps"])) .toast{display:none}
 :where(body:has([data-page="dumps"])) .layout{display:block;padding:0}
 :where(body:has([data-page="dumps"])) .panel{border:0}
 :where(body:has([data-page="dumps"])) .question{overflow:visible}
 body:where(:has([data-page="dumps"])){background:white}}
-:where(body:has([data-page="dumps"])) .top .wiki-link{display:inline-flex;align-items:center;min-height:34px;padding:6px 10px;border-radius:9px;color:#bfcbdc;font-size:.82rem;white-space:nowrap;text-decoration:none}
-:where(body:has([data-page="dumps"])) .top .wiki-link:hover{background:#334c6b;color:#fff}
-:where(body:has([data-page="dumps"])) .top .wiki-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}/* The title and page switch share a row; study controls sit below on mobile. */
-:where(body:has([data-page="dumps"])) .top .brand-copy{ min-width:0; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line{ display:flex; align-items:center; gap:10px; min-width:0; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ flex:none; font-size:1.16rem; line-height:1.4; white-space:nowrap; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ display:inline-flex; align-items:center; justify-content:center; flex:none; min-height:36px; padding:6px 9px; border:1px solid #52647a; border-radius:8px; background:#263c56; color:#ffe0ae; font-size:.8rem; line-height:1.4; text-decoration:none; white-space:nowrap; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch:hover{ border-color:#8cabc9; background:#344c6c; }
-:where(body:has([data-page="dumps"])) .top .top-actions{ margin-left:auto; gap:12px; }
-@media screen and (max-width:1000px) {
-:where(body:has([data-page="dumps"])) .top{ position:relative; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:12px; min-height:0; padding:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 18px calc(24px + env(safe-area-inset-left,0px)); }
-:where(body:has([data-page="dumps"])) .top .brand{ width:100%; min-width:0; min-height:44px; padding-right:56px; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ min-height:44px; }
-:where(body:has([data-page="dumps"])) .top .top-actions{ display:flex; flex-direction:row; align-items:center; justify-content:flex-start; flex-wrap:wrap; width:100%; margin:0; gap:10px 14px; }
-:where(body:has([data-page="dumps"])) .top #open-settings{ width:auto; min-height:44px; padding:10px 14px; font-size:.86rem; }
-:where(body:has([data-page="dumps"])) .top .save-pill{ min-width:0; line-height:1.5; overflow-wrap:anywhere; }
-:where(body:has([data-page="dumps"])) .top .account-controls{ position:absolute; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(24px + env(safe-area-inset-right,0px)); z-index:5; }
-}
-@media screen and (max-width:700px) {
-:where(body:has([data-page="dumps"])) .top{ padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px calc(16px + env(safe-area-inset-left,0px)); }
-:where(body:has([data-page="dumps"])) .top .brand-title-line{ gap:8px; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ font-size:1rem; letter-spacing:0; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ font-size:.76rem; padding:8px; }
-:where(body:has([data-page="dumps"])) .top .account-controls{ top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); }
-}
-@media screen and (max-width:360px) {
-:where(body:has([data-page="dumps"])) .top{ padding-inline:calc(12px + env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-right,0px)); }
-:where(body:has([data-page="dumps"])) .top .brand{ gap:8px; padding-right:52px; }
-:where(body:has([data-page="dumps"])) .top .brand-mark{ width:32px; height:32px; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line{ gap:6px; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ font-size:.9rem; }
-:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ font-size:.72rem; padding:8px 6px; }
-:where(body:has([data-page="dumps"])) .top .account-controls{ right:calc(12px + env(safe-area-inset-right,0px)); }
-}
 :where(body:has([data-page="dumps"])) .gpt-notes{margin:22px 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 :where(body:has([data-page="dumps"])) .gpt-note + .gpt-note{margin-top:20px}
 :where(body:has([data-page="dumps"])) .gpt-note h3{font-size:1rem;line-height:1.5;margin:0 0 8px;color:var(--blue)}

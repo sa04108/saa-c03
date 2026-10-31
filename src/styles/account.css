@@ -15,10 +15,10 @@
 .account-message[data-account-progress] { margin-top: 12px; color: #24364b; font-size: .84rem; font-weight: 600; }
 .account-warning { margin: 0 0 16px; padding: 12px 16px; background: #fff2e9; color: #743b1f; border: 1px solid #e1bfa8; border-radius: 9px; }
 .account-warning button { margin-top: 8px; }
-:is(.top, .site-header) .account-icon-button { position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; min-height: 44px; padding: 9px; border: 1px solid #d8dce3; border-radius: 50%; background: #fff; color: #24292f; text-decoration: none; cursor: pointer; }
-:is(.top, .site-header) .account-icon-button:hover:not(:disabled) { border-color: #fff; background: #eceef2; }
-:is(.top, .site-header) .account-icon-button:focus-visible { outline: 3px solid #ffb454; outline-offset: 4px; }
-:is(.top, .site-header) .account-icon-button .github-icon { width: 24px; height: 24px; }
+.study-header .account-icon-button { position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; min-height: 44px; padding: 9px; border: 1px solid #d8dce3; border-radius: 50%; background: #fff; color: #24292f; text-decoration: none; cursor: pointer; }
+.study-header .account-icon-button:hover:not(:disabled) { border-color: #fff; background: #eceef2; }
+.study-header .account-icon-button:focus-visible { outline: 3px solid #ffb454; outline-offset: 4px; }
+.study-header .account-icon-button .github-icon { width: 24px; height: 24px; }
 .account-connected-dot { position: absolute; right: -1px; bottom: 0; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; background: #238c66; }
 .account-controls [hidden], .account-section [hidden], .account-warning[hidden] { display: none !important; }
 @media (max-width: 480px) {

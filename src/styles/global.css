@@ -4,5 +4,6 @@
 @import './account.css';
 @import './assistant.css';
 @import './theme.css';
+@import './study-layout.css';
 
 [hidden] { display: none !important; }
