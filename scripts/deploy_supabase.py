@@ -25,10 +25,10 @@ class DeploymentError(Exception):
 
 
 def project_ref():
-    config = (ROOT / "assets/account-config.js").read_text()
+    config = (ROOT / "src/lib/backend/config.js").read_text()
     match = re.search(r'''supabaseUrl\s*:\s*["']https://([a-z]{20})\.supabase\.co["']''', config)
     if not match:
-        raise DeploymentError("Cannot identify the Supabase project in assets/account-config.js.")
+        raise DeploymentError("Cannot identify the Supabase project in src/lib/backend/config.js.")
     return match[1]
 
 

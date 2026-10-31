@@ -1,0 +1,225 @@
+
+:root:where(:has([data-page="dumps"])){color-scheme:light;--navy:#182b44;--ink:#24364b;--muted:#607087;--line:#dce3eb;--bg:#f1f4f8;--white:#fff;--accent:#ffb454;--blue:#235eb9;--good:#137451;--bad:#b93d45;--radius:15px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:16px}
+:where(body:has([data-page="dumps"])),:where(body:has([data-page="dumps"])) *{box-sizing:border-box}
+body:where(:has([data-page="dumps"])){margin:0;background:var(--bg);color:var(--ink)}
+:where(body:has([data-page="dumps"])) button,:where(body:has([data-page="dumps"])) input,:where(body:has([data-page="dumps"])) select,:where(body:has([data-page="dumps"])) textarea{font:inherit}
+:where(body:has([data-page="dumps"])) button,:where(body:has([data-page="dumps"])) a,:where(body:has([data-page="dumps"])) input,:where(body:has([data-page="dumps"])) select{touch-action:manipulation}
+:where(body:has([data-page="dumps"])) button{cursor:pointer}
+:where(body:has([data-page="dumps"])) button:disabled{cursor:default;opacity:.42}
+:where(body:has([data-page="dumps"])) button:focus-visible,:where(body:has([data-page="dumps"])) a:focus-visible,:where(body:has([data-page="dumps"])) summary:focus-visible{outline:3px solid #d18c27;outline-offset:3px}
+:where(body:has([data-page="dumps"])) button,:where(body:has([data-page="dumps"])) input,:where(body:has([data-page="dumps"])) select{border:1px solid var(--line);border-radius:9px;background:white;color:inherit;min-height:44px}
+:where(body:has([data-page="dumps"])) button{padding:10px 15px;font-weight:600}
+:where(body:has([data-page="dumps"])) button:hover:not(:disabled){border-color:#91a5bf;background:#f6f8fb}
+:where(body:has([data-page="dumps"])) input,:where(body:has([data-page="dumps"])) select{padding:9px 11px;width:100%;min-width:0}
+:where(body:has([data-page="dumps"])) a{color:var(--blue)}
+:where(body:has([data-page="dumps"])) p{line-height:1.7;margin:0 0 12px}
+:where(body:has([data-page="dumps"])) h1,:where(body:has([data-page="dumps"])) h2,:where(body:has([data-page="dumps"])) h3{margin:0}
+:where(body:has([data-page="dumps"])) button.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+:where(body:has([data-page="dumps"])) button.primary:hover:not(:disabled){background:#2b4464}
+:where(body:has([data-page="dumps"])) button.quiet{background:transparent}
+:where(body:has([data-page="dumps"])) button.danger{color:var(--bad)}
+:where(body:has([data-page="dumps"])) .muted{color:var(--muted)}
+:where(body:has([data-page="dumps"])) .small{font-size:.875rem}
+:where(body:has([data-page="dumps"])) .row{display:flex;align-items:center;gap:10px}
+:where(body:has([data-page="dumps"])) .wrap{flex-wrap:wrap}
+:where(body:has([data-page="dumps"])) .between{justify-content:space-between}
+:where(body:has([data-page="dumps"])) .sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+:where(body:has([data-page="dumps"])) .top{background:var(--navy);color:#fff;min-height:82px;padding:18px max(24px,calc((100vw - 1360px)/2));display:flex;align-items:center;justify-content:space-between;gap:15px}
+:where(body:has([data-page="dumps"])) .brand{display:flex;align-items:center;gap:15px}
+:where(body:has([data-page="dumps"])) .brand-mark{display:grid;place-items:center;background:var(--accent);color:var(--navy);font-size:1.25rem;font-weight:850;width:42px;height:42px;border-radius:11px;flex:none}
+:where(body:has([data-page="dumps"])) .brand h1{font-size:1.16rem;letter-spacing:.035em}
+:where(body:has([data-page="dumps"])) .brand p{font-size:.8rem;color:#bfcbdc;margin:3px 0 0}
+:where(body:has([data-page="dumps"])) .top button{border-color:#52647a;background:#263c56;color:white}
+:where(body:has([data-page="dumps"])) .top button:hover:not(:disabled){background:#334c6b}
+:where(body:has([data-page="dumps"])) .save-pill{font-size:.82rem;color:#d6e1ef}
+:where(body:has([data-page="dumps"])) .save-pill.error{color:#ffd2a0}
+:where(body:has([data-page="dumps"])) .layout{max-width:1360px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:268px minmax(0,1fr);gap:26px;align-items:start}
+:where(body:has([data-page="dumps"])) .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+:where(body:has([data-page="dumps"])) .side{padding:22px;position:sticky;top:20px}
+:where(body:has([data-page="dumps"])) .eyebrow{text-transform:uppercase;font-size:.76rem;letter-spacing:.13em;color:var(--muted);font-weight:700}
+:where(body:has([data-page="dumps"])) .progress-title{display:flex;align-items:baseline;justify-content:space-between;margin:12px 0}
+:where(body:has([data-page="dumps"])) .progress-title strong{font-size:2rem;letter-spacing:-.05em}
+:where(body:has([data-page="dumps"])) .progress-title span{font-size:.875rem;color:var(--muted)}
+:where(body:has([data-page="dumps"])) progress{appearance:none;width:100%;height:6px;border:0;display:block;border-radius:5px;overflow:hidden;background:#e8edf4}
+:where(body:has([data-page="dumps"])) progress::-webkit-progress-bar{background:#e8edf4}
+:where(body:has([data-page="dumps"])) progress::-webkit-progress-value{background:var(--blue)}
+:where(body:has([data-page="dumps"])) progress::-moz-progress-bar{background:var(--blue)}
+:where(body:has([data-page="dumps"])) .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:20px 0}
+:where(body:has([data-page="dumps"])) .stats div{font-size:.8rem;color:var(--muted)}
+:where(body:has([data-page="dumps"])) .stats strong{display:block;font-size:1.2rem;color:var(--ink);margin-bottom:3px}
+:where(body:has([data-page="dumps"])) .stats div:nth-child(1) strong{color:var(--good)}
+:where(body:has([data-page="dumps"])) .stats div:nth-child(2) strong{color:var(--bad)}
+:where(body:has([data-page="dumps"])) .divider{border:0;border-top:1px solid var(--line);margin:20px 0}
+:where(body:has([data-page="dumps"])) .field-label{display:block;font-size:.875rem;font-weight:650;margin:0 0 7px}
+:where(body:has([data-page="dumps"])) .side select,:where(body:has([data-page="dumps"])) .side input{margin-bottom:12px}
+:where(body:has([data-page="dumps"])) .jump{display:flex;gap:8px}
+:where(body:has([data-page="dumps"])) .jump input{margin:0}
+:where(body:has([data-page="dumps"])) .navigator{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:12px 0}
+:where(body:has([data-page="dumps"])) .qnum{min-height:38px;padding:3px;font-size:.81rem;position:relative;font-variant-numeric:tabular-nums}
+:where(body:has([data-page="dumps"])) .qnum.correct{background:#e9f6ef;color:var(--good);border-color:#c3e2d1}
+:where(body:has([data-page="dumps"])) .qnum.wrong{background:#fff0f0;color:var(--bad);border-color:#f1cbcf}
+:where(body:has([data-page="dumps"])) .qnum.draft{background:#eaf1ff;color:var(--blue)}
+:where(body:has([data-page="dumps"])) .qnum.viewed{background:#f1eefb}
+:where(body:has([data-page="dumps"])) .qnum.current{outline:2px solid var(--navy);outline-offset:1px}
+:where(body:has([data-page="dumps"])) .qnum.flagged::after{content:'★';position:absolute;right:1px;top:-5px;font-size:10px;color:#986000}
+:where(body:has([data-page="dumps"])) .map-pager{display:flex;align-items:center;justify-content:space-between;gap:8px}
+:where(body:has([data-page="dumps"])) .map-pager button{padding:3px 10px;min-height:34px}
+:where(body:has([data-page="dumps"])) .legend{font-size:.75rem;color:var(--muted);line-height:1.9}
+:where(body:has([data-page="dumps"])) .crumb{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:1px 0 17px;color:var(--muted);font-size:.875rem}
+:where(body:has([data-page="dumps"])) .exam-tag{font-size:.76rem;letter-spacing:.05em;font-weight:700;padding:5px 9px;border:1px solid #cbd6e5;border-radius:5px;color:#516782}
+:where(body:has([data-page="dumps"])) .question{overflow:hidden}
+:where(body:has([data-page="dumps"])) .qhead{padding:23px 30px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+:where(body:has([data-page="dumps"])) .qtitle{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+:where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.45rem;letter-spacing:-.03em}
+:where(body:has([data-page="dumps"])) .badge{font-size:.8rem;color:var(--blue);padding:5px 9px;background:#edf3fe;border-radius:5px;font-weight:650}
+:where(body:has([data-page="dumps"])) .flag{font-size:.875rem}
+:where(body:has([data-page="dumps"])) .flag[aria-pressed=true]{background:#fff5db;color:#855608;border-color:#e8c16e}
+:where(body:has([data-page="dumps"])) .qbody{padding:27px 30px 30px}
+:where(body:has([data-page="dumps"])) .stem{font-size:1.04rem;line-height:1.85;color:#23364e;overflow-wrap:anywhere}
+:where(body:has([data-page="dumps"])) .stem p{line-height:inherit;margin:0 0 15px}
+:where(body:has([data-page="dumps"])) .source-img{display:block;max-width:100%;height:auto;margin:15px 0;border:1px solid #e4e8ee;border-radius:5px;background:white}
+:where(body:has([data-page="dumps"])) .option .source-img{margin:0}
+:where(body:has([data-page="dumps"])) .choice-hint{font-size:.875rem;color:var(--muted);margin:24px 0 12px}
+:where(body:has([data-page="dumps"])) .choices{border:0;margin:0;padding:0;display:grid;gap:10px;min-width:0}
+:where(body:has([data-page="dumps"])) .option{position:relative;display:flex;align-items:flex-start;gap:13px;width:100%;text-align:left;padding:17px;border-radius:10px;line-height:1.65;min-height:65px;transition:border-color .12s,background .12s;font-weight:400}
+:where(body:has([data-page="dumps"])) .letter{display:grid;place-items:center;width:29px;height:29px;border:1px solid #ced8e5;flex:none;border-radius:7px;font-size:.88rem;line-height:1;background:#f7f9fc;font-weight:700}
+:where(body:has([data-page="dumps"])) .option-content{flex:1;min-width:0;overflow-wrap:anywhere}
+:where(body:has([data-page="dumps"])) .option.selected{background:#eff5ff;border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+:where(body:has([data-page="dumps"])) .option.selected .letter{background:var(--blue);border-color:var(--blue);color:white}
+:where(body:has([data-page="dumps"])) .option.correct{border-color:#58a481;background:#edf8f1;box-shadow:none}
+:where(body:has([data-page="dumps"])) .option.wrong{border-color:#d88389;background:#fff1f2;box-shadow:none}
+:where(body:has([data-page="dumps"])) .option.correct .letter{background:var(--good);border-color:var(--good);color:white}
+:where(body:has([data-page="dumps"])) .option.wrong .letter{background:var(--bad);border-color:var(--bad);color:white}
+:where(body:has([data-page="dumps"])) .option:disabled{opacity:1}
+:where(body:has([data-page="dumps"])) .choice-status{display:block;font-size:.8rem;font-weight:700;margin-top:7px}
+:where(body:has([data-page="dumps"])) .qactions{padding:19px 30px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbfcfe}
+:where(body:has([data-page="dumps"])) .qactions .primary{min-width:138px}
+:where(body:has([data-page="dumps"])) .explanation{border-top:1px solid var(--line);padding:26px 30px;background:#fbfcff}
+:where(body:has([data-page="dumps"])) .result-title{font-weight:750;font-size:1.12rem;margin-bottom:9px}
+:where(body:has([data-page="dumps"])) .result-title.correct{color:var(--good)}
+:where(body:has([data-page="dumps"])) .result-title.wrong{color:var(--bad)}
+:where(body:has([data-page="dumps"])) .answer-source{font-size:.85rem;color:var(--muted);margin:8px 0 19px}
+:where(body:has([data-page="dumps"])) .explanation pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;font-size:.94rem;line-height:1.8;margin:14px 0 0}
+:where(body:has([data-page="dumps"])) .nextbar{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+:where(body:has([data-page="dumps"])) .nextbar button{min-width:115px}
+:where(body:has([data-page="dumps"])) .footnote{margin:20px 0 0;color:var(--muted);font-size:.8rem;text-align:center;line-height:1.6}
+:where(body:has([data-page="dumps"])) .notice{padding:12px 15px;border-radius:8px;background:#fff6df;color:#755321;font-size:.85rem;line-height:1.7;margin:0 0 20px}
+:where(body:has([data-page="dumps"])) .empty{padding:65px 25px;text-align:center}
+:where(body:has([data-page="dumps"])) .empty h2{margin-bottom:14px}
+:where(body:has([data-page="dumps"])) dialog{border:1px solid var(--line);border-radius:17px;width:min(590px,calc(100% - 28px));max-height:90dvh;overflow:auto;padding:27px;color:var(--ink);box-shadow:0 24px 100px #0b1e4540}
+:where(body:has([data-page="dumps"])) dialog::backdrop{background:#0b1e4570}
+:where(body:has([data-page="dumps"])) dialog h2{font-size:1.3rem}
+:where(body:has([data-page="dumps"])) dialog h3{font-size:1rem;margin:22px 0 10px}
+:where(body:has([data-page="dumps"])) dialog ul{padding-left:22px;font-size:.9rem;line-height:1.8}
+:where(body:has([data-page="dumps"])) dialog .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+:where(body:has([data-page="dumps"])) .file-label{display:block;border:1px dashed #8b9eb9;padding:14px;border-radius:9px;font-size:.9rem}
+:where(body:has([data-page="dumps"])) .file-label input{display:block;margin-top:10px}
+:where(body:has([data-page="dumps"])) .close{padding:4px 12px}
+:where(body:has([data-page="dumps"])) .toast{position:fixed;bottom:max(22px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:calc(100% - 32px);background:var(--navy);color:white;padding:12px 20px;border-radius:10px;z-index:10;box-shadow:0 7px 30px #182b4430;font-size:.9rem}
+:where(body:has([data-page="dumps"])) .mobile-map{display:none}
+:where(body:has([data-page="dumps"])) .ready-overlay{position:fixed;inset:0;background:#f1f4f8e8;display:grid;place-items:center;z-index:20}
+:where(body:has([data-page="dumps"])) .ready-overlay div{background:white;padding:25px;border-radius:12px}
+:where(body:has([data-page="dumps"])) .source-details summary{cursor:pointer;font-size:.85rem;color:var(--muted);margin-top:18px}
+:where(body:has([data-page="dumps"])) .storage-warning{margin:0;padding:12px 24px;background:#fff1cf;font-size:.875rem;line-height:1.6}
+:where(body:has([data-page="dumps"])) [hidden]{display:none!important}
+@media(min-width:1100px){
+:where(body:has([data-page="dumps"])) .qbody{padding:30px 38px 35px}
+:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:38px;padding-right:38px}}
+@media(max-width:900px){
+:where(body:has([data-page="dumps"])) .layout{grid-template-columns:225px minmax(0,1fr);gap:18px;padding:20px 18px}
+:where(body:has([data-page="dumps"])) .side{padding:17px}
+:where(body:has([data-page="dumps"])) .qhead,:where(body:has([data-page="dumps"])) .qbody,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .explanation{padding-left:22px;padding-right:22px}
+:where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.25rem}
+:where(body:has([data-page="dumps"])) .brand p{display:none}}
+@media(max-width:700px){
+:where(body:has([data-page="dumps"])) .top{padding:14px 16px;min-height:72px}
+:where(body:has([data-page="dumps"])) .brand{gap:10px}
+:where(body:has([data-page="dumps"])) .brand h1{font-size:1.05rem}
+:where(body:has([data-page="dumps"])) .brand-mark{width:36px;height:36px;font-size:1.1rem}
+:where(body:has([data-page="dumps"])) .top-actions{gap:7px;align-items:flex-end;flex-direction:column-reverse}
+:where(body:has([data-page="dumps"])) .top button{min-height:34px;font-size:.8rem;padding:6px 10px}
+:where(body:has([data-page="dumps"])) .save-pill{font-size:.7rem}
+:where(body:has([data-page="dumps"])) .layout{display:block;padding:17px 13px 30px}
+:where(body:has([data-page="dumps"])) .side{position:static;margin-bottom:15px;padding:16px}
+:where(body:has([data-page="dumps"])) .side .eyebrow{display:none}
+:where(body:has([data-page="dumps"])) .side .progress-title{margin:0 0 10px}
+:where(body:has([data-page="dumps"])) .progress-title strong{font-size:1.35rem}
+:where(body:has([data-page="dumps"])) .stats{margin:13px 0 0;display:flex;justify-content:space-between;gap:14px}
+:where(body:has([data-page="dumps"])) .stats div{display:flex;align-items:center;gap:7px;font-size:.8rem}
+:where(body:has([data-page="dumps"])) .stats strong{font-size:1rem;margin:0}
+:where(body:has([data-page="dumps"])) .mobile-map{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px;width:100%;font-size:.85rem;min-height:40px;padding:8px 12px;background:#f6f8fb}
+:where(body:has([data-page="dumps"])) .map-wrap{display:none}
+:where(body:has([data-page="dumps"])) .side.expanded .map-wrap{display:block;margin-top:15px}
+:where(body:has([data-page="dumps"])) .navigator{grid-template-columns:repeat(6,minmax(0,1fr))}
+:where(body:has([data-page="dumps"])) .map-wrap .divider{margin:15px 0}
+:where(body:has([data-page="dumps"])) .qnum{min-height:38px}
+:where(body:has([data-page="dumps"])) .crumb{font-size:.8rem;margin-bottom:12px}
+:where(body:has([data-page="dumps"])) .qhead{padding:18px 17px;align-items:flex-start}
+:where(body:has([data-page="dumps"])) .qtitle{gap:7px}
+:where(body:has([data-page="dumps"])) .qtitle h2{font-size:1.22rem}
+:where(body:has([data-page="dumps"])) .flag{font-size:.8rem;padding:7px 9px;min-height:36px;white-space:nowrap}
+:where(body:has([data-page="dumps"])) .badge{font-size:.73rem;padding:4px 7px}
+:where(body:has([data-page="dumps"])) .qbody{padding:20px 17px}
+:where(body:has([data-page="dumps"])) .stem{font-size:1rem;line-height:1.8}
+:where(body:has([data-page="dumps"])) .option{padding:14px 12px;gap:10px;font-size:.96rem}
+:where(body:has([data-page="dumps"])) .letter{width:26px;height:27px;margin-top:2px}
+:where(body:has([data-page="dumps"])) .qactions{padding:15px 17px;align-items:stretch;flex-wrap:wrap}
+:where(body:has([data-page="dumps"])) .qactions .primary{flex:1}
+:where(body:has([data-page="dumps"])) .qactions .small{flex-basis:100%;font-size:.8rem}
+:where(body:has([data-page="dumps"])) .explanation{padding:21px 17px}
+:where(body:has([data-page="dumps"])) .nextbar{margin-top:14px}
+:where(body:has([data-page="dumps"])) .nextbar button{flex:1;min-height:47px}
+:where(body:has([data-page="dumps"])) .footnote{font-size:.75rem}
+:where(body:has([data-page="dumps"])) .storage-warning{padding:11px 16px}
+:where(body:has([data-page="dumps"])) dialog{padding:20px}
+:where(body:has([data-page="dumps"])) .source-img{min-width:0}
+:where(body:has([data-page="dumps"])) dialog .actions{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){
+:where(body:has([data-page="dumps"])),:where(body:has([data-page="dumps"])) *{scroll-behavior:auto!important;transition:none!important}}
+@media print{
+:where(body:has([data-page="dumps"])) .top,:where(body:has([data-page="dumps"])) .side,:where(body:has([data-page="dumps"])) .crumb,:where(body:has([data-page="dumps"])) .qactions,:where(body:has([data-page="dumps"])) .nextbar,:where(body:has([data-page="dumps"])) .footnote,:where(body:has([data-page="dumps"])) .toast{display:none}
+:where(body:has([data-page="dumps"])) .layout{display:block;padding:0}
+:where(body:has([data-page="dumps"])) .panel{border:0}
+:where(body:has([data-page="dumps"])) .question{overflow:visible}
+body:where(:has([data-page="dumps"])){background:white}}
+:where(body:has([data-page="dumps"])) .top .wiki-link{display:inline-flex;align-items:center;min-height:34px;padding:6px 10px;border-radius:9px;color:#bfcbdc;font-size:.82rem;white-space:nowrap;text-decoration:none}
+:where(body:has([data-page="dumps"])) .top .wiki-link:hover{background:#334c6b;color:#fff}
+:where(body:has([data-page="dumps"])) .top .wiki-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}/* The title and page switch share a row; study controls sit below on mobile. */
+:where(body:has([data-page="dumps"])) .top .brand-copy{ min-width:0; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line{ display:flex; align-items:center; gap:10px; min-width:0; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ flex:none; font-size:1.16rem; line-height:1.4; white-space:nowrap; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ display:inline-flex; align-items:center; justify-content:center; flex:none; min-height:36px; padding:6px 9px; border:1px solid #52647a; border-radius:8px; background:#263c56; color:#ffe0ae; font-size:.8rem; line-height:1.4; text-decoration:none; white-space:nowrap; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch:hover{ border-color:#8cabc9; background:#344c6c; }
+:where(body:has([data-page="dumps"])) .top .top-actions{ margin-left:auto; gap:12px; }
+@media screen and (max-width:1000px) {
+:where(body:has([data-page="dumps"])) .top{ position:relative; display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:12px; min-height:0; padding:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 18px calc(24px + env(safe-area-inset-left,0px)); }
+:where(body:has([data-page="dumps"])) .top .brand{ width:100%; min-width:0; min-height:44px; padding-right:56px; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ min-height:44px; }
+:where(body:has([data-page="dumps"])) .top .top-actions{ display:flex; flex-direction:row; align-items:center; justify-content:flex-start; flex-wrap:wrap; width:100%; margin:0; gap:10px 14px; }
+:where(body:has([data-page="dumps"])) .top #open-settings{ width:auto; min-height:44px; padding:10px 14px; font-size:.86rem; }
+:where(body:has([data-page="dumps"])) .top .save-pill{ min-width:0; line-height:1.5; overflow-wrap:anywhere; }
+:where(body:has([data-page="dumps"])) .top .account-controls{ position:absolute; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(24px + env(safe-area-inset-right,0px)); z-index:5; }
+}
+@media screen and (max-width:700px) {
+:where(body:has([data-page="dumps"])) .top{ padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px calc(16px + env(safe-area-inset-left,0px)); }
+:where(body:has([data-page="dumps"])) .top .brand-title-line{ gap:8px; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ font-size:1rem; letter-spacing:0; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ font-size:.76rem; padding:8px; }
+:where(body:has([data-page="dumps"])) .top .account-controls{ top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); }
+}
+@media screen and (max-width:360px) {
+:where(body:has([data-page="dumps"])) .top{ padding-inline:calc(12px + env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-right,0px)); }
+:where(body:has([data-page="dumps"])) .top .brand{ gap:8px; padding-right:52px; }
+:where(body:has([data-page="dumps"])) .top .brand-mark{ width:32px; height:32px; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line{ gap:6px; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line h1{ font-size:.9rem; }
+:where(body:has([data-page="dumps"])) .top .brand-title-line .page-switch{ font-size:.72rem; padding:8px 6px; }
+:where(body:has([data-page="dumps"])) .top .account-controls{ right:calc(12px + env(safe-area-inset-right,0px)); }
+}
+:where(body:has([data-page="dumps"])) .gpt-notes{margin:22px 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+:where(body:has([data-page="dumps"])) .gpt-note + .gpt-note{margin-top:20px}
+:where(body:has([data-page="dumps"])) .gpt-note h3{font-size:1rem;line-height:1.5;margin:0 0 8px;color:var(--blue)}
+:where(body:has([data-page="dumps"])) .gpt-note.correction h3{color:#855608}
+:where(body:has([data-page="dumps"])) .gpt-note p{font-size:.94rem;line-height:1.8;overflow-wrap:anywhere;margin:0}
+:where(body:has([data-page="dumps"])) .gpt-references{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.8rem;line-height:1.6;overflow-wrap:anywhere}
+:where(body:has([data-page="dumps"])) .source-explanation h3{font-size:1rem;margin-top:22px}

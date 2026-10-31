@@ -4,3 +4,8 @@ _site/
 node_modules/
 supabase/.temp/
 supabase/.branches/
+.next/
+out/
+public/offline/
+.env*
+!.env.example
