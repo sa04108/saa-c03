@@ -220,7 +220,8 @@
     guest_disabled: '게스트 AI 연결을 준비 중입니다. GitHub로 로그인한 뒤 이용하거나 잠시 후 다시 시도해 주세요.',
     auth_unavailable: '사용자 연결을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.',
     unauthenticated: '사용자 연결이 만료되었습니다. 새로고침한 뒤 다시 이용해 주세요.',
-    limit_reached: '현재 이용 가능한 AI 요청 한도에 도달했습니다. 잠시 쉬었다가 다시 이용해 주세요.',
+    limit_reached: '게스트의 하루 AI 요청 한도에 도달했습니다. GitHub로 로그인하거나 한도가 초기화된 뒤 다시 이용해 주세요.',
+    provider_limit: 'AI 서비스의 공유 이용 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.',
     provider_busy: 'AI 서비스의 사용 한도 또는 일시적인 혼잡으로 응답하지 못했습니다. 잠시 후 다시 시도해 주세요.',
     invalid_request: '질문이 너무 길거나 내용을 확인할 수 없습니다. 내용을 줄여 다시 전송해 주세요.',
     blocked: '이 질문에 답변을 제공하지 못했습니다. 학습 내용에 맞게 질문을 바꿔 주세요.',
@@ -244,7 +245,10 @@
   function failed(error, task) {
     if (request !== task) return;
     let message = errorMessages[error.message] || (task.controller.signal.aborted ? '응답 시간이 길어졌습니다. 잠시 후 다시 전송해 주세요.' : 'AI에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
-    if (error.retryAfter > 0) message += ` 약 ${Math.ceil(error.retryAfter / 60)}분 뒤 다시 시도할 수 있어요.`;
+    if (error.retryAfter > 0) {
+      const wait = error.retryAfter >= 3600 ? `${Math.ceil(error.retryAfter / 3600)}시간` : `${Math.ceil(error.retryAfter / 60)}분`;
+      message += ` 약 ${wait} 뒤 다시 시도할 수 있어요.`;
+    }
     thread.error = message; thread.suggestionError = task.kind === 'suggestions';
     if (task.kind === 'chat') thread.draft = task.question;
   }
