@@ -39,13 +39,14 @@ Supabase **Authentication → Sign In / Providers → Anonymous Sign-Ins**를 �
 
 익명 인증을 활성화해도 게스트 진도가 서버로 자동 이전되지는 않습니다. 익명 세션에는 기본 하루 10회 제한을 추가로 적용하며, 로그인 사용자는 개인별 요청 제한 없이 Google 프로젝트의 공용 할당량을 사용합니다. 게스트 요청도 같은 Google 할당량을 소비합니다. 브라우저 데이터를 지우면 새 익명 세션을 만들 수 있으므로 이 제한은 사람 단위의 식별이 아닙니다. Supabase 자체의 익명 가입 IP 제한도 유지하세요. 익명 사용자는 Auth 사용자 수에 포함되며 자동 삭제되지 않습니다.
 
-## 3. Gemini 키와 한도 설정
+## 3. Gemini·Tavily 키와 한도 설정
 
 [Google AI Studio](https://aistudio.google.com/api-keys)에서 사용할 프로젝트의 Gemini API 키를 발급합니다. Supabase **Edge Functions → Secrets**에 다음 값을 등록합니다.
 
 | 이름 | 값 / 기본값 |
 | --- | --- |
 | `GEMINI_API_KEY` | AI Studio에서 발급한 비밀 API 키 |
+| `TAVILY_API_KEY` | Tavily에서 발급한 비밀 API 키. 채팅의 웹 검색에 사용 |
 | `ALLOWED_ORIGINS` | `https://saa-c03.hyunbbai.com` |
 | `AI_GUEST_RPD` | 익명 세션별 하루 생성 요청 수, 기본 `10` |
 
@@ -67,6 +68,8 @@ Supabase **Authentication → Sign In / Providers → Anonymous Sign-Ins**를 �
 
 Supabase가 제공하는 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`는 서버에서만 사용합니다. 프런트엔드 설정에 추가하지 않습니다.
 
+`TAVILY_API_KEY`도 **Supabase Edge Functions → Secrets**에 등록해야 합니다. Codex 클라우드 환경에 주입한 키는 Supabase로 자동 전달되지 않습니다. 질문 한 번당 Tavily 기본 검색을 최대 한 번 수행하고, Gemini 모델이 429로 전환되어도 같은 검색 결과를 재사용합니다. 예상 질문 생성에는 Tavily를 호출하지 않습니다. [Tavily 설정과 검색 동작](tavily-search.md)을 참고하세요.
+
 ## 4. Edge Function 배포
 
 Supabase **Edge Functions → Deploy a new function → Via Editor**에서 함수 이름을 **`study-assistant`**로 지정합니다. [함수 코드](../supabase/functions/study-assistant/index.ts)를 `index.ts`에 붙여 넣고 배포합니다. 외부 패키지 설치는 필요하지 않습니다.
@@ -87,7 +90,7 @@ supabase functions deploy study-assistant
 
 1. 비로그인 상태에서 개념이나 문제 카드의 로봇 버튼을 눌러 예상 질문 4개가 나타나는지 확인합니다.
 2. 보기를 누르면 입력창에만 채워지고 답변은 생성되지 않아야 합니다.
-3. 전송 버튼을 누르면 Gemini의 실제 답변이 나타나는지 확인합니다.
+3. 전송 버튼을 누르면 Tavily 검색 자료를 참고한 Gemini 답변과 **웹 검색 자료** 링크가 나타나는지 확인합니다. 검색 연결이 없거나 실패하면 최신 정보를 확인하지 못했다는 안내가 나타납니다.
 4. 같은 항목을 다른 브라우저에서 열어 예상 질문 캐시가 재사용되는지 확인합니다.
 5. GitHub 로그인 상태에서도 질문할 수 있고, 기존 계정 진도 저장이 정상 동작하는지 확인합니다.
 
@@ -101,7 +104,7 @@ API를 시도하기 전에 캐시가 적중하면 Gemini 호출과 게스트 요
 
 GitHub 계정을 연동한 사용자의 완성된 질문·답변은 계정별 DB에 저장합니다. 익명 사용자는 저장·조회할 수 없고 현재 페이지 메모리에서만 대화합니다. 대화 기록은 예상 질문 공용 캐시와 별개이며, 본인 계정만 조회할 수 있습니다. 저장 실패 시 답변은 표시하되 실패를 안내하고, **다시 저장**은 AI를 다시 호출하지 않습니다. [무료 플랜 용량과 대화 기록 운영](chat-history.md)을 참고하세요.
 
-Gemini에는 해당 학습 자료와 현재 질문, 최근 대화 3쌍만 전달합니다. 저장된 전체 기록을 매번 Gemini에 보내지 않습니다. 이미지 자체는 전송하지 않으며 필요한 내용은 사용자가 텍스트로 설명해야 합니다. 무료 등급의 데이터 이용 조건에 따라 Google이 입력·출력을 제품 개선에 사용할 수 있으므로 비밀값이나 개인정보를 질문에 넣지 마세요. 현재 구현은 실시간 검색을 사용하지 않습니다.
+Gemini에는 해당 학습 자료와 현재 질문, 최근 대화 3쌍, Tavily 검색 발췌를 전달합니다. Tavily에는 현재 질문과 관련 항목 또는 직전 질문의 일부로 만든 400자 미만 검색어만 보냅니다. 저장된 전체 기록을 매번 보내지 않습니다. 이미지 자체는 전송하지 않으며 필요한 내용은 사용자가 텍스트로 설명해야 합니다. 무료 등급의 데이터 이용 조건에 따라 Google이 입력·출력을 제품 개선에 사용할 수 있으므로 비밀값이나 개인정보를 질문에 넣지 마세요.
 
 ## 연결 문제
 
@@ -110,6 +113,7 @@ Gemini에는 해당 학습 자료와 현재 질문, 최근 대화 3쌍만 전달
 - **사용자 연결 만료**: 새로고침 후 재시도합니다. 게스트 세션이 관리자에 의해 삭제되었다면 해당 브라우저의 `saa-c03-ai-guest-auth`만 지우고 다시 연결할 수 있습니다.
 - **게스트 하루 한도**: GitHub로 로그인하거나 UTC 자정 이후 다시 이용합니다. 로그인해도 Google의 공유 할당량이 소진된 경우에는 기다려야 합니다.
 - **공유 이용 한도**: AI Studio에서 해당 프로젝트·모델의 RPM·RPD·TPM을 확인합니다. 다른 사용자나 같은 프로젝트의 다른 앱과 할당량을 공유합니다. 문제 풀이와 저장은 계속 사용할 수 있습니다.
+- **웹 검색 불가 안내**: Supabase의 `TAVILY_API_KEY`, Tavily 크레딧·요청 한도, 검색 API 연결 상태를 확인합니다. 검색은 최대 6초 기다린 뒤 실패 안내와 함께 일반 답변을 생성합니다.
 - **CORS 오류**: 브라우저 주소의 정확한 origin을 `ALLOWED_ORIGINS`에 등록합니다. 여러 주소는 쉼표로 구분하며 경로와 끝 슬래시는 넣지 않습니다.
 
 공식 문서: [Gemini 요금](https://ai.google.dev/gemini-api/docs/pricing), [Gemini 사용 제한](https://ai.google.dev/gemini-api/docs/rate-limits), [Supabase 익명 인증](https://supabase.com/docs/guides/auth/auth-anonymous), [Edge Function 인증](https://supabase.com/docs/guides/functions/auth).
