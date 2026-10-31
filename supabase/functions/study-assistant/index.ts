@@ -1,7 +1,7 @@
 // No SDK dependency: Auth, PostgREST and Gemini use their HTTPS APIs.
 type Context = { id: string; kind: 'concept' | 'question' | 'general'; title: string; text: string; hasImages: boolean };
 type Message = { role: 'user' | 'model'; text: string };
-type Input = { action: 'suggestions' | 'chat'; context: Context; question?: string; history?: Message[] };
+type Input = { action: 'suggestions' | 'chat'; context: Context; question?: string; history?: Message[]; conversationId?: string; turnId?: string };
 class HttpError extends Error {
   constructor(public status: number, public code: string, public retryAfter = 0) { super(code); }
 }
@@ -28,6 +28,12 @@ export function validateInput(value: unknown): Input {
     || !string(c.title, 180) || !string(c.text, 12000, true) || typeof c.hasImages !== 'boolean') throw new HttpError(400, 'invalid_request');
   const result: Input = { action: value.action as Input['action'], context: { id: c.id, kind: c.kind as Context['kind'], title: c.title, text: c.text, hasImages: c.hasImages } };
   if (result.action === 'chat') {
+    if (value.conversationId !== undefined || value.turnId !== undefined) {
+      for (const key of ['conversationId', 'turnId'] as const) {
+        if (typeof value[key] !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value[key])) throw new HttpError(400, 'invalid_request');
+        result[key] = value[key];
+      }
+    }
     if (!string(value.question, 2000) || !Array.isArray(value.history) || value.history.length > 6) throw new HttpError(400, 'invalid_request');
     const history: Message[] = [];
     for (let i = 0; i < value.history.length; i++) {
@@ -109,6 +115,7 @@ export async function handleRequest(req: Request): Promise<Response> {
     const user = await auth.json();
     if (!object(user) || typeof user.id !== 'string' || !/^[a-f0-9-]{36}$/i.test(user.id)) throw new HttpError(401, 'unauthenticated');
     const input = validateInput(await readBody(req));
+    const createdAt = new Date().toISOString();
     const db = async (path: string, options: RequestInit = {}) => {
       const result = await fetch(url + '/rest/v1/' + path, { ...options, headers: { apikey: serviceKey, Authorization: 'Bearer ' + serviceKey, 'Content-Type': 'application/json', ...options.headers }, signal: AbortSignal.timeout(10000) });
       if (!result.ok) throw new HttpError(503, 'not_ready');
@@ -169,7 +176,20 @@ export async function handleRequest(req: Request): Promise<Response> {
     if (candidate?.finishReason !== 'STOP') throw new HttpError(502, 'empty_response');
     const text = (candidate?.content?.parts || []).filter((p: { thought?: boolean; text?: unknown }) => !p.thought && typeof p.text === 'string').map((p: { text: string }) => p.text).join('').trim();
     if (!text || text.length > 14000) throw new HttpError(502, 'empty_response');
-    if (input.action === 'chat') return reply({ answer: text });
+    if (input.action === 'chat') {
+      let saved: boolean | undefined;
+      if (user.is_anonymous !== true && input.conversationId) {
+        try {
+          // Use the verified member's JWT so SQL derives ownership from auth.uid().
+          await db('rpc/save_ai_chat_turn', { method: 'POST', headers: { Authorization: authorization }, body: JSON.stringify({
+            p_conversation_id: input.conversationId, p_turn_id: input.turnId,
+            p_context: input.context, p_question: input.question, p_answer: text, p_created_at: createdAt,
+          }) });
+          saved = true;
+        } catch { saved = false; console.warn('ai_chat_history_write_failed'); }
+      }
+      return reply({ answer: text, ...(saved !== undefined ? { saved, createdAt } : {}) });
+    }
     let questions: unknown;
     try { questions = JSON.parse(text).questions; } catch { throw new HttpError(502, 'empty_response'); }
     if (!validQuestions(questions)) throw new HttpError(502, 'empty_response');

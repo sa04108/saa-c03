@@ -2,14 +2,17 @@
   'use strict';
   if (location.protocol === 'file:') return;
   const scriptUrl = document.currentScript.src;
-  const icons = new URL('assistant-icons.svg', scriptUrl).href;
+  const icons = new URL('assistant-icons.svg' + new URL(scriptUrl).search, scriptUrl).href;
   const config = window.SAA_ACCOUNT_CONFIG || {};
   const mobile = matchMedia('(max-width:760px)');
+  const keyboardSubmit = matchMedia('(hover: hover) and (pointer: fine)');
+  const composerHint = () => keyboardSubmit.matches ? 'Enter 전송 · Shift+Enter 줄바꿈' : '질문을 작성한 뒤 전송하세요';
   const svg = name => `<svg aria-hidden="true"><use href="${icons}#${name}"/></svg>`;
   const general = { id: 'general', kind: 'general', title: 'SAA-C03 · 자유 질문', text: '', hasImages: false };
   const generalQuestions = ['SAA-C03 공부를 어디서부터 시작하면 좋을까?', '헷갈리기 쉬운 AWS 서비스를 비교해 줘.', '고가용성과 내결함성은 어떻게 달라?', '비용 최적화 문제를 푸는 요령을 알려줘.'];
   const threads = new Map();
-  let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget;
+  let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget, historyRequest, historyCursor;
+  let historyView = false;
   const inertBefore = new Map();
   let originalOverflow = null;
 
@@ -21,7 +24,8 @@
   panel.className = 'saa-ai'; panel.id = 'saa-assistant'; panel.dataset.aiUi = ''; panel.hidden = true;
   panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', 'saa-ai-heading');
   panel.innerHTML = `
-    <header class="saa-ai-head"><div class="saa-ai-logo">${svg('robot')}</div><div class="saa-ai-title"><h2 id="saa-ai-heading" tabindex="-1">AI 어시스턴트</h2><p>SAA-C03 학습 도우미</p></div><div class="saa-ai-head-actions"><button type="button" class="saa-ai-icon" data-new aria-label="새 대화" title="새 대화">${svg('edit')}</button><button type="button" class="saa-ai-icon" data-close aria-label="AI 어시스턴트 닫기" title="닫기">${svg('close')}</button></div></header>
+    <header class="saa-ai-head"><div class="saa-ai-logo">${svg('robot')}</div><div class="saa-ai-title"><h2 id="saa-ai-heading" tabindex="-1">AI 어시스턴트</h2><p>SAA-C03 학습 도우미</p></div><div class="saa-ai-head-actions"><button type="button" class="saa-ai-icon" data-history-toggle aria-label="대화 기록" title="대화 기록" aria-pressed="false" hidden>${svg('history')}</button><button type="button" class="saa-ai-icon" data-new aria-label="새 대화" title="새 대화">${svg('edit')}</button><button type="button" class="saa-ai-icon" data-close aria-label="AI 어시스턴트 닫기" title="닫기">${svg('close')}</button></div></header>
+    <section class="saa-ai-history" data-history hidden aria-labelledby="saa-ai-history-heading"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><h3 id="saa-ai-history-heading" tabindex="-1">대화 기록</h3><p class="saa-ai-feedback" data-history-status role="status"></p><ul class="saa-ai-history-list" data-history-list></ul><button type="button" class="saa-ai-retry" data-history-more hidden>더 보기</button></section>
     <div class="saa-ai-context-strip">${svg('book')}<div class="saa-ai-context-copy"><small>질문하는 항목</small><p data-context-title></p></div><span class="saa-ai-context-type" data-context-type></span></div>
     <div class="saa-ai-scroll" data-scroll><div class="saa-ai-welcome" data-welcome><p class="saa-ai-eyebrow">YOUR STUDY COMPANION</p><h3 data-welcome-title></h3><p class="saa-ai-description">질문을 고르거나 직접 입력해 보세요.</p><div class="saa-ai-suggestions" data-suggestions aria-label="예상 질문"></div><p class="saa-ai-suggestions-note" data-suggestion-note hidden>${svg('edit')}질문을 선택하면 입력창에만 채워져요.</p></div><div class="saa-ai-messages" data-messages role="log" aria-label="대화 내용" aria-live="polite"></div><p class="saa-ai-feedback" data-feedback role="status" hidden></p><button type="button" class="saa-ai-retry" data-retry hidden>예상 질문 다시 불러오기</button><p class="saa-ai-image-note" data-image-note hidden>이미지 속 내용이 필요하면 질문에 함께 적어 주세요.</p></div>
     <form class="saa-ai-composer-zone"><div class="saa-ai-composer"><label class="saa-ai-sr" for="saa-ai-prompt">AI 어시스턴트에게 질문</label><textarea id="saa-ai-prompt" rows="2" placeholder="궁금한 내용을 입력하세요…" maxlength="2000"></textarea><div class="saa-ai-composer-bottom"><span class="saa-ai-composer-hint" data-hint>질문을 작성한 뒤 전송하세요</span><button class="saa-ai-send" type="submit" disabled aria-label="질문 전송">${svg('up')}</button></div></div><p class="saa-ai-disclaimer">답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송됩니다.</p></form>`;
@@ -32,6 +36,8 @@
   document.body.append(fab, panel, tooltip);
   const $ = selector => panel.querySelector(selector);
   const prompt = $('#saa-ai-prompt');
+  $('[data-messages]').insertAdjacentHTML('beforebegin', '<button type="button" class="saa-ai-retry saa-ai-older" data-older hidden>이전 대화 보기</button>');
+  $('.saa-ai-disclaimer').insertAdjacentHTML('beforebegin', '<p class="saa-ai-save-status" data-save-status role="status" hidden><span></span><button type="button" data-save-retry hidden>다시 저장</button></p>');
 
   function textOf(element) {
     if (!element) return '';
@@ -98,10 +104,14 @@
     }
   }
 
+  function makeThread(context, conversationId = crypto.randomUUID()) {
+    return { context, conversationId, history: [], draft: '', suggestions: context.kind === 'general' ? generalQuestions : null,
+      error: '', suggestionError: false, unsaved: [], saved: false, saving: false, oldestTurn: null, hasOlder: false };
+  }
   function getThread(context) {
     const key = context.id + '\n' + context.text;
     if (!threads.has(key)) {
-      threads.set(key, { context, history: [], draft: '', suggestions: context.kind === 'general' ? generalQuestions : null, error: '', suggestionError: false });
+      threads.set(key, makeThread(context));
       if (threads.size > 20) threads.delete(threads.keys().next().value);
     }
     return threads.get(key);
@@ -135,16 +145,18 @@
     hideTooltip();
     if (context) {
       if (thread) thread.draft = prompt.value;
-      cancelRequest(); thread = getThread(context);
+      cancelRequest(); cancelHistory(); historyView = false; thread = getThread(context);
     } else if (!thread) thread = getThread(general);
     opener = source || document.activeElement;
     panel.hidden = false; document.body.classList.add('saa-ai-open');
     fab.setAttribute('aria-expanded', 'true'); fab.setAttribute('aria-label', 'AI 어시스턴트 닫기');
     fab.innerHTML = svg('close') + '<span>AI 어시스턴트 닫기</span>';
     render(); modalState(); $('#saa-ai-heading').focus({ preventScroll: true });
-    if (!thread.suggestions && !thread.history.length && !request) void suggestions();
+    if (historyView) void loadHistory();
+    else if (!thread.suggestions && !thread.history.length && !request) void suggestions();
   }
   function close() {
+    cancelHistory();
     thread.draft = prompt.value; prompt.blur(); panel.hidden = true; document.body.classList.remove('saa-ai-open');
     fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-label', 'AI 어시스턴트 열기');
     fab.innerHTML = svg('robot') + '<span>AI 어시스턴트</span>'; modalState();
@@ -191,6 +203,10 @@
   }
   function render() {
     const c = thread.context;
+    $('[data-history]').hidden = !historyView;
+    $('[data-history-toggle]').setAttribute('aria-pressed', String(historyView));
+    $('[data-scroll]').hidden = historyView; $('form').hidden = historyView;
+    $('.saa-ai-context-strip').hidden = historyView || c.kind === 'general';
     $('[data-context-title]').textContent = c.title;
     $('[data-context-type]').textContent = c.kind === 'concept' ? '개념' : c.kind === 'question' ? '문제' : '학습';
     const heading = c.kind === 'concept' ? `${c.title.split(' (')[0]},\n어떤 점이 궁금한가요?` : c.kind === 'question' ? '이 문제,\n함께 풀어볼까요?' : 'AWS 공부,\n무엇이 궁금한가요?';
@@ -203,7 +219,7 @@
       const text = document.createElement('span'); text.textContent = question; button.append(text); button.insertAdjacentHTML('beforeend', svg('arrow'));
       button.onclick = () => {
         box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        prompt.value = question; updateComposer(); $('[data-hint]').textContent = '수정한 뒤 전송 버튼을 눌러 주세요'; prompt.focus({ preventScroll: true });
+        prompt.value = question; updateComposer(); $('[data-hint]').textContent = keyboardSubmit.matches ? composerHint() : '수정한 뒤 전송 버튼을 눌러 주세요'; prompt.focus({ preventScroll: true });
       }; box.append(button);
     }
     $('[data-suggestion-note]').hidden = !thread.suggestions;
@@ -220,7 +236,110 @@
     feedback.hidden = !feedback.textContent; feedback.dataset.error = String(!request && !!thread.error); feedback.classList.toggle('saa-ai-loading', !!request);
     $('[data-retry]').hidden = !!request || !thread.suggestionError;
     $('[data-image-note]').hidden = !c.hasImages;
-    prompt.value = thread.draft; $('[data-hint]').textContent = request?.kind === 'chat' ? '답변을 기다리고 있어요' : '질문을 작성한 뒤 전송하세요'; updateComposer();
+    $('[data-older]').hidden = !thread.hasOlder;
+    const saveStatus = $('[data-save-status]');
+    saveStatus.hidden = !thread.saved && !thread.unsaved.length && !thread.saving;
+    saveStatus.querySelector('span').textContent = thread.saving ? '대화 기록을 저장하고 있어요' : thread.unsaved.length ? '기록을 저장하지 못했어요.' : '대화 기록에 저장됨';
+    $('[data-save-retry]').hidden = !thread.unsaved.length;
+    $('[data-save-retry]').disabled = thread.saving;
+    prompt.value = thread.draft; $('[data-hint]').textContent = request?.kind === 'chat' ? '답변을 기다리고 있어요' : composerHint(); updateComposer();
+  }
+
+  function cancelHistory() { historyRequest?.abort(); historyRequest = null; }
+  async function historyApi(path, options = {}) {
+    await window.SaaAccount?.ready;
+    if (!window.SaaAccount?.user || window.SaaAccount.user.is_anonymous === true) throw new Error('unauthenticated');
+    const token = await window.SaaAccount.getAccessToken();
+    if (!token) throw new Error('unauthenticated');
+    const response = await fetch(new URL('/rest/v1/' + path, config.supabaseUrl), {
+      ...options, headers: { apikey: config.supabasePublishableKey, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(12000)]) : AbortSignal.timeout(12000),
+    });
+    if (!response.ok) throw new Error('history_unavailable');
+    return response.json();
+  }
+  function historyStatus(message) { $('[data-history-status]').textContent = message; }
+  async function loadHistory(more = false) {
+    cancelHistory(); const task = new AbortController(); historyRequest = task;
+    const list = $('[data-history-list]');
+    if (!more) { list.replaceChildren(); historyCursor = null; }
+    $('[data-history-more]').hidden = true; historyStatus('대화 기록을 불러오고 있어요…');
+    try {
+      const query = new URLSearchParams({ select: 'id,title,updated_at', order: 'updated_at.desc,id.desc', limit: '21' });
+      if (historyCursor) query.set('or', `(updated_at.lt.${historyCursor.updated_at},and(updated_at.eq.${historyCursor.updated_at},id.lt.${historyCursor.id}))`);
+      const rows = await historyApi('ai_conversations?' + query, { signal: task.signal });
+      if (historyRequest !== task) return;
+      for (const item of rows.slice(0, 20)) {
+        const li = document.createElement('li'), button = document.createElement('button'), title = document.createElement('span'), time = document.createElement('time');
+        button.type = 'button'; button.className = 'saa-ai-room'; title.textContent = item.title;
+        time.dateTime = item.updated_at;
+        time.textContent = new Intl.DateTimeFormat('ko-KR', { month: 'numeric', day: 'numeric' }).format(new Date(item.updated_at));
+        time.title = new Date(item.updated_at).toLocaleString('ko-KR');
+        button.append(title, time); button.insertAdjacentHTML('beforeend', svg('arrow')); button.onclick = () => void openHistory(item.id);
+        li.append(button); list.append(li);
+      }
+      historyCursor = rows.slice(0, 20).at(-1) || historyCursor;
+      $('[data-history-more]').hidden = rows.length <= 20;
+      $('[data-history-more]').textContent = '더 보기';
+      historyStatus(list.children.length ? '' : '아직 저장된 대화가 없어요. 첫 질문을 시작해 보세요.');
+    } catch {
+      if (historyRequest !== task) return;
+      historyStatus('대화 기록을 불러오지 못했어요. 다시 시도해 주세요.');
+      $('[data-history-more]').hidden = false; $('[data-history-more]').textContent = '다시 불러오기';
+    } finally { if (historyRequest === task) historyRequest = null; }
+  }
+  function turnQuery(id, before) {
+    const query = new URLSearchParams({ conversation_id: 'eq.' + id, select: 'id,created_at,question,answer', order: 'created_at.desc,id.desc', limit: '21' });
+    if (before !== null) query.set('or', `(created_at.lt.${before.created_at},and(created_at.eq.${before.created_at},id.lt.${before.id}))`);
+    return 'ai_chat_turns?' + query;
+  }
+  function unpackTurns(rows) { return rows.slice(0, 20).reverse().flatMap(t => [{ role: 'user', text: t.question }, { role: 'model', text: t.answer }]); }
+  async function openHistory(id) {
+    cancelHistory(); const task = new AbortController(); historyRequest = task;
+    historyStatus('대화를 불러오고 있어요…');
+    try {
+      const query = new URLSearchParams({ id: 'eq.' + id, select: 'id,context', limit: '1' });
+      const [conversations, turns] = await Promise.all([
+        historyApi('ai_conversations?' + query, { signal: task.signal }),
+        historyApi(turnQuery(id, null), { signal: task.signal }),
+      ]);
+      if (historyRequest !== task) return;
+      if (!conversations[0]) throw new Error('history_unavailable');
+      thread.draft = prompt.value; cancelRequest();
+      thread = makeThread(conversations[0].context, id);
+      thread.history = unpackTurns(turns); thread.saved = true;
+      thread.oldestTurn = turns.slice(0, 20).at(-1) ?? null; thread.hasOlder = turns.length > 20;
+      threads.set(thread.context.id + '\n' + thread.context.text, thread);
+      if (threads.size > 20) threads.delete(threads.keys().next().value);
+      historyView = false; render(); prompt.focus({ preventScroll: true });
+      requestAnimationFrame(() => { $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight; });
+    } catch { if (historyRequest === task) historyStatus('대화를 불러오지 못했어요. 목록에서 다시 선택해 주세요.'); }
+    finally { if (historyRequest === task) historyRequest = null; }
+  }
+  async function loadOlder() {
+    cancelHistory(); const task = new AbortController(), target = thread; historyRequest = task;
+    $('[data-older]').disabled = true;
+    try {
+      const turns = await historyApi(turnQuery(target.conversationId, target.oldestTurn), { signal: task.signal });
+      if (historyRequest !== task || thread !== target) return;
+      const scroll = $('[data-scroll]'), height = scroll.scrollHeight;
+      target.history.unshift(...unpackTurns(turns)); target.hasOlder = turns.length > 20;
+      target.oldestTurn = turns.slice(0, 20).at(-1) ?? target.oldestTurn;
+      target.error = ''; render(); scroll.scrollTop += scroll.scrollHeight - height;
+    } catch { if (historyRequest === task && thread === target) { target.error = '이전 대화를 불러오지 못했어요. 다시 시도해 주세요.'; render(); } }
+    finally { if (historyRequest === task) historyRequest = null; $('[data-older]').disabled = false; }
+  }
+  async function retrySave() {
+    const target = thread;
+    if (target.saving) return;
+    target.saving = true; render();
+    try {
+      while (target.unsaved.length) {
+        await historyApi('rpc/save_ai_chat_turn', { method: 'POST', body: JSON.stringify(target.unsaved[0]) });
+        target.unsaved.shift(); target.saved = true;
+      }
+    } catch { /* Keep unsaved turns in this page so a retry never spends AI quota. */ }
+    finally { target.saving = false; if (thread === target) render(); }
   }
 
   async function accessToken() {
@@ -291,21 +410,51 @@
   async function send(event) {
     event.preventDefault(); const question = prompt.value.trim();
     if (!question || request?.kind === 'chat') return;
-    const task = begin('chat', question); thread.draft = ''; render();
+    const task = begin('chat', question); task.turnId = crypto.randomUUID(); thread.draft = ''; render();
     $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight;
     try {
-      const data = await call({ action: 'chat', context: thread.context, question, history: thread.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 2000) })) }, task);
+      const data = await call({ action: 'chat', context: task.thread.context, question, conversationId: task.thread.conversationId, turnId: task.turnId, history: task.thread.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 2000) })) }, task);
       if (typeof data.answer !== 'string' || !data.answer.trim() || data.answer.length > 14000) throw new Error('empty_response');
-      if (request === task) { thread.history.push({ role: 'user', text: question }, { role: 'model', text: data.answer }); thread.history = thread.history.slice(-30); }
+      if (request === task) {
+        thread.history.push({ role: 'user', text: question }, { role: 'model', text: data.answer });
+        if (data.saved === true) thread.saved = true;
+        if (data.saved === false) thread.unsaved.push({ p_conversation_id: thread.conversationId, p_turn_id: task.turnId, p_context: thread.context, p_question: question, p_answer: data.answer, p_created_at: data.createdAt });
+      }
     } catch (error) { failed(error, task); }
     finally {
       clearTimeout(task.timer);
-      if (request === task) { request = null; render(); requestAnimationFrame(() => { $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight; }); }
+      if (request === task) {
+        request = null; render();
+        if (historyView) void loadHistory();
+        else requestAnimationFrame(() => { $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight; });
+      }
     }
   }
   fab.onclick = () => panel.hidden ? open(null, fab) : close(); $('[data-close]').onclick = close;
-  $('[data-new]').onclick = () => { cancelRequest(); thread.history = []; thread.draft = ''; thread.error = ''; render(); if (!thread.suggestions) void suggestions(); };
+  $('[data-new]').onclick = () => {
+    cancelRequest(); cancelHistory(); historyView = false;
+    threads.delete(general.id + '\n' + general.text); thread = getThread(general);
+    render(); prompt.focus({ preventScroll: true });
+  };
+  function returnToChat() { cancelHistory(); historyView = false; render(); prompt.focus({ preventScroll: true }); }
+  $('[data-history-toggle]').onclick = () => {
+    if (historyView) return returnToChat();
+    thread.draft = prompt.value; historyView = true; render(); $('#saa-ai-history-heading').focus({ preventScroll: true }); void loadHistory();
+  };
+  $('[data-history-back]').onclick = returnToChat;
+  $('[data-history-more]').onclick = () => void loadHistory(!!historyCursor);
+  $('[data-older]').onclick = () => void loadOlder();
+  $('[data-save-retry]').onclick = () => void retrySave();
+  Promise.resolve(window.SaaAccount?.ready).then(() => {
+    $('[data-history-toggle]').hidden = !window.SaaAccount?.user || window.SaaAccount.user.is_anonymous === true;
+  });
   $('[data-retry]').onclick = () => void suggestions(); $('form').onsubmit = send; prompt.oninput = updateComposer;
+  prompt.addEventListener('keydown', event => {
+    // Keep touch keyboards' Enter behavior and never submit an IME confirmation.
+    if (!keyboardSubmit.matches || event.key !== 'Enter' || event.shiftKey || event.isComposing || event.keyCode === 229) return;
+    event.preventDefault();
+    if (!event.repeat) prompt.form.requestSubmit();
+  });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') hideTooltip();
     if (panel.hidden || document.querySelector('dialog[open]')) return;
