@@ -13,17 +13,9 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) h1{font-size:clamp(2.25rem,5vw,3.25rem);margin:.45rem 0 1.2rem}
 :where(body:has([data-page="concepts"])) h2{font-size:1.55rem}
 :where(body:has([data-page="concepts"])) h3{font-size:1.12rem}
-:where(body:has([data-page="concepts"])) .site-header{background:#102e43;color:#fff;border-bottom:3px solid var(--orange)}
-:where(body:has([data-page="concepts"])) .header-inner{max-width:1040px;margin:auto;padding:0 22px;min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-:where(body:has([data-page="concepts"])) .brand{color:#fff;display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
-:where(body:has([data-page="concepts"])) .brand:hover{text-decoration:none}
-:where(body:has([data-page="concepts"])) .mark{background:#e77b3c;border-radius:7px;padding:2px 7px;font-size:.83rem;letter-spacing:.07em;color:#102e43}
-:where(body:has([data-page="concepts"])) .primary-nav{display:flex;align-items:center;gap:4px}
-:where(body:has([data-page="concepts"])) .primary-nav a{display:block;color:#d5e5ed;padding:10px 14px;border-radius:8px;font-size:.93rem;font-weight:700;white-space:nowrap}
-:where(body:has([data-page="concepts"])) .primary-nav a:hover,:where(body:has([data-page="concepts"])) .primary-nav a.active{background:#ffffff17;color:#fff;text-decoration:none}
-:where(body:has([data-page="concepts"])) .shell{max-width:940px;margin:0 auto;padding:34px 24px 90px;min-height:calc(100vh - 140px)}
+:where(body:has([data-page="concepts"])) .shell{max-width:var(--study-width);margin:0 auto;padding:var(--study-top-space) var(--study-gutter) 40px;min-height:calc(100vh - 140px)}
 :where(body:has([data-page="concepts"])) .eyebrow{font-size:.79rem;line-height:1.4;letter-spacing:.14em;font-weight:900;color:var(--orange);margin:0 0 7px}
-:where(body:has([data-page="concepts"])) .dictionary-intro{padding:18px 0 25px}
+:where(body:has([data-page="concepts"])) .dictionary-intro{padding:18px var(--study-card-space) 25px}
 :where(body:has([data-page="concepts"])) .dictionary-intro>p:not(.eyebrow){max-width:700px;color:var(--muted);margin-bottom:23px}
 :where(body:has([data-page="concepts"])) .search-label{display:block;font-size:.9rem;font-weight:750;margin:0 0 7px}
 :where(body:has([data-page="concepts"])) .dictionary-intro input{display:block;width:min(100%,520px);border:1px solid #a5bfce;border-radius:10px;background:var(--surface);color:var(--ink);padding:12px 15px;min-height:48px}
@@ -41,7 +33,7 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) .source-note,:where(body:has([data-page="concepts"])) .save-note{font-size:.86rem;color:var(--muted);margin-top:24px}
 :where(body:has([data-page="concepts"])) .breadcrumb{display:flex;gap:9px;align-items:center;font-size:.86rem;color:var(--muted);margin:0 0 24px}
 :where(body:has([data-page="concepts"])) .breadcrumb a{font-weight:700}
-:where(body:has([data-page="concepts"])) .term-article{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:clamp(22px,5vw,42px);box-shadow:0 12px 38px #1943630a}
+:where(body:has([data-page="concepts"])) .term-article{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:clamp(22px,5vw,42px) var(--study-card-space) clamp(22px,5vw,42px);box-shadow:0 12px 38px #1943630a}
 :where(body:has([data-page="concepts"])) .term-meta{display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:.82rem;font-weight:850;letter-spacing:.04em;color:var(--orange);margin:0 0 15px}
 :where(body:has([data-page="concepts"])) .term-meta span+span{color:var(--muted)}
 :where(body:has([data-page="concepts"])) .term-article h1{margin:0 0 22px}
@@ -87,7 +79,7 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) .section-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:42px 0 19px}
 :where(body:has([data-page="concepts"])) .section-heading h2{margin:0}
 :where(body:has([data-page="concepts"])) .section-heading>a{font-size:.87rem;font-weight:700;white-space:nowrap}
-:where(body:has([data-page="concepts"])) .question-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:14px 0;padding:22px;scroll-margin-top:15px}
+:where(body:has([data-page="concepts"])) .question-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:14px 0;padding:22px var(--study-card-space) 22px;scroll-margin-top:15px}
 :where(body:has([data-page="concepts"])) .question-card.is-correct{border-left:5px solid var(--good)}
 :where(body:has([data-page="concepts"])) .question-card.is-wrong{border-left:5px solid var(--bad)}
 :where(body:has([data-page="concepts"])) .question-top{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:12px}
@@ -102,7 +94,7 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) .option input{accent-color:var(--blue);margin:4px 0 0;flex:none;width:17px;height:17px}
 :where(body:has([data-page="concepts"])) .option-letter{font-weight:850;color:var(--blue);min-width:17px}
 :where(body:has([data-page="concepts"])) .question-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:15px}
-:where(body:has([data-page="concepts"])) .question-actions button{border-radius:8px;padding:8px 13px;min-height:42px;cursor:pointer;font-size:.86rem;font-weight:780}
+:where(body:has([data-page="concepts"])) .question-actions button{border-radius:8px;padding:8px 13px;min-height:44px;cursor:pointer;font-size:.86rem;font-weight:780}
 :where(body:has([data-page="concepts"])) .check-answer{background:var(--navy);border:1px solid var(--navy);color:#fff}
 :where(body:has([data-page="concepts"])) .reset-answer{background:var(--surface);border:1px solid var(--line);color:var(--muted)}
 :where(body:has([data-page="concepts"])) .feedback{font-size:.86rem;color:var(--muted)}
@@ -124,16 +116,15 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) .quiz-heading strong{font-size:1rem;color:var(--muted);white-space:nowrap}
 :where(body:has([data-page="concepts"])) .quiz-progress{height:7px;background:#dbe8ef;border-radius:99px;overflow:hidden;margin:15px 0 25px}
 :where(body:has([data-page="concepts"])) .quiz-progress span{height:100%;display:block;background:var(--orange)}
-:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:clamp(20px,4vw,34px)}
+:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:clamp(20px,4vw,34px) var(--study-card-space) clamp(20px,4vw,34px)}
 :where(body:has([data-page="concepts"])) .footer{border-top:1px solid var(--line);background:#eaf1f5;color:var(--muted)}
-:where(body:has([data-page="concepts"])) .footer-inner{max-width:1040px;margin:auto;display:flex;justify-content:space-between;gap:12px;padding:18px 24px;font-size:.82rem}
+:where(body:has([data-page="concepts"])) .footer-inner{max-width:var(--study-width);margin:auto;display:flex;justify-content:space-between;gap:12px;padding:18px var(--study-gutter);font-size:.82rem}
 @media(max-width:700px){
 :where(body:has([data-page="concepts"])) .dictionary-item{grid-template-columns:1fr auto;gap:3px 12px}
 :where(body:has([data-page="concepts"])) .dictionary-desc{grid-row:2;grid-column:1/-1}
 :where(body:has([data-page="concepts"])) .dictionary-chapter{grid-column:2;grid-row:1}
-:where(body:has([data-page="concepts"])) .shell{padding:23px 15px 65px}
-:where(body:has([data-page="concepts"])) .header-inner{padding:0 15px;min-height:62px}
-:where(body:has([data-page="concepts"])) .term-article{padding:23px}
+:where(body:has([data-page="concepts"])) .shell{padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="concepts"])) .term-article{padding:23px var(--study-card-space) 23px}
 :where(body:has([data-page="concepts"])) .three{grid-template-columns:1fr}
 :where(body:has([data-page="concepts"])) .network-lanes{grid-template-columns:1fr;gap:16px}
 :where(body:has([data-page="concepts"])) .section-heading{align-items:start}
@@ -141,12 +132,10 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 :where(body:has([data-page="concepts"])) .diagram-body{padding:12px}
 :where(body:has([data-page="concepts"])) .frame{padding:9px}}
 @media(max-width:470px){
-:where(body:has([data-page="concepts"])) .brand{gap:7px;font-size:.89rem}
-:where(body:has([data-page="concepts"])) .primary-nav a{padding:8px 9px;font-size:.84rem}
 :where(body:has([data-page="concepts"])) .dictionary-item{padding:13px}
-:where(body:has([data-page="concepts"])) .term-article{padding:20px 16px}
+:where(body:has([data-page="concepts"])) .term-article{padding:20px var(--study-card-space) 20px}
 :where(body:has([data-page="concepts"])) .definition{font-size:1.1rem}
-:where(body:has([data-page="concepts"])) .question-card{padding:18px 15px}
+:where(body:has([data-page="concepts"])) .question-card{padding:18px var(--study-card-space) 18px}
 :where(body:has([data-page="concepts"])) .section-heading{display:block}
 :where(body:has([data-page="concepts"])) .section-heading>a{display:inline-block;margin-top:5px}
 :where(body:has([data-page="concepts"])) .two{gap:6px}
@@ -161,7 +150,7 @@ body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:va
 @media(prefers-reduced-motion:reduce){
 html:where(:has([data-page="concepts"])){scroll-behavior:auto}}
 @media print{
-:where(body:has([data-page="concepts"])) .site-header,:where(body:has([data-page="concepts"])) .footer,:where(body:has([data-page="concepts"])) .sequence,:where(body:has([data-page="concepts"])) .question-actions,:where(body:has([data-page="concepts"])) .search-label,:where(body:has([data-page="concepts"])) .dictionary-intro input,:where(body:has([data-page="concepts"])) .alphabet{display:none!important}
+:where(body:has([data-page="concepts"])) .footer,:where(body:has([data-page="concepts"])) .sequence,:where(body:has([data-page="concepts"])) .question-actions,:where(body:has([data-page="concepts"])) .search-label,:where(body:has([data-page="concepts"])) .dictionary-intro input,:where(body:has([data-page="concepts"])) .alphabet{display:none!important}
 :where(body:has([data-page="concepts"])) .shell{max-width:none;padding:0}
 :where(body:has([data-page="concepts"])) .term-article,:where(body:has([data-page="concepts"])) .question-card{break-inside:avoid;box-shadow:none}
 :where(body:has([data-page="concepts"])) .question-card{margin:12px 0}
@@ -173,21 +162,9 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) a{color:var(--blue)}
 :where(body:has([data-page="concepts"])) h1,:where(body:has([data-page="concepts"])) h2,:where(body:has([data-page="concepts"])) h3{letter-spacing:-.025em}
 :where(body:has([data-page="concepts"])) h1{font-size:clamp(1.85rem,4vw,2.7rem)}
-:where(body:has([data-page="concepts"])) .site-header{background:var(--navy);border:0}
-:where(body:has([data-page="concepts"])) .header-inner{max-width:1360px;padding:18px 24px;min-height:82px;gap:20px}
-:where(body:has([data-page="concepts"])) .brand{gap:15px;letter-spacing:0}
-:where(body:has([data-page="concepts"])) .mark{display:grid;place-items:center;background:var(--accent);color:var(--navy);font-size:1.25rem;font-weight:850;width:42px;height:42px;border-radius:11px;flex:none;padding:0;letter-spacing:0}
-:where(body:has([data-page="concepts"])) .brand-copy{display:block}
-:where(body:has([data-page="concepts"])) .brand-copy>strong{font-size:1.16rem;letter-spacing:.035em;display:block;line-height:1.4}
-:where(body:has([data-page="concepts"])) .brand-copy>strong>span{font-weight:400}
-:where(body:has([data-page="concepts"])) .brand-copy>small{display:block;font-size:.8rem;font-weight:400;color:#bfcbdc;line-height:1.5;margin-top:3px}
-:where(body:has([data-page="concepts"])) .primary-nav{gap:7px}
-:where(body:has([data-page="concepts"])) .primary-nav a{font-size:.86rem;border:1px solid transparent;padding:8px 12px}
-:where(body:has([data-page="concepts"])) .primary-nav a.active{background:#263c56;border-color:#52647a}
-:where(body:has([data-page="concepts"])) .primary-nav .study-link{font-size:.8rem;font-weight:500;color:#bfcbdc}
-:where(body:has([data-page="concepts"])) .shell{max-width:1360px;padding:28px 24px 64px}
+:where(body:has([data-page="concepts"])) .shell{max-width:var(--study-width);padding:var(--study-top-space) var(--study-gutter) 40px}
 :where(body:has([data-page="concepts"])) .dictionary-intro,:where(body:has([data-page="concepts"])) .dictionary-list,:where(body:has([data-page="concepts"])) .alphabet,:where(body:has([data-page="concepts"])) .source-note{max-width:1050px;margin-left:auto;margin-right:auto}
-:where(body:has([data-page="concepts"])) .dictionary-intro{background:white;border:1px solid var(--line);border-radius:15px;padding:30px;margin-bottom:22px}
+:where(body:has([data-page="concepts"])) .dictionary-intro{background:white;border:1px solid var(--line);border-radius:15px;padding:30px var(--study-card-space) 30px;margin-bottom:22px}
 :where(body:has([data-page="concepts"])) .dictionary-intro h1{margin-top:8px;margin-bottom:12px}
 :where(body:has([data-page="concepts"])) .eyebrow{color:var(--muted);font-size:.76rem;letter-spacing:.13em;font-weight:700}
 :where(body:has([data-page="concepts"])) .dictionary-intro>p:not(.eyebrow){margin-bottom:20px}
@@ -197,17 +174,17 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .dictionary-chapter{background:#edf2f8;color:#526781}
 :where(body:has([data-page="concepts"])) .dictionary-item{border-radius:12px;grid-template-columns:minmax(200px,270px) minmax(0,1fr) auto}
 :where(body:has([data-page="concepts"])) .letter-group h2{color:var(--muted)}
-:where(body:has([data-page="concepts"])) .breadcrumb{margin-bottom:19px}
-:where(body:has([data-page="concepts"])) .wiki-layout{display:grid;grid-template-columns:268px minmax(0,1fr);gap:26px;align-items:start}
+:where(body:has([data-page="concepts"])) .breadcrumb{min-height:28px;margin-bottom:16px}
+:where(body:has([data-page="concepts"])) .wiki-layout{display:grid;grid-template-columns:var(--study-sidebar) minmax(0,1fr);gap:var(--study-gap);align-items:start}
 :where(body:has([data-page="concepts"])) .wiki-main{min-width:0}
-:where(body:has([data-page="concepts"])) .wiki-toc{position:sticky;top:20px;background:white;border:1px solid var(--line);border-radius:15px;padding:20px;max-height:calc(100vh - 40px);overflow:auto;font-size:.81rem;line-height:1.5}
+:where(body:has([data-page="concepts"])) .wiki-toc{position:sticky;top:20px;background:white;border:1px solid var(--line);border-radius:15px;padding:var(--study-sidebar-space);max-height:calc(100vh - 40px);overflow:auto;font-size:.81rem;line-height:1.5}
 :where(body:has([data-page="concepts"])) .wiki-toc summary{font-size:.92rem;font-weight:750;cursor:pointer;color:var(--ink);padding:2px 0 8px}
 :where(body:has([data-page="concepts"])) .wiki-toc ol{list-style:none;padding:0;margin:5px 0 14px}
 :where(body:has([data-page="concepts"])) .wiki-toc li{margin:0}
 :where(body:has([data-page="concepts"])) .wiki-toc li a{display:block;padding:6px 8px;border-radius:6px;color:var(--muted);border-left:2px solid transparent}
 :where(body:has([data-page="concepts"])) .wiki-toc a:hover,:where(body:has([data-page="concepts"])) .wiki-toc a[aria-current=true]{background:var(--bluewash);color:var(--blue);text-decoration:none;border-left-color:var(--blue)}
 :where(body:has([data-page="concepts"])) .back-index{display:block;border-top:1px solid var(--line);padding-top:13px;font-weight:650}
-:where(body:has([data-page="concepts"])) .term-article{border-radius:15px;box-shadow:none;padding:32px 38px}
+:where(body:has([data-page="concepts"])) .term-article{border-radius:15px;box-shadow:none;padding:32px var(--study-card-space) 32px}
 :where(body:has([data-page="concepts"])) .article-header{padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:26px}
 :where(body:has([data-page="concepts"])) .term-article h1{margin-bottom:10px}
 :where(body:has([data-page="concepts"])) .term-meta{color:var(--muted);font-weight:650;margin-bottom:12px}
@@ -252,52 +229,40 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .explanation summary{color:var(--blue)}
 :where(body:has([data-page="concepts"])) .tag{background:var(--bluewash);color:var(--blue)}
 :where(body:has([data-page="concepts"])) .footer{background:#e9eef5}
-:where(body:has([data-page="concepts"])) .footer-inner{max-width:1360px}
+:where(body:has([data-page="concepts"])) .footer-inner{max-width:var(--study-width)}
 :where(body:has([data-page="concepts"])) .quiz-page{max-width:970px;margin:auto}
 :where(body:has([data-page="concepts"])) .save-note{font-size:.8rem}
 :where(body:has([data-page="concepts"])) .skip-link{position:absolute;left:16px;top:-80px;background:white;padding:12px;z-index:20}
 :where(body:has([data-page="concepts"])) .skip-link:focus{top:10px}
 @media(max-width:1000px){
-:where(body:has([data-page="concepts"])) .wiki-layout{grid-template-columns:220px minmax(0,1fr);gap:18px}
-:where(body:has([data-page="concepts"])) .wiki-toc{padding:15px}
-:where(body:has([data-page="concepts"])) .term-article{padding:28px}}
+:where(body:has([data-page="concepts"])) .wiki-layout{grid-template-columns:var(--study-sidebar) minmax(0,1fr);gap:var(--study-gap)}
+:where(body:has([data-page="concepts"])) .wiki-toc{padding:var(--study-sidebar-space)}
+:where(body:has([data-page="concepts"])) .term-article{padding:28px var(--study-card-space) 28px}}
 @media(max-width:800px){
 :where(body:has([data-page="concepts"])) .wiki-layout{grid-template-columns:minmax(0,1fr)}
-:where(body:has([data-page="concepts"])) .wiki-toc{position:static;max-height:none;padding:14px 18px}
+:where(body:has([data-page="concepts"])) .wiki-toc{position:static;max-height:none;padding:var(--study-sidebar-space)}
 :where(body:has([data-page="concepts"])) .wiki-toc ol{columns:2;column-gap:18px}
 :where(body:has([data-page="concepts"])) .wiki-toc li{break-inside:avoid}
 :where(body:has([data-page="concepts"])) .back-index{display:none}
-:where(body:has([data-page="concepts"])) .term-article{padding:27px}
-:where(body:has([data-page="concepts"])) .header-inner{gap:12px}
-:where(body:has([data-page="concepts"])) .brand-copy>small{font-size:.72rem}}
+:where(body:has([data-page="concepts"])) .term-article{padding:27px var(--study-card-space) 27px}}
 @media(max-width:700px){
-:where(body:has([data-page="concepts"])) .header-inner{padding:14px 16px;min-height:72px}
-:where(body:has([data-page="concepts"])) .mark{width:36px;height:36px;font-size:1.15rem;border-radius:9px}
-:where(body:has([data-page="concepts"])) .brand{gap:10px}
-:where(body:has([data-page="concepts"])) .brand-copy>strong{font-size:1.05rem}
-:where(body:has([data-page="concepts"])) .brand-copy>small{display:none}
-:where(body:has([data-page="concepts"])) .primary-nav a{font-size:.8rem;padding:7px 9px}
-:where(body:has([data-page="concepts"])) .shell{padding:20px 16px 45px}
-:where(body:has([data-page="concepts"])) .dictionary-intro{padding:23px 21px}
+:where(body:has([data-page="concepts"])) .shell{padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="concepts"])) .dictionary-intro{padding:23px var(--study-card-space) 23px}
 :where(body:has([data-page="concepts"])) .dictionary-item{grid-template-columns:1fr auto}
 :where(body:has([data-page="concepts"])) .wiki-stats{gap:15px}
-:where(body:has([data-page="concepts"])) .term-article{padding:24px}
-:where(body:has([data-page="concepts"])) .question-card{padding:21px}
-:where(body:has([data-page="concepts"])) .footer-inner{padding:18px 16px}
+:where(body:has([data-page="concepts"])) .term-article{padding:24px var(--study-card-space) 24px}
+:where(body:has([data-page="concepts"])) .question-card{padding:21px var(--study-card-space) 21px}
+:where(body:has([data-page="concepts"])) .footer-inner{padding:18px var(--study-gutter)}
 :where(body:has([data-page="concepts"])) .table-scroll{margin-top:15px}}
 @media(max-width:470px){
-:where(body:has([data-page="concepts"])) .header-inner{flex-wrap:wrap;gap:12px}
-:where(body:has([data-page="concepts"])) .brand-copy>strong{font-size:1.03rem}
-:where(body:has([data-page="concepts"])) .primary-nav{margin-left:auto;gap:3px}
-:where(body:has([data-page="concepts"])) .primary-nav a{padding:7px 8px}
-:where(body:has([data-page="concepts"])) .shell{padding:18px 12px 40px}
-:where(body:has([data-page="concepts"])) .term-article{padding:23px 19px}
-:where(body:has([data-page="concepts"])) .dictionary-intro{padding:23px 19px}
+:where(body:has([data-page="concepts"])) .shell{padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="concepts"])) .term-article{padding:23px var(--study-card-space) 23px}
+:where(body:has([data-page="concepts"])) .dictionary-intro{padding:23px var(--study-card-space) 23px}
 :where(body:has([data-page="concepts"])) .wiki-toc ol{columns:1}
 :where(body:has([data-page="concepts"])) .wiki-section h2{font-size:1.15rem}
 :where(body:has([data-page="concepts"])) .overview p{font-size:1rem}
 :where(body:has([data-page="concepts"])) .wiki-section p{font-size:.95rem}
-:where(body:has([data-page="concepts"])) .question-card,:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:20px 17px}
+:where(body:has([data-page="concepts"])) .question-card,:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:20px var(--study-card-space) 20px}
 :where(body:has([data-page="concepts"])) .scenario{padding:18px}
 :where(body:has([data-page="concepts"])) .diagram-body{padding:13px}
 :where(body:has([data-page="concepts"])) .table-scroll th,:where(body:has([data-page="concepts"])) .table-scroll td{padding:10px 12px}
@@ -317,29 +282,15 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .visual-lane .node .term-link{font-weight:inherit}
 :where(body:has([data-page="concepts"])) .visual-lane .node small{opacity:1;color:var(--muted)}@media(max-width:560px){
 :where(body:has([data-page="concepts"])) .visual-lanes{grid-template-columns:1fr;gap:24px}
-:where(body:has([data-page="concepts"])) .visual-lane .node{min-height:65px}}/* 좁은 화면에서도 모든 이동 링크를 표시한다. */
-:where(body:has([data-page="concepts"])) .header-inner,:where(body:has([data-page="concepts"])) .brand,:where(body:has([data-page="concepts"])) .brand-copy,:where(body:has([data-page="concepts"])) .primary-nav,:where(body:has([data-page="concepts"])) .primary-nav a{min-width:0}
-:where(body:has([data-page="concepts"])) .primary-nav .study-link{display:flex;align-items:center;justify-content:center}
-@media(max-width:1000px){
-:where(body:has([data-page="concepts"])) .header-inner{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;padding:18px 24px}
-:where(body:has([data-page="concepts"])) .brand{width:100%;white-space:normal}
-:where(body:has([data-page="concepts"])) .brand-copy{flex:1}
-:where(body:has([data-page="concepts"])) .brand-copy>strong{overflow-wrap:anywhere}
-:where(body:has([data-page="concepts"])) .primary-nav{width:100%;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-:where(body:has([data-page="concepts"])) .primary-nav a,:where(body:has([data-page="concepts"])) .primary-nav .study-link{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 6px;white-space:normal;overflow-wrap:anywhere;text-align:center;line-height:1.4;font-size:.86rem;border:1px solid #405571;background:#213650;border-radius:9px}
-:where(body:has([data-page="concepts"])) .primary-nav a.active{background:#344c6c;border-color:#8cabc9;color:white}
-:where(body:has([data-page="concepts"])) .primary-nav .study-link{color:#ffe0ae}
-}
+:where(body:has([data-page="concepts"])) .visual-lane .node{min-height:65px}}
 @media(max-width:700px){
-:where(body:has([data-page="concepts"])) .header-inner{padding:16px;gap:13px}
-:where(body:has([data-page="concepts"])) .brand-copy>strong{font-size:1.08rem;line-height:1.45}
-:where(body:has([data-page="concepts"])) .shell{width:100%;max-width:100%;padding:18px 14px 40px}
+:where(body:has([data-page="concepts"])) .shell{width:100%;max-width:100%;padding:var(--study-top-space) var(--study-gutter) 40px}
 :where(body:has([data-page="concepts"])) .wiki-layout,:where(body:has([data-page="concepts"])) .wiki-main,:where(body:has([data-page="concepts"])) .term-article,:where(body:has([data-page="concepts"])) .dictionary-list,:where(body:has([data-page="concepts"])) .dictionary-item,:where(body:has([data-page="concepts"])) .question-card{min-width:0;max-width:100%}
 :where(body:has([data-page="concepts"])) .dictionary-item{grid-template-columns:minmax(0,1fr) auto;gap:7px 10px}
 :where(body:has([data-page="concepts"])) .dictionary-name,:where(body:has([data-page="concepts"])) .dictionary-desc{min-width:0;overflow-wrap:anywhere}
 :where(body:has([data-page="concepts"])) .breadcrumb{flex-wrap:wrap;gap:5px 8px}
 :where(body:has([data-page="concepts"])) .breadcrumb>span:last-child{min-width:0;overflow-wrap:anywhere}
-:where(body:has([data-page="concepts"])) .term-article{padding:23px 19px}
+:where(body:has([data-page="concepts"])) .term-article{padding:23px var(--study-card-space) 23px}
 :where(body:has([data-page="concepts"])) .term-article h1{font-size:clamp(1.65rem,7vw,2.2rem);line-height:1.25;overflow-wrap:anywhere}
 :where(body:has([data-page="concepts"])) .wiki-section h2{line-height:1.5;overflow-wrap:anywhere}
 :where(body:has([data-page="concepts"])) .term-link,:where(body:has([data-page="concepts"])) .official,:where(body:has([data-page="concepts"])) .references a{overflow-wrap:anywhere;word-break:normal}
@@ -351,11 +302,8 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .footer-inner>*{min-width:0;max-width:100%}
 }
 @media(max-width:360px){
-:where(body:has([data-page="concepts"])) .header-inner{padding:14px 12px}
-:where(body:has([data-page="concepts"])) .primary-nav{gap:6px}
-:where(body:has([data-page="concepts"])) .primary-nav a,:where(body:has([data-page="concepts"])) .primary-nav .study-link{font-size:.8rem;padding:10px 4px}
-:where(body:has([data-page="concepts"])) .shell{padding:16px 10px 36px}
-:where(body:has([data-page="concepts"])) .dictionary-intro,:where(body:has([data-page="concepts"])) .term-article,:where(body:has([data-page="concepts"])) .question-card,:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:20px 15px}
+:where(body:has([data-page="concepts"])) .shell{padding:var(--study-top-space) var(--study-gutter) 40px}
+:where(body:has([data-page="concepts"])) .dictionary-intro,:where(body:has([data-page="concepts"])) .term-article,:where(body:has([data-page="concepts"])) .question-card,:where(body:has([data-page="concepts"])) .quiz-page .question-card{padding:20px var(--study-card-space) 20px}
 :where(body:has([data-page="concepts"])) .dictionary-chapter{font-size:.68rem;padding:3px 6px}
 :where(body:has([data-page="concepts"])) .wiki-stats{gap:10px}}
 :where(body:has([data-page="concepts"])) .full-name{font-weight:400;overflow-wrap:anywhere;white-space:normal}
@@ -365,48 +313,3 @@ body:where(:has([data-page="concepts"])){font-family:system-ui,-apple-system,Bli
 :where(body:has([data-page="concepts"])) .breadcrumb .full-name{font-size:.95em}
 :where(body:has([data-page="concepts"])) #navigation-status{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;padding:10px 18px;border-radius:8px;background:#17283f;color:white;box-shadow:0 4px 18px #0003;max-width:90vw;white-space:nowrap}
 :where(body:has([data-page="concepts"])) #main:focus{outline:none}/* Keep the page switch beside the title on every hash-routed page. */
-:where(body:has([data-page="concepts"])) .site-header .brand{ display:flex; align-items:center; min-width:0; }
-:where(body:has([data-page="concepts"])) .site-header .brand-home{ display:inline-flex; flex:none; color:inherit; text-decoration:none; }
-:where(body:has([data-page="concepts"])) .site-header .brand-copy{ min-width:0; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line{ display:flex; align-items:center; gap:10px; min-width:0; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title{ flex:none; color:#fff; text-decoration:none; white-space:nowrap; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title:hover{ text-decoration:none; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title strong{ display:block; font-size:1.16rem; line-height:1.4; letter-spacing:.035em; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title strong span{ font-weight:400; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch{ display:inline-flex; align-items:center; justify-content:center; flex:none; min-height:36px; padding:6px 9px; border:1px solid #52647a; border-radius:8px; background:#263c56; color:#ffe0ae; font-size:.8rem; font-weight:500; line-height:1.4; text-decoration:none; white-space:nowrap; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch:hover{ border-color:#8cabc9; background:#344c6c; }
-@media(max-width:1000px) {
-:where(body:has([data-page="concepts"])) .site-header .primary-nav{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch{ min-height:44px; }
-}
-@media(max-width:700px) {
-:where(body:has([data-page="concepts"])) .site-header .brand-title strong{ font-size:1rem; letter-spacing:0; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line{ gap:8px; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch{ font-size:.76rem; padding:8px; }
-}
-@media(max-width:360px) {
-:where(body:has([data-page="concepts"])) .site-header .mark{ width:32px; height:32px; }
-:where(body:has([data-page="concepts"])) .site-header .brand{ gap:8px; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title strong{ font-size:.9rem; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line{ gap:6px; }
-:where(body:has([data-page="concepts"])) .site-header .brand-title-line .page-switch{ font-size:.72rem; padding:8px 6px; }
-}
-
-/* Match the study header: account at the upper right, navigation below on mobile. */
-.site-header .header-inner { position:relative; }
-.site-header .primary-nav { margin-left:auto; }
-.site-header .account-controls { flex:none; }
-@media screen and (max-width:1000px) {
- .site-header .header-inner { padding:calc(18px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 18px calc(24px + env(safe-area-inset-left,0px)); }
- .site-header .brand { min-height:44px; padding-right:56px; }
- .site-header .account-controls { position:absolute; top:calc(18px + env(safe-area-inset-top,0px)); right:calc(24px + env(safe-area-inset-right,0px)); z-index:5; }
-}
-@media screen and (max-width:700px) {
- .site-header .header-inner { padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) 16px calc(16px + env(safe-area-inset-left,0px)); }
- .site-header .account-controls { top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); }
-}
-@media screen and (max-width:360px) {
- .site-header .header-inner { padding-inline:calc(12px + env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-right,0px)); }
- .site-header .brand { padding-right:52px; }
- .site-header .account-controls { right:calc(12px + env(safe-area-inset-right,0px)); }
-}
