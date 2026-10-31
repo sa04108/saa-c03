@@ -12,9 +12,9 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 
 ## 1. 데이터베이스 준비
 
-**통합 SQL `202610310002_ai_cache_history_fallback.sql`을 이미 적용한 현재 프로젝트는 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql) 한 파일만 추가 실행**합니다. 모델별 실패 횟수와 1분 → 1시간 → 1일 제외 정책을 저장합니다. 계정·풀이 기록·예상 질문·대화 기록은 유지하며, 과거 통합 SQL을 다시 실행하지 않습니다.
+**모델 실패 제외 정책 SQL `202610310003_model_failure_backoff.sql`까지 적용한 프로젝트는 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 추가 실행**하고 최신 Edge Function을 배포합니다. 기존 원문을 보존하며 세션별 요약과 서버 순번을 추가합니다. 아직 통합 SQL `202610310002_ai_cache_history_fallback.sql`까지만 적용했다면 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)을 먼저 실행합니다. 이미 적용한 파일은 다시 실행하지 않습니다.
 
-`cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 위 모델 실패 제외 정책 SQL을 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
+`cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 모델 실패 제외 정책 SQL과 세션 압축 SQL을 차례대로 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
 
 이전에 안내한 `202610310002_suggestion_cache_by_item.sql`, `202610310003_chat_history.sql`은 통합 파일로 대체했으므로 따로 실행하지 않습니다. SQL 실행 후 최신 `study-assistant` Edge Function을 다시 배포하세요.
 
@@ -24,6 +24,7 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 2. [AI 마이그레이션](../supabase/migrations/202610310001_ai_assistant.sql) — 공용 Gemini 할당량 정책과 게스트 제한 포함
 3. [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)
 4. [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)
+5. [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)
 
 이 마이그레이션은 다음을 설정합니다.
 
@@ -107,7 +108,7 @@ API를 시도하기 전에 캐시가 적중하면 Gemini 호출과 게스트 요
 
 GitHub 계정을 연동한 사용자의 완성된 질문·답변은 계정별 DB에 저장합니다. 익명 사용자는 저장·조회할 수 없고 현재 페이지 메모리에서만 대화합니다. 대화 기록은 예상 질문 공용 캐시와 별개이며, 본인 계정만 조회할 수 있습니다. 저장 실패 시 답변은 표시하되 실패를 안내하고, **다시 저장**은 AI를 다시 호출하지 않습니다. [무료 플랜 용량과 세션별 대화 기록 운영](chat-history.md)을 참고하세요.
 
-Gemini에는 해당 학습 자료와 현재 질문, 최근 대화 3쌍을 전달하고, 검색한 경우 그 발췌도 전달합니다. Tavily에는 Gemini가 검색이 필요하다고 판단했을 때만 모델이 만든 400자 이내 검색어를 보냅니다. 모델에는 관련 공개 기술 용어만 사용하고 개인정보·비밀값·전체 대화를 검색어에 복사하지 않도록 지시합니다. 저장된 전체 기록을 매번 보내지 않습니다. 이미지 자체는 전송하지 않으며 필요한 내용은 사용자가 텍스트로 설명해야 합니다. 무료 등급의 데이터 이용 조건에 따라 Google이 입력·출력을 제품 개선에 사용할 수 있으므로 비밀값이나 개인정보를 질문에 넣지 마세요.
+Gemini에는 학습 자료·현재 질문과 해당 세션의 요약·아직 요약하지 않은 원문을 전달하고, 검색한 경우 그 발췌도 전달합니다. 익명 사용자는 기존처럼 최근 3쌍만 전달합니다. Tavily에는 Gemini가 검색이 필요하다고 판단했을 때만 모델이 만든 400자 이내 검색어를 보냅니다. 모델에는 관련 공개 기술 용어만 사용하고 개인정보·비밀값·전체 대화를 검색어에 복사하지 않도록 지시합니다. 저장된 전체 기록을 매번 보내지 않습니다. 이미지 자체는 전송하지 않으며 필요한 내용은 사용자가 텍스트로 설명해야 합니다. 무료 등급의 데이터 이용 조건에 따라 Google이 입력·출력을 제품 개선에 사용할 수 있으므로 비밀값이나 개인정보를 질문에 넣지 마세요.
 
 ## 연결 문제
 
@@ -121,4 +122,4 @@ Gemini에는 해당 학습 자료와 현재 질문, 최근 대화 3쌍을 전달
 
 공식 문서: [Gemini 요금](https://ai.google.dev/gemini-api/docs/pricing), [Gemini 사용 제한](https://ai.google.dev/gemini-api/docs/rate-limits), [Supabase 익명 인증](https://supabase.com/docs/guides/auth/auth-anonymous), [Edge Function 인증](https://supabase.com/docs/guides/functions/auth).
 
-입력 토큰 한도와 장기 대화의 요약 도입 검토는 [대화 맥락 정책](ai-context-policy.md)에 정리했습니다. 현재는 세션의 최근 3쌍을 전달하며 자동 요약은 사용하지 않습니다.
+입력 토큰 한도·공식 제공자의 압축 방식 비교·실행 조건·추가 호출 비용은 [대화 맥락 정책](ai-context-policy.md)에 정리했습니다. 계정 연동 세션은 입력 16,000토큰 이내에서 답변하고, 약 12,000토큰부터 오래된 대화를 백그라운드에서 요약합니다. 요약도 Gemini 공용 할당량을 사용하며 원문 기록은 유지합니다.

@@ -50,4 +50,4 @@ select pg_size_pretty(
 ) as chat_history_size;
 ```
 
-큰 대화 기록을 매번 내려받거나 세션 전체를 Gemini에 보내지는 않습니다. 현재 후속 질문에는 해당 세션의 학습 자료와 최근 3쌍만 전달하며, 자동 요약은 아직 사용하지 않습니다. 모델 한도와 향후 압축 정책 검토는 [대화 맥락 정책](ai-context-policy.md)을 참고하세요.
+계정 연동 사용자의 후속 질문은 서버가 해당 세션의 학습 자료·저장된 요약·미요약 원문으로 구성합니다. 긴 세션은 오래된 대화만 요약하고 최근 대화는 원문으로 유지합니다. 이 기능에는 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)과 최신 Edge Function 배포가 필요합니다. 요약은 기록을 삭제하지 않으며 추가 Gemini 호출과 DB 공간을 사용합니다. 실행 조건·비용·실패 처리와 모델 한도는 [대화 맥락 정책](ai-context-policy.md)을 참고하세요.

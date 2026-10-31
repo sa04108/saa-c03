@@ -439,6 +439,9 @@
     invalid_request: '질문이 너무 길거나 내용을 확인할 수 없습니다. 내용을 줄여 다시 전송해 주세요.',
     blocked: '이 질문에 답변을 제공하지 못했습니다. 학습 내용에 맞게 질문을 바꿔 주세요.',
     empty_response: '답변을 완성하지 못했습니다. 질문을 짧게 바꿔 다시 시도해 주세요.',
+    context_full: '이 대화가 한 번에 참고할 수 있는 길이를 넘었어요. 이전 내용을 정리할 수 있으면 자동으로 요약합니다. 잠시 뒤 다시 보내거나, 필요한 조건을 새 대화에 적어 주세요.',
+    context_changed: '이 대화의 학습 자료가 변경되었어요. 대화 기록에서 다시 열거나 새 대화를 시작해 주세요.',
+    history_unsaved: '이전 답변을 저장하지 못했어요. 다시 저장한 뒤 질문을 보내 주세요.',
   };
   async function call(payload, task) {
     const token = await accessToken(); task.controller.signal.throwIfAborted();
@@ -481,6 +484,12 @@
     const task = begin('chat', question); task.turnId = crypto.randomUUID(); thread.draft = ''; render();
     $('[data-scroll]').scrollTop = $('[data-scroll]').scrollHeight;
     try {
+      // The server builds member context from saved turns. Do not silently omit
+      // an answer that is still waiting for the existing idempotent save retry.
+      if (window.SaaAccount?.user && window.SaaAccount.user.is_anonymous !== true && task.thread.unsaved.length) {
+        await retrySave();
+        if (task.thread.unsaved.length) throw new Error('history_unsaved');
+      }
       const data = await call({ action: 'chat', context: task.thread.context, question, conversationId: task.thread.conversationId, turnId: task.turnId, history: task.thread.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 2000) })) }, task);
       if (typeof data.answer !== 'string' || !data.answer.trim() || data.answer.length > 14000) throw new Error('empty_response');
       if (request === task) {
