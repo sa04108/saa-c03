@@ -23,7 +23,7 @@ GitHub 계정을 연동한 사용자는 대화 기록을 Supabase에 저장하�
 
 ## 적용
 
-기존 AI 설치에는 [대화 기록 마이그레이션](../supabase/migrations/202610310003_chat_history.sql)을 한 번 실행하고 최신 [study-assistant 함수](../supabase/functions/study-assistant/index.ts)를 배포합니다. Pages 프런트엔드도 최신 버전으로 배포해야 합니다. 새 프로젝트의 전체 순서는 [AI 연결 가이드](ai-assistant-setup.md)에 있습니다.
+기존 AI 설치에는 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 한 번 실행하고 최신 [study-assistant 함수](../supabase/functions/study-assistant/index.ts)를 배포합니다. Pages 프런트엔드도 최신 버전으로 배포해야 합니다. 새 프로젝트의 전체 순서는 [AI 연결 가이드](ai-assistant-setup.md)에 있습니다.
 
 - 답변이 완성되면 질문과 답변을 한 행에 원자적으로 저장합니다. 첫 질문을 대화 제목으로 사용하며 제목 생성에 Gemini를 호출하지 않습니다.
 - 학습 자료는 대화마다 한 번만 저장합니다. 새 대화는 새로운 ID의 자유 질문으로 시작합니다. 전송하지 않은 빈 대화는 저장하지 않습니다.
