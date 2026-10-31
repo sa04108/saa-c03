@@ -11,7 +11,7 @@
 
 브라우저 요청 본문은 UTF-8 기준 64 KiB까지 허용합니다. 계정 사용자의 과거 대화는 브라우저가 다시 업로드하지 않고 서버가 DB에서 읽습니다. 문자·바이트·토큰은 서로 다른 단위이므로 실제 Gemini `countTokens` 결과로 입력 예산을 검사합니다.
 
-운영 프로젝트에는 세션 압축 SQL을 포함해 005까지 적용되어 있습니다. 이후 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)를 설정한 뒤 `main`에 반영하면 DB·Edge Function·프런트엔드 순서로 배포됩니다. `devel` 변경만으로는 운영 환경이 갱신되지 않습니다.
+운영 프로젝트에는 세션 압축을 포함한 현재 DB 구성이 적용되어 있으며 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)로 관리합니다. 이후 변경을 `main`에 반영하면 [GitHub Actions](github-actions-deploy.md)가 DB·Edge Function·프런트엔드 순서로 배포합니다. `devel` 변경만으로는 운영 환경이 갱신되지 않습니다.
 
 ## Google에서 확인한 모델 한도
 
@@ -129,7 +129,7 @@ Claude의 임계값 압축은 확인 시점에 기본 150,000토큰, 최소 50,0
 
 ## 적용과 검증 범위
 
-[세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)은 기존 모델 실패 제외 정책 SQL 이후에 실행합니다. 원본 기록·계정별 RLS·기존 저장 RPC를 유지하며 순번과 요약 상태, 서버 전용 읽기·작업 예약·결과 저장 함수를 추가합니다. SQL을 적용한 뒤 최신 `study-assistant` Edge Function을 배포합니다.
+세션 순번·요약 상태·서버 전용 읽기·작업 예약·결과 저장 함수는 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)에 포함되어 있습니다. 새 프로젝트는 빈 DB에 초기 스키마를 적용하고, 기존 운영 프로젝트는 초기 SQL을 재실행하지 않습니다. DB와 최신 `study-assistant` Edge Function은 [GitHub Actions](github-actions-deploy.md)로 함께 배포합니다.
 
 작업 환경에서 기존 기록이 있는 DB의 마이그레이션, 저장 재시도, 중복 작업, 작업 중 새 메시지 추가, 오래된 결과 거부, 계정 권한과 익명 차단을 검증했습니다. Edge Function은 서버 기록 사용, 입력 초과 보류, 검색 결과를 포함한 토큰 계산, 잘못되거나 더 커진 요약 거부, 429·5초 초과 fallback을 검증했습니다. 검증 코드는 저장소에 포함하지 않습니다.
 

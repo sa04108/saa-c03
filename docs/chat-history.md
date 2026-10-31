@@ -25,7 +25,7 @@ GitHub 계정을 연동한 사용자는 대화 기록을 Supabase에 저장하�
 
 ## 적용
 
-현재 운영 프로젝트는 대화 기록 삭제 SQL 005까지 적용되어 있습니다. 이후 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)를 설정한 뒤 `main`에 반영합니다. 별도 프로젝트의 수동 설치는 [AI 연결 가이드](ai-assistant-setup.md)의 순서를 따릅니다.
+대화 기록·요약·선택 삭제의 DB 구성은 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)에 포함되어 있습니다. 현재 운영 프로젝트는 이미 적용을 완료했으며 이후 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)로 반영합니다. 새 프로젝트의 설치는 [AI 연결 가이드](ai-assistant-setup.md)를 참고하세요.
 
 - 답변이 완성되면 질문과 답변을 한 행에 원자적으로 저장합니다. 첫 질문을 대화 제목으로 사용하며 제목 생성에 Gemini를 호출하지 않습니다.
 - 학습 자료는 대화마다 한 번만 저장합니다. 새 대화는 새로운 ID의 자유 질문으로 시작합니다. 전송하지 않은 빈 대화는 저장하지 않습니다.
@@ -62,4 +62,4 @@ select pg_size_pretty(
 ) as chat_history_size;
 ```
 
-계정 연동 사용자의 후속 질문은 서버가 해당 세션의 학습 자료·저장된 요약·미요약 원문으로 구성합니다. 긴 세션은 오래된 대화만 요약하고 최근 대화는 원문으로 유지합니다. 이 기능에는 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)과 최신 Edge Function 배포가 필요합니다. 요약은 기록을 삭제하지 않으며 추가 Gemini 호출과 DB 공간을 사용합니다. 실행 조건·비용·실패 처리와 모델 한도는 [대화 맥락 정책](ai-context-policy.md)을 참고하세요.
+계정 연동 사용자의 후속 질문은 서버가 해당 세션의 학습 자료·저장된 요약·미요약 원문으로 구성합니다. 긴 세션은 오래된 대화만 요약하고 최근 대화는 원문으로 유지합니다. 이 기능의 DB 구성은 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)에 포함되며 최신 Edge Function과 함께 사용합니다. 요약은 기록을 삭제하지 않으며 추가 Gemini 호출과 DB 공간을 사용합니다. 실행 조건·비용·실패 처리와 모델 한도는 [대화 맥락 정책](ai-context-policy.md)을 참고하세요.

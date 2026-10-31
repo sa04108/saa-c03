@@ -12,33 +12,17 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 
 ## 1. 데이터베이스 준비
 
-**현재 운영 프로젝트는 005까지 적용되어 있습니다.** [GitHub Actions 자동 배포 설정](github-actions-deploy.md)에 따라 Secrets 두 개를 최초 등록하면, 이후 `main` push 시 새 SQL과 Edge Function을 자동 배포합니다. 이미 실행한 SQL을 다시 붙여 넣을 필요가 없습니다.
+현재 운영 프로젝트는 필요한 SQL과 GitHub Actions 자동 배포 설정을 완료했습니다. 이후 `main` push 시 새 SQL과 Edge Function을 자동 배포하며, 기존 SQL을 다시 붙여 넣을 필요가 없습니다.
 
-아래 SQL Editor 절차는 자동 배포를 사용하지 않는 환경이나 별도 프로젝트의 수동 설치를 위한 참고입니다.
+기존 마이그레이션은 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql) 한 파일로 정리했습니다. 다음 항목을 모두 포함합니다.
 
-**세션 압축 SQL `202610310004_session_compaction.sql`까지 적용한 프로젝트는 [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)을 추가 실행**하고 최신 Edge Function과 프런트엔드를 배포합니다. 003까지만 적용했다면 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 먼저 실행합니다. 002까지만 적용했다면 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)부터 순서대로 진행합니다. 이미 적용한 파일은 다시 실행하지 않습니다.
+- 계정별 문제 풀이 진도와 충돌을 확인하는 저장 함수
+- 항목별 예상 질문 공용 캐시와 익명 사용자 요청 제한
+- 서버 전체가 공유하는 모델 실패·제외 상태
+- 계정별 대화 세션·메시지·누적 요약과 선택 삭제
+- 본인 데이터만 읽는 RLS와 브라우저·서버 역할별 실행 권한
 
-`cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 모델 실패 제외 정책 SQL, 세션 압축 SQL, 대화 기록 삭제 SQL을 차례대로 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
-
-이전에 안내한 `202610310002_suggestion_cache_by_item.sql`, `202610310003_chat_history.sql`은 통합 파일로 대체했으므로 따로 실행하지 않습니다. SQL 실행 후 최신 `study-assistant` Edge Function을 다시 배포하세요.
-
-새로 설치한다면 다음 순서로 각각 한 번 실행합니다. 이미 적용한 SQL은 다시 실행하지 않습니다.
-
-1. [진도 저장 마이그레이션](../supabase/migrations/202610300001_study_progress.sql) — 기존 진도 저장 프로젝트라면 생략
-2. [AI 마이그레이션](../supabase/migrations/202610310001_ai_assistant.sql) — 공용 Gemini 할당량 정책과 게스트 제한 포함
-3. [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)
-4. [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)
-5. [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)
-6. [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)
-
-이 마이그레이션은 다음을 설정합니다.
-
-- 공개 학습 자료에 대한 예상 질문 4개를 보관하는 캐시
-- 익명 세션별 일일 요청 횟수를 원자적으로 확인하는 함수
-- 서버 전용 테이블·함수 권한: 브라우저는 직접 조회하거나 수정할 수 없음
-- 익명 AI 사용자가 계정용 풀이 기록 저장 기능에 접근하지 못하도록 제한
-
-기존 GitHub 계정의 진도 데이터와 저장 API 이름은 유지합니다. 이 SQL을 적용한 뒤 아래 절차에 따라 최신 `study-assistant` Edge Function을 배포합니다.
+새 프로젝트는 공개 연결 정보와 [GitHub Actions 배포 설정](github-actions-deploy.md)을 준비한 뒤 빈 DB에 이 초기 스키마를 적용합니다. CLI나 Actions의 `db push`를 사용하면 적용 이력도 함께 기록됩니다. **기존 운영 DB에는 초기 SQL을 재실행하지 않습니다.** 다음 배포가 기존 이력만 자동 통합합니다.
 
 ## 2. 게스트 사용 활성화
 

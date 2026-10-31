@@ -5,10 +5,10 @@
 ## 1. Supabase 프로젝트 생성
 
 1. [Supabase 대시보드](https://supabase.com/dashboard)에서 새 프로젝트를 만듭니다.
-2. 데이터베이스 준비가 끝나면 **SQL Editor**를 엽니다.
-3. 이 저장소의 [진도 저장 마이그레이션](../supabase/migrations/202610300001_study_progress.sql) 전체를 붙여 넣고 한 번 실행합니다.
+2. 아래 OAuth·공개 연결 정보 설정과 [GitHub Actions 배포 설정](github-actions-deploy.md)을 진행합니다.
+3. 첫 배포가 빈 DB에 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)를 적용합니다. SQL Editor에서 미리 실행할 필요는 없습니다. 기존 운영 프로젝트는 이미 설치되어 있으므로 재실행하지 않습니다.
 
-이 SQL은 사용자별 진도 테이블, 본인 데이터만 조회하는 RLS 정책, 저장 버전을 확인하는 `save_study_progress` 함수를 만듭니다. 로그인하지 않은 사용자는 접근할 수 없으며, 직접 테이블을 수정해서 버전 검사를 우회하는 것도 허용하지 않습니다.
+초기 스키마에는 사용자별 진도 테이블, 본인 데이터만 조회하는 RLS 정책, 저장 버전을 확인하는 `save_study_progress` 함수와 AI 관련 DB 구성이 포함됩니다. 로그인하지 않은 사용자는 접근할 수 없으며, 직접 테이블을 수정해서 버전 검사를 우회하는 것도 허용하지 않습니다.
 
 ## 2. GitHub OAuth App 등록
 
@@ -54,7 +54,7 @@ window.SAA_ACCOUNT_CONFIG = Object.freeze({
 
 ## 5. 연결 확인
 
-`devel`에서 설정을 검토하고 `main`에 반영하면 기존 Pages 워크플로가 배포합니다. 배포 후 다음을 확인합니다.
+`devel`에서 설정을 검토하고 `main`에 반영하면 [자동 배포 워크플로](github-actions-deploy.md)가 DB·Edge Function·Pages 순서로 배포합니다. 배포 후 다음을 확인합니다.
 
 1. 시작 화면의 **소셜 계정 → GitHub → 계정 연동**을 눌러 승인 후 사이트로 돌아오는지 확인합니다.
 2. 문제집에서 한 문제를 풀고 **계정 저장 완료** 표시를 확인합니다.

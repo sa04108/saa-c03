@@ -11,33 +11,36 @@
 | `SUPABASE_ACCESS_TOKEN` | [Supabase 계정의 Access Tokens](https://supabase.com/dashboard/account/tokens)에서 생성한 개인 액세스 토큰. 운영 프로젝트에 접근 가능한 계정의 토큰을 사용합니다. Publishable key나 `service_role` 키가 아닙니다. |
 | `SUPABASE_DB_PASSWORD` | 해당 Supabase 프로젝트의 Postgres 데이터베이스 비밀번호. 프로젝트 생성 시 정한 값이며, 모르면 Supabase 프로젝트의 Database 설정에서 재설정합니다. |
 
-값은 저장소 파일이나 채팅에 적지 않습니다. 현재 GitHub 연결에는 Secrets 관리 권한이 없어 이 등록은 저장소 관리자가 직접 해야 합니다. 두 값은 배포 스크립트 단계에서만 사용하며 Pages 파일에 포함하지 않습니다.
+값은 저장소 파일이나 채팅에 적지 않습니다. 두 값은 배포 스크립트 단계에서만 사용하며 Pages 파일에 포함하지 않습니다. 현재 운영 저장소는 Secrets 등록과 자동 배포를 완료했으므로 다시 등록할 필요가 없습니다.
 
 배포 대상 프로젝트 ID는 공개 설정인 [`assets/account-config.js`](../assets/account-config.js)의 URL에서 읽습니다. 현재 대상은 `ngohlplwutssofoxobrj`입니다. 별도의 프로젝트 ID Secret은 필요하지 않습니다.
 
 `GEMINI_API_KEY`, `TAVILY_API_KEY`, `ALLOWED_ORIGINS` 등은 기존처럼 **Supabase → Edge Functions → Secrets**에 둡니다. 함수 재배포 시 유지되므로 GitHub에 다시 등록할 필요가 없습니다. OAuth·익명 로그인 설정 역시 기존 Supabase 설정을 사용합니다.
 
-두 Secrets를 등록한 뒤 `devel`을 `main`에 병합하면 첫 자동 배포가 시작됩니다. 실행 결과는 [Actions](https://github.com/sa04108/saa-c03/actions/workflows/pages.yml)에서 확인합니다.
+새 환경에서는 두 Secrets와 공개 연결 정보를 설정한 뒤 `devel`을 `main`에 병합합니다. 실행 결과는 [Actions](https://github.com/sa04108/saa-c03/actions/workflows/pages.yml)에서 확인합니다.
 
-## SQL Editor에서 적용한 기존 이력 연결
+## 통합 초기 스키마와 기존 운영 이력
 
-현재 프로젝트는 운영자가 `202610310005_delete_chat_history.sql`까지 성공적으로 적용했다고 확인한 상태입니다. 총 6개 파일의 목록과 해시는 [수동 적용 기준 파일](../.github/supabase-manual-baseline.json)에 고정했습니다.
+기존 6개 마이그레이션을 [202610310005_initial_schema.sql](../supabase/migrations/202610310005_initial_schema.sql) 하나로 통합했습니다. 과거 변경 명령을 이어 붙이지 않고 최종 테이블·함수·인덱스·RLS·권한·트리거를 정의합니다. 빈 Supabase 프로젝트에는 이 파일을 한 번 적용하면 됩니다.
 
-첫 배포에서 Supabase CLI의 마이그레이션 이력이 비어 있거나 일부 누락되었다면 다음 순서로 처리합니다.
+운영 프로젝트에는 기존 6개 SQL이 모두 적용되어 있고, GitHub Actions 배포도 성공한 상태입니다. 이미 적용된 마지막 버전 `202610310005`를 통합 파일의 버전으로 유지합니다. **운영 DB에 통합 SQL을 다시 실행하지 않습니다.**
 
-1. 운영 프로젝트 ID와 기존 이력을 확인합니다.
-2. DB의 테이블·컬럼·함수 본문·권한·트리거 등이 005까지 적용된 상태인지 읽기 전용으로 확인합니다. 학습 진도나 대화 본문은 조회하지 않습니다.
-3. 확인된 6개 파일 중 **이력에 없는 버전만** `migration repair --status applied`로 등록합니다. 해당 SQL 본문을 다시 실행하지 않습니다.
-4. `db push --dry-run` 후 `db push`로 아직 적용하지 않은 새 마이그레이션을 실행합니다.
+다음 `main` 배포에서 배포 스크립트는 기존 이력을 읽고, 제거된 5개 버전과 마지막 버전이 모두 확인된 경우에만 다음 명령으로 이력을 통합합니다.
 
-따라서 이미 있는 `turn_seq`를 다시 추가하지 않으며, 기존 진도·대화·캐시를 초기화하지 않습니다. 다음 배포부터는 등록된 이력을 사용합니다. 다른 프로젝트나 불완전한 DB는 자동으로 적용 완료 처리하지 않고 중단합니다.
+```sh
+supabase migration squash --linked --version 202610310005 --yes
+```
 
-`Database does not match the complete 005 baseline` 오류가 나면 로그의 대상 객체와 실제 DB 상태를 확인합니다. 오류를 없애려고 이미 적용한 SQL 전체를 다시 실행하거나 이력을 무조건 등록하지 않습니다. 특히 기존 002는 캐시를 초기화하고, 004는 컬럼 추가와 대화 순번 부여를 포함합니다.
+해당 버전까지 로컬 SQL은 이미 한 파일이므로 CLI는 스키마 생성·실행을 생략하고, **마이그레이션 이력 6행을 1행으로 원자적으로 교체**합니다. 사용자 진도·대화·요약·캐시·모델 제외 상태는 건드리지 않습니다. 통합 이후 버전의 이력도 유지합니다. 이력 정리 결과를 확인한 뒤 `db push --dry-run`, `db push`, 함수 배포를 진행합니다. 다음 배포나 실패 후 재실행에서는 이미 정리된 이력을 그대로 사용합니다.
+
+새 프로젝트처럼 이력이 비어 있으면 이력 통합을 생략하고 통합 초기 SQL을 정상 실행합니다. 기존 이력이 일부만 있거나 저장소에 없는 알 수 없는 버전이 있으면 중단합니다. 과거 SQL Editor 설치를 스키마 비교로 추정해 적용 완료 처리하는 기능은 제거했습니다.
+
+`Remote migration history is incomplete or unknown` 오류가 나면 `supabase migration list --linked`로 실제 이력부터 확인합니다. 일부만 설치된 구형 DB에 초기 스키마를 덮어쓰거나 적용하지 않은 버전을 완료로 등록하지 않습니다. 통합 전 SQL이 필요한 경우 Git의 통합 전 커밋에서 확인할 수 있습니다.
 
 ## 이후 변경 방법
 
 - 함수 변경: `supabase/functions/study-assistant/index.ts`를 수정하고 `main`에 반영합니다. Dashboard 편집기에 붙여 넣을 필요가 없습니다.
-- DB 변경: `supabase/migrations/`에 기존 버전보다 뒤에 정렬되는 고유한 숫자 버전의 **새 SQL 파일**을 추가합니다. `supabase migration new <이름>`으로 생성해도 됩니다. 이미 적용한 파일은 수정하거나 삭제하지 않습니다.
+- DB 변경: 통합 초기 SQL은 그대로 두고 `supabase/migrations/`에 기존 버전보다 뒤에 정렬되는 고유한 숫자 버전의 **새 SQL 파일**을 추가합니다. `supabase migration new <이름>`으로 생성해도 됩니다. 이번 통합 이후 이미 적용한 파일은 수정하거나 삭제하지 않습니다.
 - 화면 변경: 기존처럼 `main`에 반영하면 서버 배포 성공 후 Pages가 갱신됩니다.
 
 함수는 CLI의 API 배포 방식으로 올려 Docker가 필요하지 않습니다. `verify_jwt = false` 설정은 유지하며, 함수 자체에서 Supabase Auth로 사용자의 Bearer 토큰을 검증합니다.
@@ -50,6 +53,6 @@ DB·함수·Pages는 하나의 트랜잭션이 아닙니다. 함수 배포에서
 
 초기 설정에는 `supabase link`, DB 연결과 Supabase Management API 접근이 필요합니다. 토큰·DB 비밀번호가 바뀌면 해당 GitHub Secret도 갱신합니다. 네트워크 제한을 설정한 프로젝트는 Actions 러너에서의 접속도 허용해야 합니다.
 
-현재 작업 환경에서는 배포 자격 증명 없이 로컬 검증을 수행했습니다. 실제 운영 배포 결과는 Secrets 등록 후 첫 `main` 실행에서 확인합니다.
+이미 성공한 자동 배포 구성은 유지합니다. 이번 이력 통합은 `main` 병합 후 실행되며, 결과는 Actions의 Supabase 단계에서 확인합니다. SQL Editor에서 별도 SQL을 실행할 필요는 없습니다.
 
-참고: [DB push](https://supabase.com/docs/reference/cli/supabase-db-push), [migration repair](https://supabase.com/docs/reference/cli/supabase-migration-repair), [함수 배포](https://supabase.com/docs/reference/cli/supabase-functions-deploy).
+참고: [DB push](https://supabase.com/docs/reference/cli/supabase-db-push), [migration squash](https://supabase.com/docs/reference/cli/supabase-migration-squash), [함수 배포](https://supabase.com/docs/reference/cli/supabase-functions-deploy).

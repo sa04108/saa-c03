@@ -10,7 +10,7 @@ AI 어시스턴트는 **Gemini가 필요하다고 판단할 때만** Tavily를 �
 
 이 검색 기능에는 추가 SQL 마이그레이션이 없습니다. 기존 대화 기록 저장이 설치된 환경에서는 출처와 검색 실패 안내를 답변 본문에 함께 저장합니다. Codex 환경의 Secret과 Supabase의 Secret은 별개이므로 Codex에 등록한 키가 운영 함수에 자동으로 전달되지는 않습니다.
 
-최신 함수의 **모델별 실패 제외 정책**에는 별도로 [202610310003_model_failure_backoff.sql](../supabase/migrations/202610310003_model_failure_backoff.sql)이 필요합니다. 기존 통합 SQL을 적용한 프로젝트는 이 새 파일만 추가 실행합니다.
+모델별 실패 제외 정책의 DB 구성은 [통합 초기 스키마](../supabase/migrations/202610310005_initial_schema.sql)에 포함됩니다. 현재 운영 프로젝트는 이미 적용을 완료했으며, 이후 함수·DB 변경은 [GitHub Actions 자동 배포](github-actions-deploy.md)를 사용합니다.
 
 ## 요청 흐름
 
