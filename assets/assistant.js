@@ -9,7 +9,7 @@
   const general = { id: 'general', kind: 'general', title: 'SAA-C03 · 자유 질문', text: '', hasImages: false };
   const generalQuestions = ['SAA-C03 공부를 어디서부터 시작하면 좋을까?', '헷갈리기 쉬운 AWS 서비스를 비교해 줘.', '고가용성과 내결함성은 어떻게 달라?', '비용 최적화 문제를 푸는 요령을 알려줘.'];
   const threads = new Map();
-  let thread, opener, request, guestClient, guestSignIn, currentQuestion;
+  let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget;
   const inertBefore = new Map();
   let originalOverflow = null;
 
@@ -25,7 +25,11 @@
     <div class="saa-ai-context-strip">${svg('book')}<div class="saa-ai-context-copy"><small>질문하는 항목</small><p data-context-title></p></div><span class="saa-ai-context-type" data-context-type></span></div>
     <div class="saa-ai-scroll" data-scroll><div class="saa-ai-welcome" data-welcome><p class="saa-ai-eyebrow">YOUR STUDY COMPANION</p><h3 data-welcome-title></h3><p class="saa-ai-description">질문을 고르거나 직접 입력해 보세요.</p><div class="saa-ai-suggestions" data-suggestions aria-label="예상 질문"></div><p class="saa-ai-suggestions-note" data-suggestion-note hidden>${svg('edit')}질문을 선택하면 입력창에만 채워져요.</p></div><div class="saa-ai-messages" data-messages role="log" aria-label="대화 내용" aria-live="polite"></div><p class="saa-ai-feedback" data-feedback role="status" hidden></p><button type="button" class="saa-ai-retry" data-retry hidden>예상 질문 다시 불러오기</button><p class="saa-ai-image-note" data-image-note hidden>이미지 속 내용이 필요하면 질문에 함께 적어 주세요.</p></div>
     <form class="saa-ai-composer-zone"><div class="saa-ai-composer"><label class="saa-ai-sr" for="saa-ai-prompt">AI 어시스턴트에게 질문</label><textarea id="saa-ai-prompt" rows="2" placeholder="궁금한 내용을 입력하세요…" maxlength="2000"></textarea><div class="saa-ai-composer-bottom"><span class="saa-ai-composer-hint" data-hint>질문을 작성한 뒤 전송하세요</span><button class="saa-ai-send" type="submit" disabled aria-label="질문 전송">${svg('up')}</button></div></div><p class="saa-ai-disclaimer">답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송됩니다.</p></form>`;
-  document.body.append(fab, panel);
+  // Mount outside study cards so their rounded overflow clips cannot cut it off.
+  const tooltip = document.createElement('div');
+  tooltip.id = 'saa-ai-tooltip'; tooltip.className = 'saa-ai-tooltip'; tooltip.dataset.aiUi = '';
+  tooltip.setAttribute('role', 'tooltip'); tooltip.hidden = true;
+  document.body.append(fab, panel, tooltip);
   const $ = selector => panel.querySelector(selector);
   const prompt = $('#saa-ai-prompt');
 
@@ -51,14 +55,36 @@
     const text = [q.stem, ...q.options.map(o => o.key + '. ' + o.text), reference].join('\n');
     return { id: `dumps:${q.id}`, kind: 'question', title: `문제 ${String(q.id).padStart(3, '0')} · SAA-C03 문제집`, text: text.slice(0, 12000), hasImages: /\[\[?(?:image|img)|<img|data:image|\{\{image/i.test(text) || !!document.querySelector('#question-mount .qbody img') };
   }
+  function hideTooltip() {
+    tooltipTarget?.removeAttribute('aria-describedby');
+    tooltipTarget = null; tooltip.hidden = true;
+  }
+  function showTooltip(button) {
+    hideTooltip(); tooltipTarget = button;
+    tooltip.textContent = button.getAttribute('aria-label'); tooltip.hidden = false;
+    button.setAttribute('aria-describedby', tooltip.id);
+    const rect = button.getBoundingClientRect(), bounds = tooltip.getBoundingClientRect();
+    const edge = 8, gap = 8;
+    const left = Math.max(edge, Math.min(rect.right - bounds.width, innerWidth - bounds.width - edge));
+    const above = rect.top - bounds.height - gap;
+    const top = Math.max(edge, Math.min(above >= edge ? above : rect.bottom + gap, innerHeight - bounds.height - edge));
+    tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
+  }
   function trigger(parent, getContext) {
     if (!parent || parent.querySelector(':scope > .saa-ai-trigger')) return;
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'saa-ai-trigger'; button.dataset.aiUi = '';
     button.setAttribute('aria-label', '이 항목을 AI에 질문'); button.innerHTML = svg('robot');
+    button.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') showTooltip(button); });
+    button.addEventListener('pointerleave', () => {
+      if (tooltipTarget === button && !(document.activeElement === button && button.matches(':focus-visible'))) hideTooltip();
+    });
+    button.addEventListener('focus', () => { if (button.matches(':focus-visible')) showTooltip(button); });
+    button.addEventListener('blur', () => { if (tooltipTarget === button) hideTooltip(); });
     button.addEventListener('click', () => open(getContext(), button)); parent.append(button);
   }
   function mount() {
+    hideTooltip();
     document.querySelectorAll('.term-article').forEach(article => {
       const header = article.querySelector('.article-header');
       header?.classList.add('saa-ai-context'); trigger(header, () => contextForConcept(article));
@@ -106,6 +132,7 @@
     viewport();
   }
   function open(context, source) {
+    hideTooltip();
     if (context) {
       if (thread) thread.draft = prompt.value;
       cancelRequest(); thread = getThread(context);
@@ -280,6 +307,7 @@
   $('[data-new]').onclick = () => { cancelRequest(); thread.history = []; thread.draft = ''; thread.error = ''; render(); if (!thread.suggestions) void suggestions(); };
   $('[data-retry]').onclick = () => void suggestions(); $('form').onsubmit = send; prompt.oninput = updateComposer;
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') hideTooltip();
     if (panel.hidden || document.querySelector('dialog[open]')) return;
     if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close(); }
     if (panel.contains(event.target)) event.stopPropagation();
@@ -290,6 +318,8 @@
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
+  document.addEventListener('scroll', hideTooltip, { capture: true, passive: true });
+  window.addEventListener('resize', hideTooltip, { passive: true });
   window.visualViewport?.addEventListener('resize', viewport); window.visualViewport?.addEventListener('scroll', viewport);
   mobile.addEventListener('change', modalState);
   window.SaaAssistant = { mount, setQuestion(q, note = {}) { currentQuestion = { q, note }; mount(); } };
