@@ -65,6 +65,8 @@
 
 <link rel="stylesheet" href="../assets/assistant.css?v=20261031-12" data-ai-assets>
 <script defer src="../assets/assistant.js?v=20261031-12" data-ai-assets></script>
+<link rel="stylesheet" href="../assets/theme.css?v=20261101-1" data-theme-assets>
+<script src="../assets/theme.js?v=20261101-1" data-theme-assets></script>
 </head>
 <body>
 <header class="top"><div class="brand"><span class="brand-mark" aria-hidden="true">S</span><div class="brand-copy"><div class="brand-title-line"><h1>SAA-C03 <span style="font-weight:400">문제집</span></h1><a class="wiki-link page-switch" href="../concepts/">개념 위키 ↗</a></div><p>AWS Certified Solutions Architect · Associate</p></div></div><div class="row top-actions"><button id="open-settings">저장 · 백업</button><span id="save-status" class="save-pill" role="status">저장 상태 확인 중</span></div><div class="account-controls" data-account-ui><button class="account-icon-button" type="button" data-github-login aria-label="GitHub 계정 연동" title="GitHub 계정 연동" disabled><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"></button><a class="account-icon-button" href="../#social-accounts" data-account-manage aria-label="GitHub 계정 관리" title="GitHub 계정 관리" hidden><img class="github-icon" src="../assets/github.svg" width="24" height="24" alt="" aria-hidden="true"><span class="account-connected-dot" aria-hidden="true"></span></a></div></header>
@@ -1470,6 +1472,7 @@ async function exportHTML(){
  const button=$('export-html');button.disabled=true;
  try{
   const snapshot=document.documentElement.cloneNode(true);
+  window.SaaTheme?.prepareExport(snapshot);
   for(const element of snapshot.querySelectorAll('[data-account-assets],[data-account-ui],[data-ai-assets],[data-ai-ui],#account-warning,#import-guest'))element.remove();
   snapshot.querySelector('body').classList.remove('saa-ai-open');
   snapshot.querySelector('body').style.overflow='';
