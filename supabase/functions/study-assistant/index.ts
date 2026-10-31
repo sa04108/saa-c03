@@ -293,7 +293,13 @@ export async function handleRequest(req: Request): Promise<Response> {
     const createdAt = new Date().toISOString();
     const makeDatabase = (signal: AbortSignal): Database => async (path, options = {}) => {
       const result = await fetch(url + '/rest/v1/' + path, { ...options, headers: { apikey: serviceKey, Authorization: 'Bearer ' + serviceKey, 'Content-Type': 'application/json', ...options.headers }, signal: AbortSignal.any([signal, AbortSignal.timeout(10000), ...(options.signal ? [options.signal] : [])]) });
-      if (!result.ok) throw new HttpError(503, 'not_ready');
+      if (!result.ok) {
+        if (path === 'rpc/read_ai_chat_context') {
+          const error = await result.json().catch(() => null);
+          if (error?.code === 'P0002') throw new HttpError(410, 'conversation_deleted');
+        }
+        throw new HttpError(503, 'not_ready');
+      }
       return result;
     };
     const db = makeDatabase(requestSignal), memberSession = input.action === 'chat' && user.is_anonymous !== true && !!input.conversationId;

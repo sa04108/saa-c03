@@ -14,6 +14,9 @@
   let thread, opener, request, guestClient, guestSignIn, currentQuestion, tooltipTarget, historyRequest, historyCursor;
   let historyView = false;
   let historySessions = [];
+  let historyEditing = false, historyLoading = false, historyDeleting = false, deleteConfirming = false, selectionRequest, selectionOwner;
+  let availableHistoryIds = new Set(), selectedHistoryIds = new Set();
+  const selectionTimes = new Map(), selectionDays = new Map();
   const inertBefore = new Map();
   let originalOverflow = null;
 
@@ -26,7 +29,7 @@
   panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', 'saa-ai-heading');
   panel.innerHTML = `
     <header class="saa-ai-head"><div class="saa-ai-logo">${svg('robot')}</div><div class="saa-ai-title"><h2 id="saa-ai-heading" tabindex="-1">AI 어시스턴트</h2><p>SAA-C03 학습 도우미</p></div><div class="saa-ai-head-actions"><button type="button" class="saa-ai-icon" data-history-toggle aria-label="대화 기록" title="대화 기록" aria-pressed="false" hidden>${svg('history')}</button><button type="button" class="saa-ai-icon" data-new aria-label="새 대화" title="새 대화">${svg('edit')}</button><button type="button" class="saa-ai-icon" data-close aria-label="AI 어시스턴트 닫기" title="닫기">${svg('close')}</button></div></header>
-    <section class="saa-ai-history" data-history hidden aria-label="대화 기록"><div class="saa-ai-history-head"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><p class="saa-ai-feedback" data-history-status role="status" hidden></p></div><div class="saa-ai-history-scroll" data-history-scroll><div class="saa-ai-sessions" data-history-list role="list" aria-label="저장된 대화 세션"></div><button type="button" class="saa-ai-retry saa-ai-history-more" data-history-more hidden>이전 대화 불러오기</button></div></section>
+    <section class="saa-ai-history" data-history hidden aria-label="대화 기록"><div class="saa-ai-history-head"><div class="saa-ai-history-tools"><button type="button" class="saa-ai-history-back" data-history-back>${svg('arrow')}대화로 돌아가기</button><button type="button" class="saa-ai-history-edit" data-history-edit hidden>편집</button></div><div class="saa-ai-selection" data-selection hidden><button type="button" class="saa-ai-select-all" data-select-all role="checkbox" aria-checked="false"><span class="saa-ai-check" aria-hidden="true">${svg('check')}</span>전체 선택</button><span data-selection-total></span></div><p class="saa-ai-feedback" data-history-status role="status" hidden></p></div><div class="saa-ai-history-scroll" data-history-scroll><div class="saa-ai-sessions" data-history-list role="list" aria-label="저장된 대화 세션"></div><button type="button" class="saa-ai-retry saa-ai-history-more" data-history-more hidden>이전 대화 불러오기</button></div><div class="saa-ai-history-footer" data-selection-footer hidden><span data-selection-count role="status" aria-live="polite">0개 선택</span><button type="button" class="saa-ai-delete" data-history-delete disabled>${svg('trash')}선택 삭제</button></div><section class="saa-ai-delete-confirm" data-delete-confirm role="alertdialog" aria-labelledby="saa-ai-delete-title" aria-describedby="saa-ai-delete-description" hidden><h3 id="saa-ai-delete-title"></h3><p id="saa-ai-delete-description">선택한 대화와 메시지는 복구할 수 없어요.</p><div><button type="button" class="saa-ai-delete-cancel" data-delete-cancel>취소</button><button type="button" class="saa-ai-delete" data-delete-confirm-button>삭제</button></div></section></section>
     <div class="saa-ai-context-strip">${svg('book')}<div class="saa-ai-context-copy"><small>질문하는 항목</small><p data-context-title></p></div><span class="saa-ai-context-type" data-context-type></span></div>
     <div class="saa-ai-scroll" data-scroll><div class="saa-ai-welcome" data-welcome><p class="saa-ai-eyebrow">YOUR STUDY COMPANION</p><h3 data-welcome-title></h3><p class="saa-ai-description">질문을 고르거나 직접 입력해 보세요.</p><div class="saa-ai-suggestions" data-suggestions aria-label="예상 질문"></div><p class="saa-ai-suggestions-note" data-suggestion-note hidden>${svg('edit')}질문을 선택하면 입력창에만 채워져요.</p></div><div class="saa-ai-messages" data-messages role="log" aria-label="대화 내용" aria-live="polite"></div><p class="saa-ai-feedback" data-feedback role="status" hidden></p><button type="button" class="saa-ai-retry" data-retry hidden>예상 질문 다시 불러오기</button><p class="saa-ai-image-note" data-image-note hidden>이미지 속 내용이 필요하면 질문에 함께 적어 주세요.</p></div>
     <form class="saa-ai-composer-zone"><div class="saa-ai-composer"><label class="saa-ai-sr" for="saa-ai-prompt">AI 어시스턴트에게 질문</label><textarea id="saa-ai-prompt" rows="2" placeholder="궁금한 내용을 입력하세요…" maxlength="2000"></textarea><div class="saa-ai-composer-bottom"><span class="saa-ai-composer-hint" data-hint>질문을 작성한 뒤 전송하세요</span><button class="saa-ai-send" type="submit" disabled aria-label="질문 전송">${svg('up')}</button></div></div><p class="saa-ai-disclaimer">답변은 틀릴 수 있어요. 질문과 학습 내용은 Google로 전송되며, 검색 시 Tavily도 사용합니다.</p></form>`;
@@ -145,6 +148,8 @@
   function open(context, source) {
     hideTooltip();
     if (context) {
+      if (historyDeleting) return;
+      exitHistoryEdit();
       if (thread) thread.draft = prompt.value;
       cancelRequest(); cancelHistory(); historyView = false; thread = getThread(context);
     } else if (!thread) thread = getThread(general);
@@ -153,10 +158,11 @@
     fab.setAttribute('aria-expanded', 'true'); fab.setAttribute('aria-label', 'AI 어시스턴트 닫기');
     fab.innerHTML = svg('close') + '<span>AI 어시스턴트 닫기</span>';
     render(); modalState(); $('#saa-ai-heading').focus({ preventScroll: true });
-    if (historyView) void loadHistory();
+    if (historyView && !historyDeleting) void loadHistory();
     else if (!thread.suggestions && !thread.history.length && !request) void suggestions();
   }
   function close() {
+    if (!historyDeleting) exitHistoryEdit();
     cancelHistory();
     thread.draft = prompt.value; prompt.blur(); panel.hidden = true; document.body.classList.remove('saa-ai-open');
     fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-label', 'AI 어시스턴트 열기');
@@ -276,52 +282,187 @@
   }
 
   function historyBusy(busy) {
+    historyLoading = busy;
     $('[data-history-list]').setAttribute('aria-busy', String(busy));
-    $('[data-history-more]').disabled = busy;
-    $('[data-history-list]').querySelectorAll('button').forEach(button => { button.disabled = busy; });
+    updateHistoryControls();
   }
   function cancelHistory() { historyRequest?.abort(); historyRequest = null; historyBusy(false); }
   async function historyApi(path, options = {}) {
+    const { accountId, ...requestOptions } = options;
     await window.SaaAccount?.ready;
     if (!window.SaaAccount?.user || window.SaaAccount.user.is_anonymous === true) throw new Error('unauthenticated');
+    const owner = accountId || window.SaaAccount.user.id;
+    if (window.SaaAccount.user.id !== owner) throw new Error('unauthenticated');
     const token = await window.SaaAccount.getAccessToken();
-    if (!token) throw new Error('unauthenticated');
+    if (!token || window.SaaAccount?.user?.id !== owner) throw new Error('unauthenticated');
     const response = await fetch(new URL('/rest/v1/' + path, config.supabaseUrl), {
-      ...options, headers: { apikey: config.supabasePublishableKey, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      ...requestOptions, headers: { apikey: config.supabasePublishableKey, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(12000)]) : AbortSignal.timeout(12000),
     });
-    if (!response.ok) throw new Error('history_unavailable');
+    if (window.SaaAccount?.user?.id !== owner) throw new Error('unauthenticated');
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.code === 'P0002' ? 'conversation_deleted' : 'history_unavailable');
+    }
     return response.json();
   }
   function historyStatus(message) { $('[data-history-status]').textContent = message; $('[data-history-status]').hidden = !message; }
+  function updateHistoryControls() {
+    const busy = historyLoading || !!selectionRequest || historyDeleting || deleteConfirming;
+    $('[data-history-edit]').hidden = !historyEditing && !historySessions.length;
+    $('[data-history-edit]').textContent = historyEditing ? '완료' : '편집';
+    $('[data-history-edit]').disabled = busy;
+    $('[data-history-back]').disabled = historyDeleting || deleteConfirming;
+    $('[data-new]').disabled = historyDeleting || deleteConfirming;
+    $('[data-history-toggle]').disabled = historyDeleting || deleteConfirming;
+    $('[data-history-more]').disabled = busy;
+    $('[data-selection]').hidden = !historyEditing;
+    $('[data-selection-footer]').hidden = !historyEditing || deleteConfirming;
+    $('[data-delete-confirm]').hidden = !deleteConfirming;
+    $('[data-select-all]').disabled = busy || !availableHistoryIds.size;
+    const all = !!availableHistoryIds.size && selectedHistoryIds.size === availableHistoryIds.size;
+    $('[data-select-all]').setAttribute('aria-checked', all ? 'true' : selectedHistoryIds.size ? 'mixed' : 'false');
+    $('[data-selection-total]').textContent = selectionRequest ? '불러오는 중…' : `전체 ${availableHistoryIds.size}개`;
+    $('[data-selection-count]').textContent = `${selectedHistoryIds.size}개 선택`;
+    $('[data-history-delete]').disabled = busy || !selectedHistoryIds.size;
+    for (const button of $('[data-history-list]').querySelectorAll('button')) {
+      button.disabled = busy;
+      if (historyEditing && button.dataset.historyDay) {
+        const ids = selectionDays.get(button.dataset.historyDay) || new Set();
+        const selected = [...ids].filter(id => selectedHistoryIds.has(id)).length;
+        button.setAttribute('aria-checked', selected === ids.size && selected ? 'true' : selected ? 'mixed' : 'false');
+        button.disabled = busy || !ids.size;
+      } else if (historyEditing) button.setAttribute('aria-checked', String(selectedHistoryIds.has(button.dataset.conversationId)));
+    }
+  }
+  function exitHistoryEdit() {
+    if (historyDeleting) return;
+    selectionRequest?.abort(); selectionRequest = null; historyEditing = false; deleteConfirming = false;
+    selectedHistoryIds.clear(); availableHistoryIds.clear(); selectionTimes.clear(); selectionDays.clear(); selectionOwner = null;
+    renderSessions($('[data-history-list]')); updateHistoryControls();
+  }
+  async function editHistory() {
+    if (historyEditing) { exitHistoryEdit(); return; }
+    if (historyLoading || historyDeleting) return;
+    const task = new AbortController(); selectionRequest = task; selectionOwner = window.SaaAccount?.user?.id;
+    historyEditing = true; selectedHistoryIds.clear(); availableHistoryIds.clear(); selectionTimes.clear(); selectionDays.clear();
+    renderSessions($('[data-history-list]')); updateHistoryControls();
+    try {
+      const rows = await historyApi('rpc/list_ai_conversation_selection', { method: 'POST', body: '{}', signal: task.signal, accountId: selectionOwner });
+      if (selectionRequest !== task) return;
+      if (!Array.isArray(rows) || rows.some(row => !row || typeof row.id !== 'string' || !/^[a-f0-9-]{36}$/i.test(row.id) || !Number.isFinite(Date.parse(row.updated_at)))) throw new Error('history_unavailable');
+      const ids = rows.map(row => row.id);
+      for (const row of rows) {
+        selectionTimes.set(row.id, row.updated_at);
+        const day = localDay(row.updated_at);
+        if (!selectionDays.has(day)) selectionDays.set(day, new Set());
+        selectionDays.get(day).add(row.id);
+      }
+      availableHistoryIds = new Set(ids);
+      historySessions = historySessions.filter(session => availableHistoryIds.has(session.id));
+      renderSessions($('[data-history-list]')); historyStatus(ids.length ? '' : '아직 저장된 대화가 없어요.');
+    } catch {
+      if (selectionRequest !== task) return;
+      exitHistoryEdit(); historyStatus('대화 목록을 불러오지 못했어요. 다시 시도해 주세요.');
+    } finally { if (selectionRequest === task) { selectionRequest = null; updateHistoryControls(); } }
+  }
+  function forgetDeletedSessions(ids) {
+    if (request && ids.has(request.thread.conversationId)) cancelRequest();
+    for (const [key, value] of threads) if (ids.has(value.conversationId)) threads.delete(key);
+    if (ids.has(thread.conversationId)) {
+      thread = makeThread(general); threads.set(general.id + '\n' + general.text, thread);
+    }
+    historySessions = historySessions.filter(session => !ids.has(session.id));
+    for (const id of ids) {
+      selectedHistoryIds.delete(id); availableHistoryIds.delete(id);
+      selectionDays.get(localDay(selectionTimes.get(id)))?.delete(id); selectionTimes.delete(id);
+    }
+  }
+  async function deleteSelectedHistory() {
+    if (!deleteConfirming || !selectedHistoryIds.size || historyDeleting) return;
+    const ids = [...selectedHistoryIds], owner = selectionOwner;
+    deleteConfirming = false; historyDeleting = true; updateHistoryControls();
+    historyStatus('대화를 삭제하고 있어요…'); let deleted = 0, failed = false;
+    if (request && selectedHistoryIds.has(request.thread.conversationId)) cancelRequest();
+    try {
+      // Selection is an exact ID snapshot, including pages not loaded yet.
+      // Batches keep requests bounded; confirmed batches survive a later failure.
+      for (let i = 0; i < ids.length; i += 200) {
+        const batch = ids.slice(i, i + 200);
+        const result = await historyApi('rpc/delete_ai_conversations', { method: 'POST', body: JSON.stringify({ p_ids: batch }), accountId: owner });
+        if (window.SaaAccount?.user?.id !== owner) throw new Error('unauthenticated');
+        if (!Array.isArray(result.deletedIds) || result.deletedIds.some(id => !batch.includes(id))) throw new Error('history_unavailable');
+        const removed = new Set(result.deletedIds); deleted += removed.size; forgetDeletedSessions(removed);
+        if (removed.size !== batch.length) failed = true;
+      }
+    } catch { failed = true; }
+    finally {
+      historyDeleting = false;
+      if (window.SaaAccount?.user?.id === owner) {
+        if (!failed) exitHistoryEdit();
+        render(); await loadHistory();
+        historyStatus(failed ? `${deleted ? `${deleted}개를 삭제했어요. ` : ''}남은 대화는 삭제를 확인하지 못했어요. 선택을 유지했으니 다시 시도해 주세요.` : `${deleted}개의 대화를 삭제했어요.`);
+        (failed ? $('[data-history-delete]') : historySessions.length ? $('[data-history-edit]') : $('[data-history-back]')).focus({ preventScroll: true });
+      } else {
+        exitHistoryEdit(); cancelHistory(); threads.clear(); historySessions = []; historyView = false;
+        thread = getThread(general); render();
+      }
+    }
+  }
   function renderSessions(container) {
     container.replaceChildren(); let day = '';
-    for (const session of historySessions) {
-      const date = new Date(session.updated_at), sessionDay = localDay(session.updated_at);
+    // Freeze displayed dates to the selection snapshot, even if another device
+    // updates a session while editing. Dates use the same local timezone as history.
+    const stamp = session => historyEditing ? selectionTimes.get(session.id) || session.updated_at : session.updated_at;
+    const sessions = historyEditing ? [...historySessions].sort((a, b) => Date.parse(stamp(b)) - Date.parse(stamp(a)) || b.id.localeCompare(a.id)) : historySessions;
+    for (const session of sessions) {
+      const updatedAt = stamp(session), date = new Date(updatedAt), sessionDay = localDay(updatedAt);
       if (sessionDay && sessionDay !== day) {
-        const divider = dateDivider(session.updated_at); divider.className = 'saa-ai-session-date';
-        divider.setAttribute('role', 'presentation'); container.append(divider); day = sessionDay;
+        const divider = dateDivider(updatedAt);
+        if (historyEditing) {
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'saa-ai-date-select';
+          button.dataset.historyDay = sessionDay; button.setAttribute('role', 'checkbox');
+          button.setAttribute('aria-label', `${divider.textContent}의 대화 모두 선택`);
+          const check = document.createElement('span'); check.className = 'saa-ai-check'; check.setAttribute('aria-hidden', 'true'); check.innerHTML = svg('check');
+          const total = document.createElement('span'); total.className = 'saa-ai-date-count'; total.textContent = `${selectionDays.get(sessionDay)?.size || 0}개`;
+          button.append(check, ...divider.childNodes, total);
+          button.onclick = () => {
+            const ids = selectionDays.get(sessionDay) || new Set();
+            const clear = [...ids].every(id => selectedHistoryIds.has(id));
+            for (const id of ids) if (clear) selectedHistoryIds.delete(id); else selectedHistoryIds.add(id);
+            updateHistoryControls();
+          };
+          const header = document.createElement('div'); header.setAttribute('role', 'listitem'); header.append(button); container.append(header);
+        } else {
+          divider.className = 'saa-ai-session-date'; divider.setAttribute('role', 'presentation'); container.append(divider);
+        }
+        day = sessionDay;
       }
       const item = document.createElement('div'); item.setAttribute('role', 'listitem');
       const button = document.createElement('button'); button.type = 'button'; button.className = 'saa-ai-session';
       button.dataset.conversationId = session.id;
-      if (session.id === thread.conversationId) button.setAttribute('aria-current', 'true');
+      if (!historyEditing && session.id === thread.conversationId) button.setAttribute('aria-current', 'true');
       const kind = session.kind === 'concept' ? '개념' : session.kind === 'question' ? '문제' : '자유 질문';
       const title = session.title || '저장된 대화', topic = session.context_title || 'SAA-C03 · 자유 질문';
-      button.setAttribute('aria-label', `${title} — ${topic} 대화 이어가기`);
-      const icon = document.createElement('span'); icon.className = 'saa-ai-session-icon'; icon.innerHTML = svg(session.kind === 'general' ? 'robot' : 'book');
+      button.setAttribute('aria-label', `${title} — ${topic} ${historyEditing ? '선택' : '대화 이어가기'}`);
+      if (historyEditing) { button.setAttribute('role', 'checkbox'); button.setAttribute('aria-checked', String(selectedHistoryIds.has(session.id))); }
+      const icon = document.createElement('span'); icon.className = historyEditing ? 'saa-ai-check' : 'saa-ai-session-icon'; icon.setAttribute('aria-hidden', 'true'); icon.innerHTML = svg(historyEditing ? 'check' : session.kind === 'general' ? 'robot' : 'book');
       const copy = document.createElement('span'); copy.className = 'saa-ai-session-copy';
       const meta = document.createElement('span'); meta.className = 'saa-ai-session-meta';
       const label = document.createElement('span'); label.textContent = kind;
-      const time = document.createElement('time'); time.dateTime = session.updated_at;
+      const time = document.createElement('time'); time.dateTime = updatedAt;
       time.textContent = Number.isFinite(date.getTime()) ? new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(date) : '';
       time.title = Number.isFinite(date.getTime()) ? date.toLocaleString('ko-KR') : '';
       meta.append(label, time);
       const heading = document.createElement('strong'); heading.textContent = title;
       const contextLabel = document.createElement('span'); contextLabel.className = 'saa-ai-session-topic'; contextLabel.textContent = topic;
       const arrow = document.createElement('span'); arrow.className = 'saa-ai-session-arrow'; arrow.innerHTML = svg('arrow');
-      copy.append(meta, heading, contextLabel); button.append(icon, copy, arrow);
-      button.onclick = () => void openHistory(session.id); item.append(button); container.append(item);
+      copy.append(meta, heading, contextLabel); button.append(icon, copy); if (!historyEditing) button.append(arrow);
+      button.onclick = () => {
+        if (!historyEditing) return void openHistory(session.id);
+        if (selectedHistoryIds.has(session.id)) selectedHistoryIds.delete(session.id); else selectedHistoryIds.add(session.id);
+        updateHistoryControls();
+      }; item.append(button); container.append(item);
     }
   }
   async function loadHistory(more = false) {
@@ -338,7 +479,7 @@
       if (historyRequest !== task) return;
       const page = rows.slice(0, 20), loaded = new Set(historySessions.map(session => session.id));
       historyCursor = page.at(-1) || historyCursor;
-      historySessions.push(...page.filter(session => !loaded.has(session.id)));
+      historySessions.push(...page.filter(session => !loaded.has(session.id) && (!historyEditing || availableHistoryIds.has(session.id))));
       renderSessions(list);
       $('[data-history-more]').hidden = rows.length <= 20;
       $('[data-history-more]').textContent = '이전 대화 불러오기';
@@ -405,7 +546,11 @@
         await historyApi('rpc/save_ai_chat_turn', { method: 'POST', body: JSON.stringify(target.unsaved[0]) });
         target.unsaved.shift(); target.saved = true;
       }
-    } catch { /* Keep unsaved turns in this page so a retry never spends AI quota. */ }
+    } catch (error) {
+      // Ordinary failures remain retryable without spending AI quota. A deleted
+      // session must never be recreated by retrying a stale answer.
+      if (error.message === 'conversation_deleted') { target.unsaved = []; target.deleted = true; target.error = errorMessages.conversation_deleted; }
+    }
     finally { target.saving = false; if (thread === target) render(); }
   }
 
@@ -442,6 +587,7 @@
     context_full: '이 대화가 한 번에 참고할 수 있는 길이를 넘었어요. 이전 내용을 정리할 수 있으면 자동으로 요약합니다. 잠시 뒤 다시 보내거나, 필요한 조건을 새 대화에 적어 주세요.',
     context_changed: '이 대화의 학습 자료가 변경되었어요. 대화 기록에서 다시 열거나 새 대화를 시작해 주세요.',
     history_unsaved: '이전 답변을 저장하지 못했어요. 다시 저장한 뒤 질문을 보내 주세요.',
+    conversation_deleted: '삭제된 대화예요. 새 대화를 시작해 주세요.',
   };
   async function call(payload, task) {
     const token = await accessToken(); task.controller.signal.throwIfAborted();
@@ -490,6 +636,7 @@
         await retrySave();
         if (task.thread.unsaved.length) throw new Error('history_unsaved');
       }
+      if (task.thread.deleted) throw new Error('conversation_deleted');
       const data = await call({ action: 'chat', context: task.thread.context, question, conversationId: task.thread.conversationId, turnId: task.turnId, history: task.thread.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 2000) })) }, task);
       if (typeof data.answer !== 'string' || !data.answer.trim() || data.answer.length > 14000) throw new Error('empty_response');
       if (request === task) {
@@ -510,17 +657,31 @@
   }
   fab.onclick = () => panel.hidden ? open(null, fab) : close(); $('[data-close]').onclick = close;
   $('[data-new]').onclick = () => {
+    if (historyDeleting) return;
+    exitHistoryEdit();
     cancelRequest(); cancelHistory(); historyView = false;
     threads.delete(general.id + '\n' + general.text); thread = getThread(general);
     render(); prompt.focus({ preventScroll: true });
   };
-  function returnToChat() { cancelHistory(); historyView = false; render(); prompt.focus({ preventScroll: true }); }
+  function returnToChat() { if (historyDeleting) return; exitHistoryEdit(); cancelHistory(); historyView = false; render(); prompt.focus({ preventScroll: true }); }
   $('[data-history-toggle]').onclick = () => {
     if (historyView) return returnToChat();
     thread.draft = prompt.value; historyView = true; render(); $('[data-history-back]').focus({ preventScroll: true }); void loadHistory();
   };
   $('[data-history-back]').onclick = returnToChat;
   $('[data-history-more]').onclick = () => void loadHistory(!!historyCursor);
+  $('[data-history-edit]').onclick = () => void editHistory();
+  $('[data-select-all]').onclick = () => {
+    selectedHistoryIds = selectedHistoryIds.size === availableHistoryIds.size ? new Set() : new Set(availableHistoryIds);
+    updateHistoryControls();
+  };
+  $('[data-history-delete]').onclick = () => {
+    if (!selectedHistoryIds.size || historyDeleting) return;
+    deleteConfirming = true; $('#saa-ai-delete-title').textContent = `대화 ${selectedHistoryIds.size}개를 삭제할까요?`;
+    updateHistoryControls(); $('[data-delete-cancel]').focus({ preventScroll: true });
+  };
+  $('[data-delete-cancel]').onclick = () => { deleteConfirming = false; updateHistoryControls(); $('[data-history-delete]').focus({ preventScroll: true }); };
+  $('[data-delete-confirm-button]').onclick = () => void deleteSelectedHistory();
   $('[data-older]').onclick = () => void loadOlder();
   $('[data-save-retry]').onclick = () => void retrySave();
   Promise.resolve(window.SaaAccount?.ready).then(() => {
@@ -536,7 +697,10 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') hideTooltip();
     if (panel.hidden || document.querySelector('dialog[open]')) return;
-    if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close(); }
+    if (event.key === 'Escape') {
+      event.preventDefault(); event.stopImmediatePropagation();
+      if (deleteConfirming) $('[data-delete-cancel]').click(); else close();
+    }
     if (panel.contains(event.target)) event.stopPropagation();
     if (event.key === 'Tab' && mobile.matches) {
       const focusable = [...panel.querySelectorAll('button:not(:disabled),textarea,a[href]')].filter(el => el.getClientRects().length);

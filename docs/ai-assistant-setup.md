@@ -12,9 +12,9 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 
 ## 1. 데이터베이스 준비
 
-**모델 실패 제외 정책 SQL `202610310003_model_failure_backoff.sql`까지 적용한 프로젝트는 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 추가 실행**하고 최신 Edge Function을 배포합니다. 기존 원문을 보존하며 세션별 요약과 서버 순번을 추가합니다. 아직 통합 SQL `202610310002_ai_cache_history_fallback.sql`까지만 적용했다면 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)을 먼저 실행합니다. 이미 적용한 파일은 다시 실행하지 않습니다.
+**세션 압축 SQL `202610310004_session_compaction.sql`까지 적용한 프로젝트는 [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)을 추가 실행**하고 최신 Edge Function과 프런트엔드를 배포합니다. 003까지만 적용했다면 [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)을 먼저 실행합니다. 002까지만 적용했다면 [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)부터 순서대로 진행합니다. 이미 적용한 파일은 다시 실행하지 않습니다.
 
-`cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 모델 실패 제외 정책 SQL과 세션 압축 SQL을 차례대로 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
+`cce61d536c2947f5ad7e8e5d469b17be291022d3`까지만 적용한 예전 환경은 먼저 [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)을 적용한 뒤 모델 실패 제외 정책 SQL, 세션 압축 SQL, 대화 기록 삭제 SQL을 차례대로 실행합니다. 통합 SQL에는 항목별 캐시 전환·계정별 대화 기록·모델 fallback 제한 상태가 들어 있습니다.
 
 이전에 안내한 `202610310002_suggestion_cache_by_item.sql`, `202610310003_chat_history.sql`은 통합 파일로 대체했으므로 따로 실행하지 않습니다. SQL 실행 후 최신 `study-assistant` Edge Function을 다시 배포하세요.
 
@@ -25,6 +25,7 @@ Gemini API 키는 Supabase의 서버 비밀값에만 넣습니다. GitHub Pages 
 3. [통합 업데이트 SQL](../supabase/migrations/202610310002_ai_cache_history_fallback.sql)
 4. [모델 실패 제외 정책 SQL](../supabase/migrations/202610310003_model_failure_backoff.sql)
 5. [세션 압축 SQL](../supabase/migrations/202610310004_session_compaction.sql)
+6. [대화 기록 삭제 SQL](../supabase/migrations/202610310005_delete_chat_history.sql)
 
 이 마이그레이션은 다음을 설정합니다.
 
