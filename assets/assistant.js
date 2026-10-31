@@ -435,7 +435,8 @@
   function begin(kind, question = '') {
     cancelRequest(); thread.error = ''; thread.suggestionError = false;
     const task = { kind, question, thread, createdAt: new Date().toISOString(), controller: new AbortController() };
-    request = task; task.timer = setTimeout(() => task.controller.abort('timeout'), 55000); return task;
+    // Transport/auth/database watchdog only; the server gives each model 5s.
+    request = task; task.timer = setTimeout(() => task.controller.abort('timeout'), 120000); return task;
   }
   function failed(error, task) {
     if (request !== task) return;
