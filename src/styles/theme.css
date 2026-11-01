@@ -123,10 +123,10 @@
   :root[data-theme="dark"] .saa-ai-history-head { border-color: var(--theme-line); }
   :root[data-theme="dark"] :is(.saa-ai-retry, .saa-ai-session-icon, .saa-ai-trigger, .saa-ai-answer code) { background: #152031; color: var(--theme-muted); border-color: var(--theme-line); }
   :root[data-theme="dark"] :is(.saa-ai-welcome h3, .saa-ai textarea, .saa-ai-answer, .saa-ai-answer strong, .saa-ai-session strong) { color: var(--theme-ink); }
-  :root[data-theme="dark"] :is(.saa-ai-description, .saa-ai-eyebrow, .saa-ai-suggestions-note, .saa-ai-feedback, .saa-ai-reply-label, .saa-ai-reply-label time, .saa-ai .saa-ai-history-back, .saa-ai .saa-ai-history-edit, .saa-ai-session-date, .saa-ai-session-meta, .saa-ai-session-meta > span, .saa-ai-session-topic, .saa-ai-session-arrow, .saa-ai-selection, .saa-ai-date, .saa-ai-date-select, .saa-ai-date-count, .saa-ai-save-status) { color: var(--theme-muted); }
+  :root[data-theme="dark"] :is(.saa-ai-description, .saa-ai-eyebrow, .saa-ai-suggestions-note, .saa-ai-feedback, .saa-ai-reply-label, .saa-ai-reply-label time, .saa-ai .saa-ai-history-back, .saa-ai .saa-ai-history-edit, .saa-ai-session-date, .saa-ai-session-meta, .saa-ai-session-meta > span, .saa-ai-session-topic, .saa-ai-session-arrow, .saa-ai-selection, .saa-ai-date, .saa-ai-date-select, .saa-ai-date-count) { color: var(--theme-muted); }
   :root[data-theme="dark"] :is(.saa-ai-user, .saa-ai-suggestion[aria-pressed="true"], .saa-ai-session[aria-current="true"], .saa-ai .saa-ai-session[aria-checked="true"]) { background: var(--theme-bluewash); color: #c3dcff; border-color: #526b89; }
   :root[data-theme="dark"] :is(.saa-ai-suggestion:hover, .saa-ai .saa-ai-session:hover:not(:disabled), .saa-ai-trigger:hover, .saa-ai .saa-ai-history-edit:hover:not(:disabled)) { background: var(--theme-raised); color: var(--theme-ink); }
-  :root[data-theme="dark"] :is(.saa-ai-answer a, .saa-ai .saa-ai-save-status button) { color: var(--theme-blue); }
+  :root[data-theme="dark"] .saa-ai-answer a { color: var(--theme-blue); }
   :root[data-theme="dark"] .saa-ai .saa-ai-select-all { background: transparent; color: var(--theme-ink); }
   :root[data-theme="dark"] .saa-ai .saa-ai-date-select { background: transparent; }
   :root[data-theme="dark"] .saa-ai textarea { background: transparent; }

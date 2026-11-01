@@ -54,6 +54,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
 
   const $ = (selector) => panel.querySelector(selector);
   const prompt = $("#saa-ai-prompt");
+  const saveError = $("[data-save-error]");
   const layout = createPanelLayout({ panel, mobile });
   const navigation = createPanelNavigation({
     panel,
@@ -290,15 +291,8 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     $("[data-retry]").hidden = !!request || !thread.suggestionError;
     $("[data-image-note]").hidden = !c.hasImages;
     $("[data-older]").hidden = !thread.hasOlder;
-    const saveStatus = $("[data-save-status]");
-    saveStatus.hidden = !thread.unsaved.length && !thread.saving;
-    saveStatus.querySelector("span").textContent = thread.saving
-      ? "대화 기록을 저장하고 있어요"
-      : thread.unsaved.length
-        ? "기록을 저장하지 못했어요."
-        : "";
-    $("[data-save-retry]").hidden = !thread.unsaved.length;
-    $("[data-save-retry]").disabled = thread.saving;
+    saveError.hidden = !thread.unsaved.length;
+    if (saveError.hidden && tooltipTarget === saveError) hideTooltip();
     prompt.value = thread.draft;
     updateComposer();
   }
@@ -720,8 +714,6 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
       "이 대화가 한 번에 참고할 수 있는 길이를 넘었어요. 이전 내용을 정리할 수 있으면 자동으로 요약합니다. 잠시 뒤 다시 보내거나, 필요한 조건을 새 대화에 적어 주세요.",
     context_changed:
       "이 대화의 학습 자료가 변경되었어요. 대화 기록에서 다시 열거나 새 대화를 시작해 주세요.",
-    history_unsaved:
-      "이전 답변을 저장하지 못했어요. 다시 저장한 뒤 질문을 보내 주세요.",
     conversation_deleted: "삭제된 대화예요. 새 대화를 시작해 주세요.",
   };
   function begin(kind, question = "") {
@@ -742,6 +734,13 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
   }
   function failed(error, task) {
     if (request !== task) return;
+    if (error.message === "history_unsaved") {
+      // The header indicator represents pending saves; preserve the unsent
+      // question so the next send can retry without losing conversation context.
+      thread.error = "";
+      thread.draft = task.question;
+      return;
+    }
     let message =
       errorMessages[error.message] ||
       (task.controller.signal.aborted
@@ -912,7 +911,17 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
   $("[data-delete-confirm-button]").onclick = () =>
     void deleteSelectedHistory();
   $("[data-older]").onclick = () => void loadOlder();
-  $("[data-save-retry]").onclick = () => void retrySave();
+  saveError.onpointerenter = (event) => {
+    if (event.pointerType !== "touch") showTooltip(saveError);
+  };
+  saveError.onpointerleave = () => {
+    if (!saveError.matches(":focus-visible")) hideTooltip();
+  };
+  saveError.onfocus = () => {
+    if (saveError.matches(":focus-visible")) showTooltip(saveError);
+  };
+  saveError.onblur = hideTooltip;
+  saveError.onclick = () => showTooltip(saveError);
   Promise.resolve(account?.ready).then(() => {
     if (disposed) return;
     $("[data-history-toggle]").hidden =

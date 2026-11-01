@@ -59,6 +59,24 @@
 }
 .saa-ai-type:focus { outline: none; }
 .saa-ai-type svg { width: 17px; height: 17px; color: var(--theme-muted); }
+.saa-ai-head-tools { display: flex; align-items: center; flex: none; gap: 6px; }
+.saa-ai .saa-ai-save-error {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff4e8;
+  color: #a15c25;
+}
+.saa-ai .saa-ai-save-error:hover { background: #ffead1; }
+.saa-ai-save-error svg { width: 19px; height: 19px; }
+:root[data-theme="dark"] .saa-ai .saa-ai-save-error { background: #382c24; color: #efb374; }
+:root[data-theme="dark"] .saa-ai .saa-ai-save-error:hover { background: #493528; }
 .saa-ai-head-actions { gap: 1px; padding: 1px; }
 .saa-ai .saa-ai-head .saa-ai-icon {
   display: grid;
@@ -178,6 +196,10 @@
 @media (hover: none) and (pointer: coarse) {
   .saa-ai .saa-ai-composer textarea { scrollbar-width: none; }
   .saa-ai textarea::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 360px) {
+  .saa-ai-head { gap: 8px; padding-inline: 12px; }
+  .saa-ai .saa-ai-type { gap: 6px; padding-inline: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .saa-ai-head::before, .saa-ai-head > * { transition: none; }

@@ -49,36 +49,47 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
             <AssistantIcon name="book" />
             <span data-context-type>자유 질문</span>
           </h2>
-          <div className="saa-ai-head-actions">
+          <div className="saa-ai-head-tools">
             <button
               type="button"
-              className="saa-ai-icon"
-              data-history-toggle
-              aria-label="대화 기록"
-              title="대화 기록"
-              aria-pressed="false"
+              className="saa-ai-save-error"
+              data-save-error
+              aria-label="기록 저장 불가"
               hidden
             >
-              <AssistantIcon name="history" />
+              <AssistantIcon name="wifi-off" />
             </button>
-            <button
-              type="button"
-              className="saa-ai-icon"
-              data-new
-              aria-label="새 대화"
-              title="새 대화"
-            >
-              <AssistantIcon name="edit" />
-            </button>
-            <button
-              type="button"
-              className="saa-ai-icon"
-              data-close
-              aria-label="AI 어시스턴트 닫기"
-              title="닫기"
-            >
-              <AssistantIcon name="close" />
-            </button>
+            <div className="saa-ai-head-actions">
+              <button
+                type="button"
+                className="saa-ai-icon"
+                data-history-toggle
+                aria-label="대화 기록"
+                title="대화 기록"
+                aria-pressed="false"
+                hidden
+              >
+                <AssistantIcon name="history" />
+              </button>
+              <button
+                type="button"
+                className="saa-ai-icon"
+                data-new
+                aria-label="새 대화"
+                title="새 대화"
+              >
+                <AssistantIcon name="edit" />
+              </button>
+              <button
+                type="button"
+                className="saa-ai-icon"
+                data-close
+                aria-label="AI 어시스턴트 닫기"
+                title="닫기"
+              >
+                <AssistantIcon name="close" />
+              </button>
+            </div>
           </div>
         </header>
         <section
@@ -248,17 +259,6 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
               <AssistantIcon name="up" />
             </button>
           </div>
-          <p
-            className="saa-ai-save-status"
-            data-save-status
-            role="status"
-            hidden
-          >
-            <span />
-            <button type="button" data-save-retry hidden>
-              다시 저장
-            </button>
-          </p>
         </form>
       </section>
       <div
