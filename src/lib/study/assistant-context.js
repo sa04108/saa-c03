@@ -1,3 +1,5 @@
+import { dumpsQuestionPath } from "./paths";
+
 function textOf(element) {
   if (!element) return "";
   const clone = element.cloneNode(true);
@@ -77,7 +79,7 @@ export function contextForItem(context, button) {
 
 export function contextSourceHref(context) {
   const dumps = /^dumps:([1-9]\d*)$/.exec(context.id);
-  if (dumps) return `/dumps/#question-${dumps[1]}`;
+  if (dumps) return `${dumpsQuestionPath(dumps[1])}#question-title`;
   const quiz = /^quiz:Q(\d{3})$/.exec(context.id);
   if (quiz) return `/concepts/quiz/q${quiz[1]}/#question-Q${quiz[1]}`;
   const concept = /^concept:\/terms\/([a-z0-9-]+)\.html$/.exec(context.id);

@@ -9,7 +9,7 @@ import { BackupDialog } from "./backup-dialog";
 import bank from "@/data/questions.json";
 import notes from "@/data/explanations.json";
 
-export function DumpsPage({ embedded = null }) {
+export function DumpsPage({ embedded = null, route = null }) {
   const { initialized, service, offline } = useAccount();
   const [view, setView] = useState(null),
     [actions, setActions] = useState(null),
@@ -18,7 +18,8 @@ export function DumpsPage({ embedded = null }) {
   const dialog = useRef(null),
     main = useRef(null),
     toastTimer = useRef(null),
-    focusQuestion = useRef(false);
+    focusQuestion = useRef(false),
+    pendingRoute = useRef(null);
   const notify = useCallback((message) => {
     setToast(message);
     clearTimeout(toastTimer.current);
@@ -48,6 +49,20 @@ export function DumpsPage({ embedded = null }) {
       ?.focus({ preventScroll: true });
   }, [view?.state.current]);
   useEffect(() => {
+    if (!route || !actions || view?.loading) return;
+    pendingRoute.current = route.questionId;
+    if (!route.questionId) return;
+    const current = actions.snapshot();
+    if (current.q?.id === route.questionId) return;
+    // A direct URL or browser Back/Forward takes priority over saved position.
+    // Keep the current filter when it already contains the requested question.
+    focusQuestion.current = true;
+    setExpanded(false);
+    current.ids.includes(route.questionId)
+      ? actions.go(route.questionId)
+      : actions.jump(route.questionId);
+  }, [actions, view?.loading, route?.questionId]);
+  useEffect(() => {
     if (!actions || view?.loading) return;
     let frame;
     const jumpToSource = () => {
@@ -55,9 +70,11 @@ export function DumpsPage({ embedded = null }) {
       const id = match && Number(match[1]);
       if (!bank.questions.some((question) => question.id === id)) return;
       const alreadyCurrent = actions.snapshot().state.current === id;
+      pendingRoute.current = route ? id : null;
       focusQuestion.current = !alreadyCurrent;
       setExpanded(false);
       actions.jump(id);
+      route?.open(id, { replace: true });
       cancelAnimationFrame(frame);
       if (alreadyCurrent) frame = requestAnimationFrame(() => {
         main.current.scrollIntoView({ behavior: "auto", block: "start" });
@@ -70,7 +87,13 @@ export function DumpsPage({ embedded = null }) {
       cancelAnimationFrame(frame);
       window.removeEventListener("hashchange", jumpToSource);
     };
-  }, [actions, view?.loading]);
+  }, [actions, view?.loading, route?.open]);
+  useEffect(() => {
+    if (!route || !view?.q || view.loading) return;
+    if (pendingRoute.current && pendingRoute.current !== view.q.id) return;
+    pendingRoute.current = null;
+    route.open(view.q.id, { replace: !route.questionId });
+  }, [route, view?.q?.id, view?.loading]);
   function go(id, jump = false) {
     if (!actions) return;
     focusQuestion.current = true;
