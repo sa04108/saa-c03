@@ -1,22 +1,27 @@
 export function createPanelViewport({ panel, mobile }) {
   const lifetime = new AbortController();
   const visibleViewport = window.visualViewport;
-  const prompt = panel.querySelector("textarea");
-  let frame = 0, settleUntil = 0;
+  let frame = 0;
 
   function clear() {
     cancelAnimationFrame(frame);
     frame = 0;
-    settleUntil = 0;
     panel.style.removeProperty("--ai-visible-height");
     panel.style.removeProperty("--ai-visible-top");
   }
-  function measure() {
-    const reportedHeight = visibleViewport?.height;
-    const height = Number.isFinite(reportedHeight) && reportedHeight > 0
-      ? reportedHeight
-      : window.innerHeight;
-    const top = Math.max(0, visibleViewport?.offsetTop || 0);
+  function sync() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    if (lifetime.signal.aborted) return;
+    if (!mobile.matches || panel.hidden || !visibleViewport) return clear();
+    const height = visibleViewport.height;
+    const top = Math.max(0, visibleViewport.offsetTop);
+    // With interactive-widget=resizes-content, CSS follows the resized layout
+    // viewport itself. Only compensate when a browser keeps that viewport
+    // larger than its visible area (or when the user has zoomed/panned).
+    if (!Number.isFinite(height) || height <= 0 ||
+        (height >= document.documentElement.clientHeight - 1 && top < 1))
+      return clear();
     for (const [name, value] of [
       ["--ai-visible-height", height],
       ["--ai-visible-top", top],
@@ -26,31 +31,14 @@ export function createPanelViewport({ panel, mobile }) {
         panel.style.setProperty(name, pixels);
     }
   }
-  function update(now) {
-    frame = 0;
-    if (lifetime.signal.aborted) return;
-    if (!mobile.matches || panel.hidden) return clear();
-    measure();
-    if (now < settleUntil) frame = requestAnimationFrame(update);
+  function schedule() {
+    if (!frame) frame = requestAnimationFrame(sync);
   }
-  function sync({ settle = false } = {}) {
-    if (lifetime.signal.aborted) return;
-    if (!mobile.matches || panel.hidden) return clear();
-    measure();
-    // A keyboard can finish resizing/panning after its last viewport event.
-    // Recheck briefly after focus or geometry changes, without moving focus or
-    // scrolling the page. Stop sampling once the transition has settled.
-    if (settle) settleUntil = performance.now() + 1000;
-    if (!frame) frame = requestAnimationFrame(update);
-  }
-  const settle = () => sync({ settle: true });
   const options = { signal: lifetime.signal, passive: true };
-  visibleViewport?.addEventListener("resize", settle, options);
-  visibleViewport?.addEventListener("scroll", settle, options);
-  window.addEventListener("resize", settle, options);
-  mobile.addEventListener("change", settle, options);
-  prompt.addEventListener("focus", settle, options);
-  prompt.addEventListener("blur", settle, options);
+  visibleViewport?.addEventListener("resize", schedule, options);
+  visibleViewport?.addEventListener("scroll", schedule, options);
+  window.addEventListener("resize", schedule, options);
+  mobile.addEventListener("change", schedule, options);
 
   return {
     sync,
