@@ -47,6 +47,30 @@ export function DumpsPage({ embedded = null }) {
       .querySelector("#question-title")
       ?.focus({ preventScroll: true });
   }, [view?.state.current]);
+  useEffect(() => {
+    if (!actions || view?.loading) return;
+    let frame;
+    const jumpToSource = () => {
+      const match = /^#question-([1-9]\d*)$/.exec(location.hash);
+      const id = match && Number(match[1]);
+      if (!bank.questions.some((question) => question.id === id)) return;
+      const alreadyCurrent = actions.snapshot().state.current === id;
+      focusQuestion.current = !alreadyCurrent;
+      setExpanded(false);
+      actions.jump(id);
+      cancelAnimationFrame(frame);
+      if (alreadyCurrent) frame = requestAnimationFrame(() => {
+        main.current.scrollIntoView({ behavior: "auto", block: "start" });
+        main.current.querySelector("#question-title")?.focus({ preventScroll: true });
+      });
+    };
+    jumpToSource();
+    window.addEventListener("hashchange", jumpToSource);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", jumpToSource);
+    };
+  }, [actions, view?.loading]);
   function go(id, jump = false) {
     if (!actions) return;
     focusQuestion.current = true;

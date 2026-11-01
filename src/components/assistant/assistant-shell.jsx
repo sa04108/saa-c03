@@ -1,10 +1,12 @@
 "use client";
 import { memo, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { AssistantIcon } from "./icon";
 import { createAssistantController } from "./controller";
 import { getAccount } from "@/lib/backend/account";
 
 export const AssistantShell = memo(function AssistantShell({ onReady }) {
+  const router = useRouter();
   const fab = useRef(null),
     panel = useRef(null),
     tooltip = useRef(null);
@@ -14,13 +16,20 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
       panel: panel.current,
       tooltip: tooltip.current,
       account: getAccount(),
+      navigate(href) {
+        const target = new URL(href, location.href);
+        if (target.pathname === location.pathname && target.search === location.search) {
+          if (target.hash !== location.hash) location.hash = target.hash;
+          else window.dispatchEvent(new HashChangeEvent("hashchange"));
+        } else router.push(href);
+      },
     });
     onReady(controller);
     return () => {
       onReady(null);
       controller.dispose();
     };
-  }, [onReady]);
+  }, [onReady, router]);
   return (
     <>
       <button
@@ -46,8 +55,10 @@ export const AssistantShell = memo(function AssistantShell({ onReady }) {
       >
         <header className="saa-ai-head">
           <h2 className="saa-ai-type" id="saa-ai-heading" tabIndex="-1">
-            <AssistantIcon name="book" />
-            <span data-context-type>자유 질문</span>
+            <a data-context-link>
+              <AssistantIcon name="book" />
+              <span data-context-title>SAA-C03 · 자유 질문</span>
+            </a>
           </h2>
           <div className="saa-ai-head-tools">
             <button

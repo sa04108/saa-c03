@@ -15,8 +15,9 @@ import {
 } from "./views";
 import { createPanelLayout } from "./panel-layout";
 import { createPanelNavigation } from "./panel-navigation";
+import { contextSourceHref } from "@/lib/study/assistant-context";
 
-export function createAssistantController({ fab, panel, tooltip, account }) {
+export function createAssistantController({ fab, panel, tooltip, account, navigate }) {
   const lifetime = new AbortController();
   let disposed = false;
   const icons = "/assets/assistant-icons.svg";
@@ -61,6 +62,7 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     mobile,
     show: () => open(null, fab),
     hide: hidePanel,
+    visit: navigate,
   });
 
   function hideTooltip() {
@@ -240,8 +242,12 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     $("form").hidden = historyView;
     panel.classList.toggle("saa-ai-history-mode", historyView);
     if (historyView) layout.showHeader();
-    $("[data-context-type]").textContent =
-      c.kind === "concept" ? "개념" : c.kind === "question" ? "문제" : "자유 질문";
+    $("[data-context-title]").textContent = c.title;
+    const sourceLink = $("[data-context-link]");
+    const sourceHref = contextSourceHref(c);
+    sourceLink.title = c.title;
+    if (sourceHref) sourceLink.setAttribute("href", sourceHref);
+    else sourceLink.removeAttribute("href");
     const heading =
       c.kind === "concept"
         ? `${c.title.split(" (")[0]},\n어떤 점이 궁금한가요?`
@@ -857,6 +863,13 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     }
   }
   fab.onclick = () => (panel.hidden ? open(null, fab) : close());
+  $("[data-context-link]").onclick = (event) => {
+    const href = event.currentTarget.getAttribute("href");
+    if (!href || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    hideTooltip();
+    navigation.navigate(href);
+  };
   $("[data-close]").onclick = close;
   $("[data-new]").onclick = () => {
     if (historyDeleting) return;

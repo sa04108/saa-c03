@@ -12,6 +12,8 @@ export function ConceptContent({ html, documentKey }) {
     replace(node) {
       if (node.type !== "tag") return;
       const children = () => domToReact(node.children, options);
+      if (node.name === "h1" && documentKey.startsWith("/terms/"))
+        return <h1 {...attributesToProps(node.attribs)} id="concept-title" tabIndex={-1}>{children()}</h1>;
       if (node.name === "a" && node.attribs.href?.startsWith("/concepts/"))
         return <Link {...attributesToProps(node.attribs)}>{children()}</Link>;
       if (cls(node, "article-header"))

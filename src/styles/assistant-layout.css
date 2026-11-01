@@ -49,15 +49,29 @@
   color: var(--theme-ink);
 }
 .saa-ai .saa-ai-type {
-  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
   margin: 0;
-  padding: 0 15px;
+  padding: 0;
   font-size: 14px;
   line-height: 1.4;
   font-weight: 650;
   letter-spacing: -.02em;
   white-space: nowrap;
 }
+.saa-ai-type [data-context-link] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+.saa-ai-type [data-context-link][href]:hover { background: var(--ai-input); }
+.saa-ai-type [data-context-title] { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .saa-ai-type:focus { outline: none; }
 .saa-ai-type svg { width: 17px; height: 17px; color: var(--theme-muted); }
 .saa-ai-head-tools { display: flex; align-items: center; flex: none; gap: 6px; }
@@ -200,7 +214,7 @@
 }
 @media (max-width: 360px) {
   .saa-ai-head { gap: 8px; padding-inline: 12px; }
-  .saa-ai .saa-ai-type { gap: 6px; padding-inline: 11px; }
+  .saa-ai-type [data-context-link] { gap: 6px; padding-inline: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .saa-ai-head::before, .saa-ai-head > * { transition: none; }

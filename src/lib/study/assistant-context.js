@@ -33,7 +33,7 @@ export function contextForItem(context, button) {
     return {
       id: `dumps:${q.id}`,
       kind: "question",
-      title: `문제 ${String(q.id).padStart(3, "0")} · SAA-C03 문제집`,
+      title: `문제 ${q.id}`,
       text: text.slice(0, 12000),
       hasImages:
         /\[\[?(?:image|img)|<img|data:image|\{\{image/i.test(text) ||
@@ -45,7 +45,7 @@ export function contextForItem(context, button) {
     return {
       id: `quiz:${card.dataset.question}`,
       kind: "question",
-      title: `${card.dataset.question} · 개념 확인 문제`,
+      title: `퀴즈 ${Number(card.dataset.question.slice(1))}`,
       text: [
         textOf(card.querySelector("h3")),
         textOf(card.querySelector("fieldset")),
@@ -73,4 +73,14 @@ export function contextForItem(context, button) {
       references.slice(0, 1400),
     hasImages: !!article.querySelector("img"),
   };
+}
+
+export function contextSourceHref(context) {
+  const dumps = /^dumps:([1-9]\d*)$/.exec(context.id);
+  if (dumps) return `/dumps/#question-${dumps[1]}`;
+  const quiz = /^quiz:Q(\d{3})$/.exec(context.id);
+  if (quiz) return `/concepts/quiz/q${quiz[1]}/#question-Q${quiz[1]}`;
+  const concept = /^concept:\/terms\/([a-z0-9-]+)\.html$/.exec(context.id);
+  if (concept) return `/concepts/terms/${concept[1]}/#concept-title`;
+  return null;
 }

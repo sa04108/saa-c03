@@ -108,7 +108,7 @@ export function QuestionCard({ view, images, actions }) {
       </section>
     );
   return (
-    <article className="panel question" aria-labelledby="question-title">
+    <article className="panel question" id={`question-${q.id}`} aria-labelledby="question-title">
       <header className="qhead">
         <div className="qtitle">
           <h2 id="question-title" tabIndex={-1}>

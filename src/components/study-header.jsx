@@ -58,7 +58,7 @@ export function StudyHeader({
                 aria-current={quiz ? "page" : undefined}
                 href="/concepts/quiz/q001/"
               >
-                문제 풀이
+                퀴즈
               </a>
             </nav>
           ) : (

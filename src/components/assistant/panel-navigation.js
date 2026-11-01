@@ -1,14 +1,14 @@
 const stateKey = "saa-c03-assistant";
 
 // A mobile dialog owns one same-URL entry. Preserve Next.js's history metadata.
-export function createPanelNavigation({ panel, mobile, show, hide }) {
+export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
   const saved = history.state?.[stateKey];
   let pageUrl = location.href;
   let id =
     saved?.url === location.href && typeof saved.id === "string"
       ? saved.id
       : crypto.randomUUID();
-  let ownedEntry = isEntry(), pendingUrl = null;
+  let ownedEntry = isEntry(), pendingUrl = null, pendingDestination = null;
   const lifetime = new AbortController();
 
   function isEntry() {
@@ -40,8 +40,17 @@ export function createPanelNavigation({ panel, mobile, show, hide }) {
   window.addEventListener("popstate", () => {
     if (pendingUrl) {
       const expectedUrl = pendingUrl;
+      const destination = pendingDestination;
       pendingUrl = null;
+      pendingDestination = null;
       if (location.href !== expectedUrl) hide();
+      else if (destination) {
+        // Let history restore the document first; otherwise it can overwrite
+        // the source link's scroll position and focus, especially on mobile.
+        setTimeout(() => {
+          if (!lifetime.signal.aborted && location.href === expectedUrl) visit(destination);
+        }, 0);
+      }
       else sync();
       return;
     }
@@ -63,6 +72,18 @@ export function createPanelNavigation({ panel, mobile, show, hide }) {
   mobile.addEventListener("change", sync, { signal: lifetime.signal });
   return {
     sync,
+    navigate(destination) {
+      hide();
+      // Consume the mobile dialog entry before opening the source, so Back
+      // returns to the study page instead of reopening the assistant.
+      if (pendingUrl) pendingDestination = destination;
+      else if (isEntry()) {
+        pendingDestination = destination;
+        pendingUrl = location.href;
+        ownedEntry = false;
+        history.back();
+      } else visit(destination);
+    },
     restore() {
       if (!isEntry()) return;
       if (mobile.matches) show();
