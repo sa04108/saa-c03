@@ -13,29 +13,21 @@
 
 값은 저장소 파일이나 채팅에 적지 않습니다. 두 값은 배포 스크립트 단계에서만 사용하며 Pages 파일에 포함하지 않습니다. 현재 운영 저장소는 Secrets 등록과 자동 배포를 완료했으므로 다시 등록할 필요가 없습니다.
 
-배포 대상 프로젝트 ID는 공개 설정인 [`assets/account-config.js`](../assets/account-config.js)의 URL에서 읽습니다. 현재 대상은 `ngohlplwutssofoxobrj`입니다. 별도의 프로젝트 ID Secret은 필요하지 않습니다.
+배포 대상 프로젝트 ID는 공개 설정인 [`src/lib/backend/config.js`](../src/lib/backend/config.js)의 URL에서 읽습니다. 현재 대상은 `ngohlplwutssofoxobrj`입니다. 별도의 프로젝트 ID Secret은 필요하지 않습니다.
 
 `GEMINI_API_KEY`, `TAVILY_API_KEY`, `ALLOWED_ORIGINS` 등은 기존처럼 **Supabase → Edge Functions → Secrets**에 둡니다. 함수 재배포 시 유지되므로 GitHub에 다시 등록할 필요가 없습니다. OAuth·익명 로그인 설정 역시 기존 Supabase 설정을 사용합니다.
 
 새 환경에서는 두 Secrets와 공개 연결 정보를 설정한 뒤 `devel`을 `main`에 병합합니다. 실행 결과는 [Actions](https://github.com/sa04108/saa-c03/actions/workflows/pages.yml)에서 확인합니다.
 
-## 통합 초기 스키마와 기존 운영 이력
+## DB 마이그레이션 적용
 
 기존 6개 마이그레이션을 [202610310005_initial_schema.sql](../supabase/migrations/202610310005_initial_schema.sql) 하나로 통합했습니다. 과거 변경 명령을 이어 붙이지 않고 최종 테이블·함수·인덱스·RLS·권한·트리거를 정의합니다. 빈 Supabase 프로젝트에는 이 파일을 한 번 적용하면 됩니다.
 
-운영 프로젝트에는 기존 6개 SQL이 모두 적용되어 있고, GitHub Actions 배포도 성공한 상태입니다. 이미 적용된 마지막 버전 `202610310005`를 통합 파일의 버전으로 유지합니다. **운영 DB에 통합 SQL을 다시 실행하지 않습니다.**
+배포 스크립트는 SQL 파일이 존재하는지, 파일명이 고유한 숫자 버전을 사용하는지 확인합니다. 특정 초기 버전이나 과거 버전 목록을 코드에 고정하지 않습니다.
 
-다음 `main` 배포에서 배포 스크립트는 기존 이력을 읽고, 제거된 5개 버전과 마지막 버전이 모두 확인된 경우에만 다음 명령으로 이력을 통합합니다.
+이후 `supabase link` → `db push --dry-run` → `db push` → 함수 배포 순서로 실행합니다. 적용 여부는 Supabase CLI가 로컬 SQL 파일과 원격 마이그레이션 이력을 비교해 판단합니다. 이미 적용한 버전은 건너뛰고, 새 프로젝트에서는 초기 스키마부터 적용합니다.
 
-```sh
-supabase migration squash --linked --version 202610310005 --yes
-```
-
-해당 버전까지 로컬 SQL은 이미 한 파일이므로 CLI는 스키마 생성·실행을 생략하고, **마이그레이션 이력 6행을 1행으로 원자적으로 교체**합니다. 사용자 진도·대화·요약·캐시·모델 제외 상태는 건드리지 않습니다. 통합 이후 버전의 이력도 유지합니다. 이력 정리 결과를 확인한 뒤 `db push --dry-run`, `db push`, 함수 배포를 진행합니다. 다음 배포나 실패 후 재실행에서는 이미 정리된 이력을 그대로 사용합니다.
-
-새 프로젝트처럼 이력이 비어 있으면 이력 통합을 생략하고 통합 초기 SQL을 정상 실행합니다. 기존 이력이 일부만 있거나 저장소에 없는 알 수 없는 버전이 있으면 중단합니다. 과거 SQL Editor 설치를 스키마 비교로 추정해 적용 완료 처리하는 기능은 제거했습니다.
-
-`Remote migration history is incomplete or unknown` 오류가 나면 `supabase migration list --linked`로 실제 이력부터 확인합니다. 일부만 설치된 구형 DB에 초기 스키마를 덮어쓰거나 적용하지 않은 버전을 완료로 등록하지 않습니다. 통합 전 SQL이 필요한 경우 Git의 통합 전 커밋에서 확인할 수 있습니다.
+원격 이력과 로컬 파일이 맞지 않으면 CLI 검사가 실패하고 배포도 중단됩니다. 이때 `supabase migration list --linked`로 실제 이력을 확인합니다. 배포 스크립트에서 이력을 자동 통합하거나 적용 완료로 보정하지 않습니다.
 
 ## 이후 변경 방법
 
@@ -53,6 +45,6 @@ DB·함수·Pages는 하나의 트랜잭션이 아닙니다. 함수 배포에서
 
 초기 설정에는 `supabase link`, DB 연결과 Supabase Management API 접근이 필요합니다. 토큰·DB 비밀번호가 바뀌면 해당 GitHub Secret도 갱신합니다. 네트워크 제한을 설정한 프로젝트는 Actions 러너에서의 접속도 허용해야 합니다.
 
-이미 성공한 자동 배포 구성은 유지합니다. 이번 이력 통합은 `main` 병합 후 실행되며, 결과는 Actions의 Supabase 단계에서 확인합니다. SQL Editor에서 별도 SQL을 실행할 필요는 없습니다.
+배포 결과는 Actions의 Supabase 단계에서 확인합니다. SQL Editor에서 별도 SQL을 실행할 필요는 없습니다.
 
-참고: [DB push](https://supabase.com/docs/reference/cli/supabase-db-push), [migration squash](https://supabase.com/docs/reference/cli/supabase-migration-squash), [함수 배포](https://supabase.com/docs/reference/cli/supabase-functions-deploy).
+참고: [DB push](https://supabase.com/docs/reference/cli/supabase-db-push), [마이그레이션 이력 확인](https://supabase.com/docs/reference/cli/supabase-migration-list), [함수 배포](https://supabase.com/docs/reference/cli/supabase-functions-deploy).
