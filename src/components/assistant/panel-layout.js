@@ -1,5 +1,8 @@
+import { createPanelViewport } from "./panel-viewport";
+
 export function createPanelLayout({ panel, mobile }) {
   const lifetime = new AbortController();
+  const viewport = createPanelViewport({ panel, mobile });
   const form = panel.querySelector("form");
   const composer = panel.querySelector(".saa-ai-composer");
   const prompt = panel.querySelector("textarea");
@@ -67,9 +70,11 @@ export function createPanelLayout({ panel, mobile }) {
   return {
     resizeComposer,
     showHeader,
+    syncViewport: viewport.sync,
     dispose() {
       lifetime.abort();
       observer.disconnect();
+      viewport.dispose();
       cancelAnimationFrame(frame);
       head.inert = false;
     },

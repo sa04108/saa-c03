@@ -119,21 +119,6 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     }
     return threads.get(key);
   }
-  function viewport() {
-    if (mobile.matches && !panel.hidden && window.visualViewport) {
-      panel.style.setProperty(
-        "--ai-visible-height",
-        visualViewport.height + "px",
-      );
-      panel.style.setProperty(
-        "--ai-visible-top",
-        visualViewport.offsetTop + "px",
-      );
-    } else {
-      panel.style.removeProperty("--ai-visible-height");
-      panel.style.removeProperty("--ai-visible-top");
-    }
-  }
   function modalState() {
     const modal = mobile.matches && !panel.hidden;
     panel.setAttribute("aria-modal", String(modal));
@@ -158,7 +143,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       for (const [node, inert] of inertBefore) node.inert = inert;
       inertBefore.clear();
     }
-    viewport();
+    layout.syncViewport();
   }
   function open(context, source) {
     hideTooltip();
@@ -1011,12 +996,6 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     signal: lifetime.signal,
   });
   window.addEventListener("hashchange", locationChanged, {
-    signal: lifetime.signal,
-  });
-  window.visualViewport?.addEventListener("resize", viewport, {
-    signal: lifetime.signal,
-  });
-  window.visualViewport?.addEventListener("scroll", viewport, {
     signal: lifetime.signal,
   });
   mobile.addEventListener("change", modalState, { signal: lifetime.signal });
