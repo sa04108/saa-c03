@@ -77,7 +77,7 @@ export function ThemeProvider({ children }) {
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.themePreference = preference;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = theme === "dark" ? "#101722" : "#182b44";
+    if (meta) meta.content = theme === "dark" ? "#171819" : "#182b44";
   }, [preference, dark, ready]);
   function choose(value) {
     try {
@@ -153,7 +153,7 @@ export function ThemeToggle() {
       className="theme-control"
       data-theme-ui
       ref={control}
-      onKeyDown={keyboard}
+      onKeyDownCapture={keyboard}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
       }}

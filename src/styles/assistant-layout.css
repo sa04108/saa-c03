@@ -7,9 +7,9 @@
   padding: 0;
 }
 :root[data-theme="dark"] .saa-ai {
-  --ai-paper-rgb: 25, 35, 52;
-  --ai-input: #263449;
-  --ai-scrollbar: #637c9c;
+  --ai-paper-rgb: 32, 34, 36;
+  --ai-input: #2c3034;
+  --ai-scrollbar: #747c85;
 }
 .saa-ai-head {
   position: absolute;
