@@ -291,13 +291,12 @@ export function createAssistantController({ fab, panel, tooltip, account }) {
     $("[data-image-note]").hidden = !c.hasImages;
     $("[data-older]").hidden = !thread.hasOlder;
     const saveStatus = $("[data-save-status]");
-    saveStatus.hidden =
-      !thread.saved && !thread.unsaved.length && !thread.saving;
+    saveStatus.hidden = !thread.unsaved.length && !thread.saving;
     saveStatus.querySelector("span").textContent = thread.saving
       ? "대화 기록을 저장하고 있어요"
       : thread.unsaved.length
         ? "기록을 저장하지 못했어요."
-        : "대화 기록에 저장됨";
+        : "";
     $("[data-save-retry]").hidden = !thread.unsaved.length;
     $("[data-save-retry]").disabled = thread.saving;
     prompt.value = thread.draft;

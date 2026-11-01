@@ -91,7 +91,7 @@
   inset: auto 0 0;
   z-index: 6;
   margin: 0;
-  padding: 22px 15px max(16px, env(safe-area-inset-bottom, 0px));
+  padding: 22px 15px env(safe-area-inset-bottom, 0px);
   border: 0;
   background: linear-gradient(to bottom, rgba(var(--ai-paper-rgb), 0), rgba(var(--ai-paper-rgb), .94) 26px, rgb(var(--ai-paper-rgb)));
 }
