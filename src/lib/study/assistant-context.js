@@ -16,7 +16,7 @@ function textOf(element) {
     .replace(/\n\s*\n/g, "\n")
     .trim();
 }
-export function contextForItem(context, button) {
+export function contextForItem(context, button, { includeAnswers = true } = {}) {
   if (context.source === "dumps") {
     const { q, note } = context;
     const reference = [
@@ -30,7 +30,7 @@ export function contextForItem(context, button) {
     const text = [
       q.stem,
       ...q.options.map((o) => o.key + ". " + o.text),
-      reference,
+      ...(includeAnswers ? [reference] : []),
     ].join("\n");
     return {
       id: `dumps:${q.id}`,
@@ -51,12 +51,16 @@ export function contextForItem(context, button) {
       text: [
         textOf(card.querySelector("h3")),
         textOf(card.querySelector("fieldset")),
-        "참고 답안과 해설 (오류 가능):",
-        textOf(card.querySelector(".explanation")),
+        ...(includeAnswers
+          ? [
+              "참고 답안과 해설 (오류 가능):",
+              textOf(card.querySelector(".explanation")),
+            ]
+          : []),
       ]
         .join("\n")
         .slice(0, 12000),
-      hasImages: !!card.querySelector("img"),
+      hasImages: !!card.querySelector(includeAnswers ? "img" : "h3 img, fieldset img"),
     };
   }
   const article = button.closest(".term-article");

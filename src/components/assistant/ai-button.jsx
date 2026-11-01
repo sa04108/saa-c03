@@ -31,6 +31,7 @@ export function AIButton({ context }) {
         assistant.open(
           contextForItem(context, e.currentTarget),
           e.currentTarget,
+          contextForItem(context, e.currentTarget, { includeAnswers: false }),
         )
       }
     >

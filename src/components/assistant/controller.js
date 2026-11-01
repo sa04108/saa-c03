@@ -98,6 +98,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
   function makeThread(context, conversationId = crypto.randomUUID()) {
     return {
       context,
+      suggestionContext: context,
       conversationId,
       history: [],
       draft: "",
@@ -111,13 +112,15 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       hasOlder: false,
     };
   }
-  function getThread(context) {
+  function getThread(context, suggestionContext = context) {
     const key = context.id + "\n" + context.text;
     if (!threads.has(key)) {
       threads.set(key, makeThread(context));
       if (threads.size > 20) threads.delete(threads.keys().next().value);
     }
-    return threads.get(key);
+    const target = threads.get(key);
+    target.suggestionContext = suggestionContext;
+    return target;
   }
   function modalState() {
     const modal = mobile.matches && !panel.hidden;
@@ -145,7 +148,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     }
     layout.syncViewport();
   }
-  function open(context, source) {
+  function open(context, source, suggestionContext = context) {
     hideTooltip();
     if (context) {
       if (historyDeleting) return;
@@ -154,7 +157,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       cancelRequest();
       cancelHistory();
       historyView = false;
-      thread = getThread(context);
+      thread = getThread(context, suggestionContext);
     } else if (!thread) thread = getThread(general);
     opener = source || document.activeElement;
     panel.hidden = false;
@@ -761,7 +764,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     render();
     try {
       const data = await call(
-        { action: "suggestions", context: task.thread.context },
+        { action: "suggestions", context: task.thread.suggestionContext },
         task,
       );
       if (
