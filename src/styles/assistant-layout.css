@@ -1,5 +1,6 @@
 /* Header and composer float over the conversation in both study pages. */
 .saa-ai {
+  --ai-edge-space: 15px;
   --ai-paper-rgb: 255, 255, 255;
   --ai-input: #f0f4f9;
   --ai-scrollbar: #acbdd2;
@@ -18,7 +19,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: calc(15px + env(safe-area-inset-top, 0px)) 17px 0;
+  padding: calc(var(--ai-edge-space) + env(safe-area-inset-top, 0px)) 17px 0;
   height: calc(111px + env(safe-area-inset-top, 0px));
   pointer-events: none;
 }
@@ -109,7 +110,7 @@
   inset: auto 0 0;
   z-index: 6;
   margin: 0;
-  padding: 22px 15px env(safe-area-inset-bottom, 0px);
+  padding: 22px 15px calc(var(--ai-edge-space) + env(safe-area-inset-bottom, 0px));
   border: 0;
   background: linear-gradient(to bottom, rgba(var(--ai-paper-rgb), 0), rgba(var(--ai-paper-rgb), .94) 26px, rgb(var(--ai-paper-rgb)));
 }
