@@ -84,9 +84,10 @@ export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
   return {
     sync,
     navigate(destination) {
+      if (mobile.matches) hide();
       sourceDestination = new URL(destination, location.href).href;
-      // Move the mobile dialog entry to the destination while keeping the
-      // conversation visible. Back then closes it on the new source page.
+      // Consume the old mobile dialog entry before visiting the source.
+      // The desktop conversation stays open alongside the destination page.
       if (pendingUrl) pendingDestination = destination;
       else if (isEntry()) {
         pendingDestination = destination;
