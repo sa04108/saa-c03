@@ -187,6 +187,14 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     else if (!thread.suggestions && !thread.history.length && !request)
       void suggestions();
   }
+  function locationChanged() {
+    hideTooltip();
+    modalState();
+    navigation.sync();
+    if (mobile.matches && !panel.hidden && !panel.contains(document.activeElement)) {
+      $("#saa-ai-heading").focus({ preventScroll: true });
+    }
+  }
   function close() {
     hidePanel();
     navigation.sync();
@@ -1002,6 +1010,9 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     passive: true,
     signal: lifetime.signal,
   });
+  window.addEventListener("hashchange", locationChanged, {
+    signal: lifetime.signal,
+  });
   window.visualViewport?.addEventListener("resize", viewport, {
     signal: lifetime.signal,
   });
@@ -1014,6 +1025,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     open,
     showTooltip,
     hideTooltip,
+    locationChanged,
     dispose() {
       disposed = true;
       lifetime.abort();

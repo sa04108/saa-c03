@@ -11,7 +11,7 @@ export function AssistantProvider({ children }) {
   const ready = useCallback((value) => setApi(value), []);
   useEffect(() => setMounted(true), []);
   useEffect(() => {
-    api?.hideTooltip();
+    api?.locationChanged();
   }, [path, api]);
   return (
     <AssistantContext.Provider value={api}>

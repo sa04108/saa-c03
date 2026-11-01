@@ -9,6 +9,7 @@ export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
       ? saved.id
       : crypto.randomUUID();
   let ownedEntry = isEntry(), pendingUrl = null, pendingDestination = null;
+  let sourceDestination = null;
   const lifetime = new AbortController();
 
   function isEntry() {
@@ -17,6 +18,10 @@ export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
   }
   function sync() {
     if (pendingUrl) return;
+    if (sourceDestination) {
+      if (location.href !== sourceDestination) return;
+      sourceDestination = null;
+    }
     if (!panel.hidden && mobile.matches) {
       if (pageUrl !== location.href) {
         pageUrl = location.href;
@@ -43,12 +48,18 @@ export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
       const destination = pendingDestination;
       pendingUrl = null;
       pendingDestination = null;
-      if (location.href !== expectedUrl) hide();
+      if (location.href !== expectedUrl) {
+        sourceDestination = null;
+        hide();
+      }
       else if (destination) {
         // Let history restore the document first; otherwise it can overwrite
         // the source link's scroll position and focus, especially on mobile.
         setTimeout(() => {
-          if (!lifetime.signal.aborted && location.href === expectedUrl) visit(destination);
+          if (!lifetime.signal.aborted && location.href === expectedUrl && sourceDestination === new URL(destination, location.href).href) {
+            visit(destination);
+            sync();
+          }
         }, 0);
       }
       else sync();
@@ -73,16 +84,19 @@ export function createPanelNavigation({ panel, mobile, show, hide, visit }) {
   return {
     sync,
     navigate(destination) {
-      hide();
-      // Consume the mobile dialog entry before opening the source, so Back
-      // returns to the study page instead of reopening the assistant.
+      sourceDestination = new URL(destination, location.href).href;
+      // Move the mobile dialog entry to the destination while keeping the
+      // conversation visible. Back then closes it on the new source page.
       if (pendingUrl) pendingDestination = destination;
       else if (isEntry()) {
         pendingDestination = destination;
         pendingUrl = location.href;
         ownedEntry = false;
         history.back();
-      } else visit(destination);
+      } else {
+        visit(destination);
+        sync();
+      }
     },
     restore() {
       if (!isEntry()) return;
