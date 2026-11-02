@@ -25,7 +25,7 @@ export default async function Page({ params }) {
       </ConceptNavigation>
       <footer className="footer">
         <div className="footer-inner">
-          <span>SAA-C03 개념 위키 · 공식 문서 확인 2026.09.30</span>
+          <span>SAA-C03 개념 위키</span>
           <a
             href="https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-associate-03/solutions-architect-associate-03.html"
             target="_blank"
