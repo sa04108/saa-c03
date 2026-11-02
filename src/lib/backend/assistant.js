@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { backendConfig as config } from "./config";
 import { getAccount } from "./account";
+import { readSSE } from "../../../supabase/functions/_shared/sse.js";
 let guestClient, guestSignIn;
 async function accessToken() {
   const signedIn = await getAccount().getAccessToken();
@@ -45,7 +46,7 @@ async function accessToken() {
     );
   return result.data.session.access_token;
 }
-export async function callAssistant(payload, task) {
+export async function callAssistant(payload, task, onProgress) {
   const token = await accessToken();
   task.controller.signal.throwIfAborted();
   const response = await fetch(
@@ -54,6 +55,7 @@ export async function callAssistant(payload, task) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: payload.action === "chat" ? "text/event-stream" : "application/json",
         apikey: config.supabasePublishableKey,
         Authorization: "Bearer " + token,
       },
@@ -61,6 +63,27 @@ export async function callAssistant(payload, task) {
       signal: task.controller.signal,
     },
   );
+  if (response.ok && response.headers.get("content-type")?.includes("text/event-stream")) {
+    let answer = "";
+    for await (const event of readSSE(response.body, task.controller.signal)) {
+      let data;
+      try { data = JSON.parse(event.data); } catch { throw new Error("connection"); }
+      if (!data || typeof data !== "object") throw new Error("connection");
+      if (event.event === "error") {
+        const error = new Error(typeof data.error === "string" ? data.error : "connection");
+        error.retryAfter = Number(data.retryAfter) || 0;
+        throw error;
+      }
+      if (event.event === "done") return data;
+      if (event.event === "reset") answer = "";
+      else if (event.event === "delta" && typeof data.text === "string") answer += data.text;
+      else continue;
+      if (answer.length > 14000) throw new Error("empty_response");
+      onProgress?.(answer);
+    }
+    // A disconnected stream is never a completed or saveable answer.
+    throw new Error("connection");
+  }
   let data;
   try {
     data = await response.json();
