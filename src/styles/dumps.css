@@ -171,5 +171,6 @@ body:where(:has([data-page="dumps"])){background:white}}
 :where(body:has([data-page="dumps"])) .gpt-note h3{font-size:1rem;line-height:1.5;margin:0 0 8px;color:var(--blue)}
 :where(body:has([data-page="dumps"])) .gpt-note.correction h3{color:#855608}
 :where(body:has([data-page="dumps"])) .gpt-note p{font-size:.94rem;line-height:1.8;overflow-wrap:anywhere;margin:0}
+:where(body:has([data-page="dumps"])) .gpt-note.explanation p{white-space:pre-line}
 :where(body:has([data-page="dumps"])) .gpt-references{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:.8rem;line-height:1.6;overflow-wrap:anywhere}
 :where(body:has([data-page="dumps"])) .source-explanation h3{font-size:1rem;margin-top:22px}
