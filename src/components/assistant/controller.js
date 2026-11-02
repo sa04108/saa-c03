@@ -206,6 +206,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
   function cancelRequest() {
     if (!request) return;
     clearTimeout(request.timer);
+    cancelAnimationFrame(request.frame);
     request.controller.abort();
     if (request.kind === "chat") request.thread.draft = request.question;
     request = null;
@@ -278,14 +279,18 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
               text: request.question,
               createdAt: request.createdAt,
             },
+            ...(request.partialAnswer
+              ? [{ role: "model", text: request.partialAnswer, createdAt: request.createdAt }]
+              : []),
           ]
         : thread.history;
     renderMessages($("[data-messages]"), history);
+    $("[data-messages]").setAttribute("aria-busy", String(request?.kind === "chat"));
     const feedback = $("[data-feedback]");
     feedback.textContent = request
       ? request.kind === "suggestions"
         ? "이 항목의 예상 질문을 준비하고 있어요…"
-        : "답변을 작성하고 있어요…"
+        : request.partialAnswer ? "" : "답변을 작성하고 있어요…"
       : thread.error;
     feedback.hidden = !feedback.textContent;
     feedback.dataset.error = String(!request && !!thread.error);
@@ -728,8 +733,9 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       thread,
       createdAt: new Date().toISOString(),
       controller: new AbortController(),
+      partialAnswer: "",
     };
-    // Transport/auth/database watchdog only; the server gives each model 5s.
+    // Transport watchdog; the server tries 5s per model, then 10s per model.
     request = task;
     task.timer = setTimeout(() => task.controller.abort("timeout"), 120000);
     return task;
@@ -780,6 +786,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       failed(error, task);
     } finally {
       clearTimeout(task.timer);
+      cancelAnimationFrame(task.frame);
       if (request === task) {
         request = null;
         render();
@@ -819,6 +826,19 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
             .map((m) => ({ role: m.role, text: m.text.slice(0, 2000) })),
         },
         task,
+        (answer) => {
+          if (request !== task) return;
+          task.partialAnswer = answer;
+          if (task.frame) return;
+          task.frame = requestAnimationFrame(() => {
+            task.frame = 0;
+            if (request !== task) return;
+            const scroll = $("[data-scroll]");
+            const following = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 80;
+            render();
+            if (following) scroll.scrollTop = scroll.scrollHeight;
+          });
+        },
       );
       if (
         typeof data.answer !== "string" ||
@@ -847,6 +867,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       failed(error, task);
     } finally {
       clearTimeout(task.timer);
+      cancelAnimationFrame(task.frame);
       if (request === task) {
         request = null;
         render();
