@@ -16,7 +16,7 @@ export const viewport = {
 };
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>

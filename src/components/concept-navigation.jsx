@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 const searches = new Map();
 export function ConceptNavigation({ children, documentKey }) {
@@ -54,9 +54,9 @@ export function ConceptNavigation({ children, documentKey }) {
       search.removeEventListener("input", filter);
     };
   }, [documentKey]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     let frame;
-    const jump = () => {
+    const jump = (behavior = "auto") => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         if (!location.hash || location.hash.startsWith("#/")) return;
@@ -70,17 +70,28 @@ export function ConceptNavigation({ children, documentKey }) {
         if (!target || !main.current?.contains(target)) return;
         const details = target.closest("details");
         if (details) details.open = true;
-        target.scrollIntoView({ block: "start" });
+        target.scrollIntoView({ behavior, block: "start" });
         if (!target.hasAttribute("tabindex"))
           target.setAttribute("tabindex", "-1");
         target.focus({ preventScroll: true });
       });
     };
-    jump();
-    window.addEventListener("hashchange", jump);
+    // A new document's anchor should appear immediately; in-page links follow CSS.
+    jump("instant");
+    const onHashChange = (event) =>
+      jump(
+        event.oldURL && new URL(event.oldURL).pathname !== location.pathname
+          ? "instant"
+          : "auto",
+      );
+    window.addEventListener("hashchange", onHashChange);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("hashchange", jump);
+      window.removeEventListener("hashchange", onHashChange);
+      // Keep native history restoration instant while the document is replaced.
+      const root = document.documentElement;
+      root.setAttribute("data-route-scroll", "");
+      requestAnimationFrame(() => root.removeAttribute("data-route-scroll"));
     };
   }, [documentKey]);
   return (

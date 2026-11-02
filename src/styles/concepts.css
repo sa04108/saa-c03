@@ -2,6 +2,7 @@
 :root:where(:has([data-page="concepts"])){color-scheme:light;--ink:#142d40;--muted:#536b7b;--line:#cfdee8;--surface:#fff;--wash:#f3f7fa;--navy:#153a51;--blue:#226c92;--bluewash:#eaf5fb;--orange:#ca6530;--orangewash:#fff2e9;--good:#176b55;--bad:#a23f39}
 :where(body:has([data-page="concepts"])),:where(body:has([data-page="concepts"])) *{box-sizing:border-box}
 html:where(:has([data-page="concepts"])){scroll-behavior:smooth}
+html:where([data-route-scroll]){scroll-behavior:auto}
 body:where(:has([data-page="concepts"])){margin:0;color:var(--ink);background:var(--wash);font:16px/1.7 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;overflow-wrap:anywhere}
 :where(body:has([data-page="concepts"])) a{color:#12668e;text-decoration:none}
 :where(body:has([data-page="concepts"])) a:hover{text-decoration:underline}
