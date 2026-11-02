@@ -735,7 +735,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       controller: new AbortController(),
       partialAnswer: "",
     };
-    // Transport watchdog; the server tries 5s per model, then 10s per model.
+    // Transport watchdog; model requests share a 30s server deadline after launch.
     request = task;
     task.timer = setTimeout(() => task.controller.abort("timeout"), 120000);
     return task;
