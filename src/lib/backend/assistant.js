@@ -55,7 +55,7 @@ export async function callAssistant(payload, task, onProgress) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: payload.action === "chat" ? "text/event-stream" : "application/json",
+        Accept: payload.action === "chat" || payload.action === "title" ? "text/event-stream" : "application/json",
         apikey: config.supabasePublishableKey,
         Authorization: "Bearer " + token,
       },
@@ -78,7 +78,7 @@ export async function callAssistant(payload, task, onProgress) {
       if (event.event === "reset") answer = "";
       else if (event.event === "delta" && typeof data.text === "string") answer += data.text;
       else continue;
-      if (answer.length > 14000) throw new Error("empty_response");
+      if (answer.length > (payload.action === "title" ? 100 : 14000)) throw new Error("empty_response");
       onProgress?.(answer);
     }
     // A disconnected stream is never a completed or saveable answer.
@@ -218,8 +218,8 @@ export function renameConversation(id, title, expectedTitle, signal) {
     signal,
   });
 }
-export function suggestConversationTitle(id, signal) {
+export function suggestConversationTitle(id, signal, onProgress) {
   return callAssistant({ action: "title", conversationId: id }, {
     controller: { signal: AbortSignal.any([signal, AbortSignal.timeout(120000)]) },
-  });
+  }, onProgress);
 }

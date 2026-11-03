@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { AssistantIcon } from "./icon";
-import { SessionTitleEditor } from "./session-title-editor";
+import { useSessionTitleEditor } from "./session-title-editor";
 
 // The controller owns request/focus lifetimes; these isolated slots own their React children.
 const roots = new Map();
@@ -170,30 +170,32 @@ function Suggestions({ questions, onSelect }) {
 }
 function ConversationCard({ session, editing, disabled, selected, currentId, updatedAt,
   kind, title, topic, onSelect, onRename, onSuggest }) {
-  const [renaming, setRenaming] = useState(false);
+  const editor = useSessionTitleEditor({ session, disabled, onRename, onSuggest });
   return (
-    <div role="listitem" className="saa-ai-session-card" data-session-card={session.id}>
+    <div role="listitem" className="saa-ai-session-card" data-session-card={session.id}
+      data-renaming={editor.renaming || undefined} onKeyDown={editor.keyDown}>
       <button type="button" className="saa-ai-session" data-conversation-id={session.id}
-        data-renaming={renaming ? "true" : undefined} disabled={disabled || renaming}
+        data-renaming={editor.renaming ? "true" : undefined} disabled={disabled || editor.renaming}
         aria-current={!editing && session.id === currentId ? "true" : undefined}
         role={editing ? "checkbox" : undefined} aria-checked={editing ? selected : undefined}
         aria-label={`${title} — ${topic} ${editing ? "선택" : "대화 이어가기"}`}
-        onClick={() => onSelect(session.id)}>
-        <span className={editing ? "saa-ai-check" : "saa-ai-session-icon"} aria-hidden="true">
-          <AssistantIcon name={editing ? "check" : session.kind === "general" ? "robot" : "book"} />
-        </span>
-        <span className="saa-ai-session-copy">
-          <span className="saa-ai-session-meta"><span>{kind}</span><Time value={updatedAt} /></span>
-          <strong>{title}</strong>
+        onClick={() => onSelect(session.id)} />
+      <span className={editing ? "saa-ai-check" : "saa-ai-session-icon"} aria-hidden="true">
+        <AssistantIcon name={editing ? "check" : session.kind === "general" ? "robot" : "book"} />
+      </span>
+      <div className="saa-ai-session-copy">
+        <div className="saa-ai-session-meta"><span>{kind}</span><Time value={updatedAt} /></div>
+        {editor.title}
+        <div className="saa-ai-session-bottom">
           <span className="saa-ai-session-topic">{topic}</span>
-        </span>
-        {!editing && <span className="saa-ai-session-arrow"><AssistantIcon name="arrow" /></span>}
-      </button>
-      {!editing && <SessionTitleEditor session={session} disabled={disabled}
-        onRename={onRename} onSuggest={onSuggest} onEditingChange={setRenaming} />}
+          {!editing && editor.controls}
+        </div>
+        {editor.error}
+      </div>
     </div>
   );
 }
+
 export function ConversationList({
   sessions,
   editing,
