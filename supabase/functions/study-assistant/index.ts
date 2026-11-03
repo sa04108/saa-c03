@@ -410,16 +410,19 @@ export async function handleRequest(req: Request): Promise<Response> {
             }
           }
         } catch { console.warn('ai_model_cooldown_read_failed'); }
-        const recordOutcome = async (model: string, attemptStartedAt: string, error: string | null, writer: Database = db) => {
+        const recordOutcome = async (model: string, attemptStartedAt: string, error: string | null, writer: Database = db, preserveCooldown = false) => {
           if (error) {
             const count = Math.min(3, (failures.get(model) || 0) + 1);
             failures.set(model, count); failureReasons.set(model, error);
             cooldowns.set(model, Date.now() + [60, 3600, 86400][count - 1] * 1000);
           }
           try {
-            // SQL serializes concurrent outcomes. Late failures/successes cannot
-            // escalate the same exclusion window or overwrite a newer attempt.
-            const state = await (await writer('rpc/record_ai_model_outcome', { method: 'POST', signal: AbortSignal.timeout(1000), body: JSON.stringify({ p_model: model, p_attempt_started_at: attemptStartedAt, p_error: error }) })).json();
+            // Count every completed response atomically, even if its older attempt
+            // cannot change cooldown state or already received a latency penalty.
+            const path = error === null ? 'rpc/record_ai_model_success' : 'rpc/record_ai_model_outcome';
+            const body = { p_model: model, p_attempt_started_at: attemptStartedAt,
+              ...(error === null ? { p_preserve_cooldown: preserveCooldown } : { p_error: error }) };
+            const state = await (await writer(path, { method: 'POST', signal: AbortSignal.timeout(1000), body: JSON.stringify(body) })).json();
             const retryAt = Date.parse(state?.retry_at);
             if (Number.isFinite(retryAt)) cooldowns.set(model, retryAt);
             if (Number.isInteger(state?.failure_count)) failures.set(model, state.failure_count);
@@ -579,8 +582,8 @@ export async function handleRequest(req: Request): Promise<Response> {
         });
         const { result, search: selectedSearch } = selected.value;
         const successfulModel = selected.attempt.model;
-        // A late answer can be used, but it must not undo its five-second penalty.
-        if (!selected.attempt.penalized) await recordOutcome(successfulModel, selected.attempt.startedAt, null);
+        // Count late completed answers while preserving their five-second penalty.
+        await recordOutcome(successfulModel, selected.attempt.startedAt, null, db, selected.attempt.penalized);
         const text = responseParts(result).filter(p => !p.thought && typeof p.text === 'string').map(p => p.text as string).join('').trim();
         if (!text || text.length > 14000) throw new HttpError(502, 'empty_response');
         if (input.action === 'chat') {
