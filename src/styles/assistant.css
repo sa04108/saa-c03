@@ -59,8 +59,12 @@
 .saa-ai .saa-ai-title-tools button:disabled{opacity:.45;cursor:default}
 .saa-ai .saa-ai-title-input{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:24px;margin:0;padding:0 3px;border:1px solid var(--theme-line);border-radius:5px;background:transparent;color:var(--theme-ink);font:600 13px/1.65 system-ui,sans-serif;letter-spacing:-.02em;resize:none;overflow:hidden;pointer-events:auto}
 .saa-ai .saa-ai-title-input:focus-visible{outline:2px solid var(--theme-blue);outline-offset:1px}
+.saa-ai .saa-ai-title-input{field-sizing:content}
 .saa-ai .saa-ai-title-error{margin:5px 0 0;font-size:11px;line-height:1.7;color:var(--bad,#a53d40);overflow-wrap:anywhere}
 .saa-ai-title-wait{display:inline-block;min-height:22px}
+/* Native focus/caret scrolling must leave room for the title's action row,
+   especially after Android Chrome resizes the viewport for its keyboard. */
+.saa-ai-history-scroll:has(.saa-ai-title-input){scroll-padding-block-end:68px}
 @media(max-width:760px){.saa-ai .saa-ai-title-tools button{width:36px;height:36px;min-height:36px}.saa-ai .saa-ai-title-input{font-size:16px}}
 .saa-ai-date{display:flex;align-items:center;gap:12px;color:#73859c;font-size:10px;line-height:1.6;font-weight:500;margin:8px 0 1px}.saa-ai-date:before,.saa-ai-date:after{content:"";height:1px;background:#e8edf3;flex:1;min-width:12px}.saa-ai-date time{white-space:nowrap}.saa-ai-reply-label time{margin-left:auto;font-size:10px;font-weight:400;color:#7b8da4;white-space:nowrap}
 .saa-ai-older{display:block;margin:0 auto 20px}

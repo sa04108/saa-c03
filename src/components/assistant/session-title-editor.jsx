@@ -7,20 +7,30 @@ export function useSessionTitleEditor({ session, disabled, onRename, onSuggest }
     [original, setOriginal] = useState(""),
     [working, setWorking] = useState(""),
     [error, setError] = useState("");
-  const task = useRef(null), input = useRef(null), editButton = useRef(null), aiButton = useRef(null);
+  const task = useRef(null), input = useRef(null), controlsRef = useRef(null), editButton = useRef(null), aiButton = useRef(null);
+  function revealControls() {
+    controlsRef.current?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant", container: "nearest" });
+  }
   useEffect(() => () => task.current?.abort(), []);
   useLayoutEffect(() => {
-    if (mode === "manual" && input.current) {
-      input.current.focus({ preventScroll: true });
-      input.current.select();
-    }
-  }, [mode]);
-  useLayoutEffect(() => {
-    if (input.current) {
+    // Native sizing lets Chrome calculate caret scrolling from the final height.
+    // Older browsers retain the explicit height fallback.
+    if (input.current && !CSS.supports("field-sizing", "content")) {
       input.current.style.height = "0px";
       input.current.style.height = `${input.current.scrollHeight}px`;
+      if (document.activeElement === input.current) revealControls();
     }
   }, [draft, mode]);
+  useLayoutEffect(() => {
+    if (mode === "manual" && input.current) {
+      // Size the whole title first, then let the browser reveal it together
+      // with the confirmation row reserved by the history scroll padding.
+      input.current.focus();
+      input.current.select();
+      // Initial focus can center a tall input and leave its actions clipped.
+      revealControls();
+    }
+  }, [mode]);
   const restoreFocus = () => requestAnimationFrame(() =>
     (mode === "ai" ? aiButton : editButton).current?.focus({ preventScroll: true }));
   function cancel() {
@@ -115,7 +125,7 @@ export function useSessionTitleEditor({ session, disabled, onRename, onSuggest }
     </strong>
   );
   const controls = (
-    <div className="saa-ai-title-tools" aria-busy={!!working}>
+    <div ref={controlsRef} className="saa-ai-title-tools" aria-busy={!!working}>
       {mode ? <>
         <button type="button" title="취소" aria-label="취소" disabled={working === "save"} onClick={cancel}>
           <AssistantIcon name="close" />
