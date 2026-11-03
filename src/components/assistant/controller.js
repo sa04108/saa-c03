@@ -3,6 +3,7 @@ import {
   listConversations,
   listTurns,
   loadConversation,
+  resolveContextConversation,
   listConversationSelection,
   deleteConversations,
   saveTurn,
@@ -113,7 +114,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     };
   }
   function getThread(context, suggestionContext = context) {
-    const key = context.id + "\n" + context.text;
+    const key = context.id;
     if (!threads.has(key)) {
       threads.set(key, makeThread(context));
       if (threads.size > 20) threads.delete(threads.keys().next().value);
@@ -148,8 +149,10 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     }
     layout.syncViewport();
   }
-  function open(context, source, suggestionContext = context) {
+  function open(context, source, suggestionContext = context, question = "") {
     hideTooltip();
+    if (question && request?.kind === "chat" && request.question === question && thread.context.id === context?.id)
+      return;
     if (context) {
       if (historyDeleting) return;
       exitHistoryEdit();
@@ -171,9 +174,12 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     layout.showHeader();
     navigation.sync();
     $("#saa-ai-heading").focus({ preventScroll: true });
-    if (historyView && !historyDeleting) void loadHistory();
-    else if (!thread.suggestions && !thread.history.length && !request)
-      void suggestions();
+    if (question) {
+      prompt.value = question;
+      updateComposer();
+      void send();
+    } else if (historyView && !historyDeleting) void loadHistory();
+    else if (!request) void restoreContext();
   }
   function locationChanged() {
     hideTooltip();
@@ -214,8 +220,8 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
   function updateComposer() {
     thread.draft = prompt.value;
     $(".saa-ai-send").disabled =
-      !prompt.value.trim() || request?.kind === "chat";
-    prompt.readOnly = request?.kind === "chat";
+      !prompt.value.trim() || ["chat", "context"].includes(request?.kind);
+    prompt.readOnly = ["chat", "context"].includes(request?.kind);
     layout.resizeComposer();
   }
   function localDay(value) {
@@ -288,7 +294,9 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     $("[data-messages]").setAttribute("aria-busy", String(request?.kind === "chat"));
     const feedback = $("[data-feedback]");
     feedback.textContent = request
-      ? request.kind === "suggestions"
+      ? request.kind === "context"
+        ? "이 항목의 대화를 불러오고 있어요…"
+        : request.kind === "suggestions"
         ? "이 항목의 예상 질문을 준비하고 있어요…"
         : request.partialAnswer ? "" : "답변을 작성하고 있어요…"
       : thread.error;
@@ -446,7 +454,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       if (ids.has(value.conversationId)) threads.delete(key);
     if (ids.has(thread.conversationId)) {
       thread = makeThread(general);
-      threads.set(general.id + "\n" + general.text, thread);
+      threads.set(general.id, thread);
     }
     historySessions = historySessions.filter((session) => !ids.has(session.id));
     for (const id of ids) {
@@ -620,7 +628,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       thread.saved = true;
       thread.oldestTurn = turns.slice(0, 20).at(-1) ?? null;
       thread.hasOlder = turns.length > 20;
-      threads.set(thread.context.id + "\n" + thread.context.text, thread);
+      threads.set(thread.context.id, thread);
       if (threads.size > 20) threads.delete(threads.keys().next().value);
       historyView = false;
       render();
@@ -722,6 +730,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     context_changed:
       "이 대화의 학습 자료가 변경되었어요. 대화 기록에서 다시 열거나 새 대화를 시작해 주세요.",
     conversation_deleted: "삭제된 대화예요. 새 대화를 시작해 주세요.",
+    history_unavailable: "기존 대화를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",
   };
   function begin(kind, question = "") {
     cancelRequest();
@@ -793,10 +802,56 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       }
     }
   }
+  async function syncContext(task, create = false) {
+    await account?.ready;
+    task.controller.signal.throwIfAborted();
+    const target = task.thread, owner = account?.user?.id;
+    if (!owner || account.user.is_anonymous === true || target.context.kind === "general" || target.unsaved.length)
+      return;
+    const conversation = await resolveContextConversation(
+      target.context, create ? task.question : null, task.controller.signal,
+    );
+    if (!conversation) {
+      if (create) throw new Error("history_unavailable");
+      return;
+    }
+    if (typeof conversation.id !== "string" || conversation.context?.id !== target.context.id)
+      throw new Error("history_unavailable");
+    const turns = await listTurns(conversation.id, null, task.controller.signal);
+    task.controller.signal.throwIfAborted();
+    if (account?.user?.id !== owner) throw new Error("unauthenticated");
+    if (request !== task) return;
+    target.conversationId = conversation.id;
+    target.context = conversation.context;
+    target.history = unpackTurns(turns);
+    target.saved = turns.length > 0;
+    target.oldestTurn = turns.slice(0, 20).at(-1) ?? null;
+    target.hasOlder = turns.length > 20;
+    render();
+  }
+  async function restoreContext() {
+    const task = begin("context");
+    render();
+    let restored = false;
+    try {
+      await syncContext(task);
+      restored = true;
+    } catch (error) {
+      failed(error, task);
+    } finally {
+      clearTimeout(task.timer);
+      if (request === task) {
+        request = null;
+        render();
+        if (restored && !thread.suggestions && !thread.history.length)
+          void suggestions();
+      }
+    }
+  }
   async function send(event) {
-    event.preventDefault();
+    event?.preventDefault();
     const question = prompt.value.trim();
-    if (!question || request?.kind === "chat") return;
+    if (!question || ["chat", "context"].includes(request?.kind)) return;
     const task = begin("chat", question);
     task.turnId = crypto.randomUUID();
     thread.draft = "";
@@ -814,6 +869,11 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
         if (task.thread.unsaved.length) throw new Error("history_unsaved");
       }
       if (task.thread.deleted) throw new Error("conversation_deleted");
+      // Resolve before every send so reloads and other devices append to the
+      // same item conversation and the server receives its persisted context.
+      await syncContext(task, true);
+      task.controller.signal.throwIfAborted();
+      if (request !== task) return;
       const data = await call(
         {
           action: "chat",
@@ -894,7 +954,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     cancelRequest();
     cancelHistory();
     historyView = false;
-    threads.delete(general.id + "\n" + general.text);
+    threads.delete(general.id);
     thread = getThread(general);
     render();
     prompt.focus({ preventScroll: true });

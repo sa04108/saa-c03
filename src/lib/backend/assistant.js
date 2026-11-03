@@ -175,6 +175,13 @@ export async function loadConversation(id, signal) {
     listTurns(id, null, signal),
   ]);
 }
+export function resolveContextConversation(context, question, signal) {
+  return historyApi("rpc/resolve_ai_context_conversation", {
+    method: "POST",
+    body: JSON.stringify({ p_context: context, p_question: question || null }),
+    signal,
+  });
+}
 export function listConversationSelection(accountId, signal) {
   return historyApi("rpc/list_ai_conversation_selection", {
     method: "POST",

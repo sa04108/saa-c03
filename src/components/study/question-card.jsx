@@ -147,18 +147,37 @@ export function QuestionCard({ view, images, actions }) {
               correct = r.checked && gradable && answer.includes(o.key),
               wrong = r.checked && gradable && selected && !correct;
             return (
-              <button
-                type="button"
+              <div
                 key={o.key}
                 className={`option ${selected ? "selected " : ""}${correct ? "correct " : ""}${wrong ? "wrong " : ""}`}
                 data-option={o.key}
-                aria-pressed={selected}
-                disabled={r.checked}
-                onClick={() => actions.select(o.key)}
               >
-                <span className="letter">{o.key}</span>
+                <input
+                  type="checkbox"
+                  className="option-input"
+                  id={`option-${q.id}-${o.key}-select`}
+                  checked={selected}
+                  disabled={r.checked}
+                  aria-labelledby={`option-${q.id}-${o.key}-letter option-${q.id}-${o.key}-text`}
+                  onChange={() => actions.select(o.key)}
+                />
+                <label
+                  className="option-select"
+                  htmlFor={`option-${q.id}-${o.key}-select`}
+                  aria-hidden="true"
+                />
+                <span className="letter" id={`option-${q.id}-${o.key}-letter`}>{o.key}</span>
                 <span className="option-content" lang="en">
-                  <RichText text={o.text} images={images} />
+                  <span id={`option-${q.id}-${o.key}-text`}>
+                    <RichText text={o.text} images={images} />
+                  </span>
+                  {r.checked && selected && (
+                    <>{" "}<AIButton
+                      context={{ source: "dumps", q, note }}
+                      label="AI에 물어보기"
+                      question={`문제 ${q.id}에서 제가 선택한 ${o.key} 보기가 왜 정답인지 또는 왜 틀렸는지 설명해 주세요. 문제의 요구사항과 연결해서 설명하고, 참고 답안에 오류가 있다면 함께 알려주세요.`}
+                    /></>
+                  )}
                   {r.checked && (correct || selected) && (
                     <span className="choice-status" lang="ko">
                       {correct ? "✓ 정답" : ""}
@@ -172,7 +191,7 @@ export function QuestionCard({ view, images, actions }) {
                     </span>
                   )}
                 </span>
-              </button>
+              </div>
             );
           })}
         </fieldset>

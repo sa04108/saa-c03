@@ -7,6 +7,10 @@
 .saa-ai button:focus-visible,.saa-ai a:focus-visible,.saa-ai-trigger:focus-visible,.saa-ai-fab:focus-visible{outline:3px solid #e6a74b;outline-offset:3px}
 .saa-ai-trigger{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid #d2deeb;background:#f3f7fc;color:#294d76;border-radius:12px;cursor:pointer;position:relative;transition:background .15s,transform .15s}
 .saa-ai-trigger:hover{background:#e7eef9;transform:translateY(-1px)}.saa-ai-trigger svg{width:25px;height:25px}
+.saa-ai-trigger.saa-ai-trigger-inline{display:inline-flex;align-items:center;gap:6px;vertical-align:middle;width:auto;height:auto;min-height:34px;padding:5px 10px;margin-block:2px;border-radius:999px;font-size:12px;font-weight:650;line-height:1.4;white-space:nowrap;color:var(--blue);border-color:var(--line);background:var(--white);pointer-events:auto;z-index:1}
+.saa-ai-trigger.saa-ai-trigger-inline svg{width:20px;height:20px}
+.saa-ai-trigger.saa-ai-trigger-inline:hover:not(:disabled){border-color:var(--blue);background:var(--white);transform:none}
+@media(max-width:760px){.saa-ai-trigger.saa-ai-trigger-inline{min-height:44px}}
 .saa-ai-tooltip{position:fixed;z-index:100;width:max-content;max-width:calc(100vw - 16px);margin:0;padding:7px 11px;border:0;border-radius:8px;background:#182b44;color:#fff;font:500 11px/1.5 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;overflow-wrap:anywhere;pointer-events:none;box-shadow:0 3px 10px #182b4419}.saa-ai-tooltip[hidden]{display:none!important}
 .article-header.saa-ai-context{position:relative}.article-header.saa-ai-context h1{padding-right:64px}.article-header>.saa-ai-trigger{position:absolute;right:0;top:44px}
 .question-top>.saa-ai-trigger{margin-left:auto}.question-top:has(.saa-ai-trigger) .question-link{margin-left:0}
