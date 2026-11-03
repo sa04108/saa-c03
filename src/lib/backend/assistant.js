@@ -128,7 +128,8 @@ export async function historyApi(path, options = {}) {
   if (!response.ok) {
     const error = await response.json().catch(() => null);
     throw new Error(
-      error?.code === "P0002" ? "conversation_deleted" : "history_unavailable",
+      error?.code === "P0002" ? "conversation_deleted"
+        : error?.code === "40001" ? "title_changed" : "history_unavailable",
     );
   }
   return response.json();
@@ -208,5 +209,17 @@ export function saveTurn(turn) {
       p_answer: turn.answer,
       p_created_at: turn.createdAt,
     }),
+  });
+}
+export function renameConversation(id, title, expectedTitle, signal) {
+  return historyApi("rpc/rename_ai_conversation", {
+    method: "POST",
+    body: JSON.stringify({ p_conversation_id: id, p_title: title, p_expected_title: expectedTitle }),
+    signal,
+  });
+}
+export function suggestConversationTitle(id, signal) {
+  return callAssistant({ action: "title", conversationId: id }, {
+    controller: { signal: AbortSignal.any([signal, AbortSignal.timeout(120000)]) },
   });
 }

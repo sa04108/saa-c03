@@ -1,4 +1,22 @@
 /* Shared study assistant: scoped styles keep both study pages independent. */
+.saa-ai-session-card{border:1px solid var(--theme-line,#e1e8f0);border-radius:13px;background:var(--theme-surface,white);overflow:hidden}
+.saa-ai .saa-ai-session-card>.saa-ai-session{border:0;border-radius:12px;background:transparent}
+.saa-ai-session-card:has(.saa-ai-session[aria-current="true"]),.saa-ai-session-card:has(.saa-ai-session[aria-checked="true"]){border-color:var(--theme-blue,#afc2d9)}
+.saa-ai-title-tools{display:flex;justify-content:flex-end;gap:4px;padding:0 10px 8px}
+.saa-ai .saa-ai-title-tools button{display:grid;place-items:center;width:38px;height:38px;min-height:38px;margin:0;padding:0;border:0;border-radius:9px;background:transparent;color:var(--theme-muted,#6681a0)}
+.saa-ai-title-tools svg{width:19px;height:19px}
+.saa-ai .saa-ai-title-tools button:hover:not(:disabled){background:var(--theme-raised,#f0f5fa);color:var(--theme-blue,#365779)}
+.saa-ai-title-editor{margin:0;padding:5px 13px 13px 58px}
+.saa-ai .saa-ai-title-editor input{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:40px;padding:9px 10px;border:1px solid var(--theme-line,#c8d4e3);border-radius:8px;background:var(--theme-surface,white);color:var(--theme-ink,#24364b);font:400 13px/1.5 system-ui,sans-serif}
+.saa-ai .saa-ai-title-editor input:focus-visible{outline:2px solid var(--theme-blue,#7d9fca);outline-offset:1px}
+.saa-ai .saa-ai-title-note,.saa-ai .saa-ai-title-error{margin:10px 0 0;font-size:11px;line-height:1.7;color:var(--theme-muted,#70849e);overflow-wrap:anywhere}
+.saa-ai .saa-ai-title-error{color:var(--bad,#a53d40)}
+.saa-ai-title-confirm{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}
+.saa-ai .saa-ai-title-confirm button{min-height:36px;margin:0;padding:6px 13px;border:1px solid var(--theme-line,#dce3eb);border-radius:8px;background:var(--theme-surface,white);color:var(--theme-muted,#607087);font-size:12px}
+.saa-ai .saa-ai-title-confirm button[type="submit"]{display:grid;place-items:center;width:36px;height:36px;padding:0;background:var(--theme-blue,#294d76);border-color:var(--theme-blue,#294d76);color:var(--theme-surface,white)}
+.saa-ai-title-confirm button[type="submit"] svg{width:19px;height:19px}
+.saa-ai .saa-ai-title-confirm button:disabled,.saa-ai .saa-ai-title-tools button:disabled{opacity:.45;cursor:default}
+@media(max-width:760px){.saa-ai .saa-ai-title-tools button{width:44px;height:44px;min-height:44px}.saa-ai .saa-ai-title-confirm button{min-height:44px}.saa-ai .saa-ai-title-confirm button[type="submit"]{width:44px;height:44px}.saa-ai .saa-ai-title-editor input{font-size:16px;min-height:44px}.saa-ai-title-editor{padding-left:13px}}
 :root{--ai-width:390px;--ai-rail:438px}
 .saa-ai,.saa-ai *,.saa-ai-trigger,.saa-ai-fab,.saa-ai-tooltip{box-sizing:border-box}
 .saa-ai{font:14px/1.7 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;color:#24364b;overflow-wrap:anywhere}

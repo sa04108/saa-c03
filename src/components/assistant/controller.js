@@ -4,6 +4,8 @@ import {
   listTurns,
   loadConversation,
   resolveContextConversation,
+  renameConversation,
+  suggestConversationTitle,
   listConversationSelection,
   deleteConversations,
   saveTurn,
@@ -41,6 +43,8 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
   let thread, opener, request, tooltipTarget, historyRequest, historyCursor;
   let historyView = false;
   let historySessions = [];
+  let titleRevision = 0;
+  const titleUpdates = new Map();
   let historyEditing = false,
     historyLoading = false,
     historyDeleting = false,
@@ -242,7 +246,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       String(historyView),
     );
     $("[data-scroll]").hidden = historyView;
-    $("form").hidden = historyView;
+    $(".saa-ai-composer-zone").hidden = historyView;
     panel.classList.toggle("saa-ai-history-mode", historyView);
     if (historyView) layout.showHeader();
     $("[data-context-title]").textContent = c.title;
@@ -315,6 +319,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
   function historyBusy(busy) {
     historyLoading = busy;
     $("[data-history-list]").setAttribute("aria-busy", String(busy));
+    renderSessions($("[data-history-list]"));
     updateHistoryControls();
   }
   function cancelHistory() {
@@ -357,8 +362,8 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     $("[data-selection-count]").textContent =
       `${selectedHistoryIds.size}개 선택`;
     $("[data-history-delete]").disabled = busy || !selectedHistoryIds.size;
-    for (const button of $("[data-history-list]").querySelectorAll("button")) {
-      button.disabled = busy;
+    for (const button of $("[data-history-list]").querySelectorAll(".saa-ai-session, .saa-ai-date-select")) {
+      button.disabled = busy || button.dataset.renaming === "true";
       if (historyEditing && button.dataset.historyDay) {
         const ids = selectionDays.get(button.dataset.historyDay) || new Set();
         const selected = [...ids].filter((id) =>
@@ -458,6 +463,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     }
     historySessions = historySessions.filter((session) => !ids.has(session.id));
     for (const id of ids) {
+      titleUpdates.delete(id);
       selectedHistoryIds.delete(id);
       availableHistoryIds.delete(id);
       selectionDays.get(localDay(selectionTimes.get(id)))?.delete(id);
@@ -533,6 +539,17 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       selectionDays,
       selectedIds: selectedHistoryIds,
       currentId: thread?.conversationId,
+      disabled: historyLoading || historyDeleting,
+      onSuggest: suggestConversationTitle,
+      async onRename(id, title, expectedTitle, signal) {
+        const result = await renameConversation(id, title, expectedTitle, signal);
+        if (disposed || signal.aborted) return;
+        if (result?.id !== id || typeof result.title !== "string") throw new Error("history_unavailable");
+        titleUpdates.set(id, { title: result.title, revision: ++titleRevision });
+        historySessions = historySessions.map(session => session.id === id ? { ...session, title: result.title } : session);
+        renderSessions(container);
+        return result;
+      },
       onSelect(id) {
         if (!historyEditing) return void openHistory(id);
         if (selectedHistoryIds.has(id)) selectedHistoryIds.delete(id);
@@ -554,6 +571,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     cancelHistory();
     const task = new AbortController();
     historyRequest = task;
+    const titlesAtStart = titleRevision;
     const list = $("[data-history-list]"),
       scroll = $("[data-history-scroll]"),
       previousTop = scroll.scrollTop;
@@ -568,7 +586,10 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
     try {
       const rows = await listConversations(historyCursor, task.signal);
       if (historyRequest !== task) return;
-      const page = rows.slice(0, 20),
+      const page = rows.slice(0, 20).map(session => {
+        const update = titleUpdates.get(session.id);
+        return update?.revision > titlesAtStart ? { ...session, title: update.title } : session;
+      }),
         loaded = new Set(historySessions.map((session) => session.id));
       historyCursor = page.at(-1) || historyCursor;
       historySessions.push(
@@ -1018,7 +1039,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       !account?.user || account.user.is_anonymous === true;
   });
   $("[data-retry]").onclick = () => void suggestions();
-  $("form").onsubmit = send;
+  $(".saa-ai-composer-zone").onsubmit = send;
   prompt.oninput = updateComposer;
   prompt.addEventListener(
     "keydown",
@@ -1051,7 +1072,7 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       if (panel.contains(event.target)) event.stopPropagation();
       if (event.key === "Tab" && mobile.matches) {
         const focusable = [
-          ...panel.querySelectorAll("button:not(:disabled),textarea,a[href]"),
+          ...panel.querySelectorAll("button:not(:disabled),input:not(:disabled),textarea,a[href]"),
         ].filter((el) => el.getClientRects().length && !el.closest("[inert]"));
         const first = focusable[0],
           last = focusable.at(-1);

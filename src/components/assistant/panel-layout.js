@@ -3,7 +3,7 @@ import { createPanelViewport } from "./panel-viewport";
 export function createPanelLayout({ panel, mobile }) {
   const lifetime = new AbortController();
   const viewport = createPanelViewport({ panel, mobile });
-  const form = panel.querySelector("form");
+  const form = panel.querySelector(".saa-ai-composer-zone");
   const composer = panel.querySelector(".saa-ai-composer");
   const prompt = panel.querySelector("textarea");
   const head = panel.querySelector(".saa-ai-head");
