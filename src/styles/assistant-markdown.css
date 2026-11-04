@@ -1,0 +1,34 @@
+/* Shared browser-rendered markdown for questions, streamed answers and history. */
+.saa-ai-message { min-width: 0; }
+.saa-ai-user { white-space: normal; }
+.saa-ai-markdown { min-width: 0; max-width: 100%; white-space: normal; overflow-wrap: anywhere; line-height: 1.85; }
+.saa-ai .saa-ai-markdown > * { margin: 0; }
+.saa-ai .saa-ai-markdown > * + * { margin-top: 12px; }
+.saa-ai .saa-ai-markdown :is(h1,h2,h3,h4,h5,h6) { color: var(--theme-ink); font-weight: 650; letter-spacing: -.02em; line-height: 1.5; }
+.saa-ai .saa-ai-markdown h1 { font-size: 1.35em; }
+.saa-ai .saa-ai-markdown h2 { font-size: 1.23em; }
+.saa-ai .saa-ai-markdown h3 { font-size: 1.12em; }
+.saa-ai .saa-ai-markdown :is(h4,h5,h6) { font-size: 1em; }
+.saa-ai .saa-ai-markdown :is(h1,h2,h3,h4,h5,h6):not(:first-child) { margin-top: 20px; }
+.saa-ai .saa-ai-markdown strong { color: inherit; font-weight: 650; }
+.saa-ai .saa-ai-markdown :is(ul,ol) { padding-left: 22px; }
+.saa-ai .saa-ai-markdown li + li { margin-top: 4px; }
+.saa-ai .saa-ai-markdown li > :is(ul,ol),.saa-ai .saa-ai-markdown li > p + p { margin-top: 6px; }
+.saa-ai .saa-ai-markdown blockquote { margin-inline: 0; padding: 2px 0 2px 12px; border-left: 3px solid var(--theme-line); color: var(--theme-muted); }
+.saa-ai .saa-ai-markdown blockquote > * + * { margin-top: 8px; }
+.saa-ai .saa-ai-markdown hr { border: 0; border-top: 1px solid var(--theme-line); }
+.saa-ai .saa-ai-markdown a { color: var(--theme-blue); text-decoration: underline; text-underline-offset: 2px; }
+.saa-ai .saa-ai-markdown code { padding: 2px 4px; border-radius: 4px; background: var(--theme-raised); color: inherit; font: .92em/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; white-space: break-spaces; }
+.saa-ai .saa-ai-markdown pre { max-width: 100%; overflow-x: auto; padding: 12px; border: 1px solid var(--theme-line); border-radius: 9px; background: var(--theme-raised); color: var(--theme-ink); white-space: pre; overflow-wrap: normal; line-height: 1.65; }
+.saa-ai .saa-ai-markdown pre code { display: block; padding: 0; border: 0; border-radius: 0; background: transparent; white-space: pre; }
+.saa-ai-markdown-table { max-width: 100%; overflow-x: auto; border: 1px solid var(--theme-line); border-radius: 9px; }
+.saa-ai .saa-ai-markdown table { width: 100%; margin: 0; border: 0; border-collapse: collapse; font-size: .92em; line-height: 1.65; text-align: left; }
+.saa-ai .saa-ai-markdown :is(th,td) { min-width: 85px; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--theme-line); vertical-align: top; }
+.saa-ai .saa-ai-markdown th { background: var(--theme-raised); color: var(--theme-ink); font-weight: 600; }
+.saa-ai .saa-ai-markdown tbody tr { background: transparent; }
+.saa-ai .saa-ai-markdown tbody tr:last-child td { border-bottom: 0; }
+.saa-ai .saa-ai-markdown .contains-task-list { list-style: none; padding-left: 0; }
+.saa-ai .saa-ai-markdown .task-list-item input { width: 14px; height: 14px; margin: 0 7px 0 0; vertical-align: middle; accent-color: var(--theme-blue); }
+.saa-ai .saa-ai-markdown .footnotes { padding-top: 10px; border-top: 1px solid var(--theme-line); color: var(--theme-muted); font-size: .9em; }
+.saa-ai .saa-ai-markdown .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.saa-ai .saa-ai-markdown :is(pre,.saa-ai-markdown-table):focus-visible { outline: 2px solid var(--theme-blue); outline-offset: 2px; }

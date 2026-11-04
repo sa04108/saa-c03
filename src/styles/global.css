@@ -6,6 +6,7 @@
 @import './assistant.css';
 @import './theme.css';
 @import './assistant-layout.css';
+@import './assistant-markdown.css';
 @import './study-layout.css';
 
 [hidden] { display: none !important; }

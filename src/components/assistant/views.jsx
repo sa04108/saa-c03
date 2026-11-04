@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { AssistantIcon } from "./icon";
+import { ChatMarkdown } from "./markdown";
 import { useSessionTitleEditor } from "./session-title-editor";
 
 // The controller owns request/focus lifetimes; these isolated slots own their React children.
@@ -62,57 +63,8 @@ function Time({ value }) {
     </time>
   );
 }
-function Inline({ text }) {
-  const pattern =
-    /(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\(https:\/\/[^\s)]+\))/g;
-  let offset = 0;
-  const children = [];
-  for (const match of text.matchAll(pattern)) {
-    children.push(text.slice(offset, match.index));
-    const value = match[0];
-    if (value.startsWith("**"))
-      children.push(<strong key={match.index}>{value.slice(2, -2)}</strong>);
-    else if (value.startsWith("`"))
-      children.push(<code key={match.index}>{value.slice(1, -1)}</code>);
-    else {
-      const parts = /^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/.exec(value);
-      children.push(
-        <a
-          key={match.index}
-          href={parts[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {parts[1]}
-        </a>,
-      );
-    }
-    offset = match.index + value.length;
-  }
-  children.push(text.slice(offset));
-  return children;
-}
 export function AssistantAnswer({ text }) {
-  return (
-    <div className="saa-ai-answer">
-      {text.split(/\n\s*\n/).map((block, i) => {
-        const lines = block.split("\n");
-        return lines.every((line) => /^\s*[-*] /.test(line)) ? (
-          <ul key={i}>
-            {lines.map((line, j) => (
-              <li key={j}>
-                <Inline text={line.replace(/^\s*[-*] /, "")} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p key={i}>
-            <Inline text={block.replace(/^#{1,6} /gm, "")} />
-          </p>
-        );
-      })}
-    </div>
-  );
+  return <div className="saa-ai-answer"><ChatMarkdown text={text} /></div>;
 }
 export function ChatMessages({ messages }) {
   let day = "";
@@ -135,7 +87,7 @@ export function ChatMessages({ messages }) {
           aria-label={message.role === "user" ? "내 질문" : undefined}
         >
           {message.role === "user" ? (
-            message.text
+            <ChatMarkdown text={message.text} />
           ) : (
             <>
               <div className="saa-ai-reply-label">
