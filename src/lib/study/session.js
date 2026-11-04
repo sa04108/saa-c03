@@ -1,5 +1,6 @@
+import { BANK_ID } from "./bank-info";
+
 const clone = (value) => JSON.parse(JSON.stringify(value));
-const BANK_ID = "saa-c03-684-20260926-v1";
 export const emptyProgress = () => ({
   version: 1,
   bank: BANK_ID,
@@ -65,7 +66,7 @@ export function createStudySession({
       ...emptyProgress(),
       updatedAt: value.updatedAt,
       current: value.current,
-      filter: ["all", "unanswered", "wrong", "flagged", "missing"].includes(
+      filter: ["all", "unanswered", "wrong", "flagged"].includes(
         value.filter,
       )
         ? value.filter
@@ -139,8 +140,7 @@ export function createStudySession({
           (state.filter === "all" ||
             (state.filter === "unanswered" && !r.checked) ||
             (state.filter === "wrong" && s === "wrong") ||
-            (state.filter === "flagged" && r.flagged) ||
-            (state.filter === "missing" && !hasAnswer(q))) &&
+            (state.filter === "flagged" && r.flagged)) &&
           (!state.query ||
             (q.stem + " " + q.options.map((o) => o.text).join(" "))
               .toLowerCase()
@@ -198,7 +198,6 @@ export function createStudySession({
           result: result(byId.get(id)),
           flagged: record(byId.get(id)).flagged,
         })),
-      missing: questions.filter((q) => !hasAnswer(q)).map((q) => q.id),
       imageCount: Object.keys(bank.images).length,
     };
   }

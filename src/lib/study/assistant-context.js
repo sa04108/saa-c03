@@ -1,4 +1,5 @@
 import { dumpsQuestionPath } from "./paths";
+import { isAvailableQuestion } from "./bank-info";
 
 function textOf(element) {
   if (!element) return "";
@@ -33,7 +34,7 @@ export function contextForItem(context, button, { includeAnswers = true } = {}) 
       ...(includeAnswers ? [reference] : []),
     ].join("\n");
     return {
-      id: `dumps:${q.id}`,
+      id: `dumps-v2:${q.id}`,
       kind: "question",
       title: `문제 ${q.id}`,
       text: text.slice(0, 12000),
@@ -82,8 +83,10 @@ export function contextForItem(context, button, { includeAnswers = true } = {}) 
 }
 
 export function contextSourceHref(context) {
-  const dumps = /^dumps:([1-9]\d*)$/.exec(context.id);
-  if (dumps) return `${dumpsQuestionPath(dumps[1])}#question-title`;
+  const dumps = /^dumps-v2:([1-9]\d*)$/.exec(context.id);
+  if (dumps) return isAvailableQuestion(Number(dumps[1]))
+    ? `${dumpsQuestionPath(dumps[1])}#question-title`
+    : null;
   const quiz = /^quiz:Q(\d{3})$/.exec(context.id);
   if (quiz) return `/concepts/quiz/q${quiz[1]}/#question-Q${quiz[1]}`;
   const concept = /^concept:\/terms\/([a-z0-9-]+)\.html$/.exec(context.id);

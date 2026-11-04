@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "../account-provider";
 import { StudyHeader } from "../study-header";
 import { createStudySession } from "@/lib/study/session";
+import { QUESTION_COUNT } from "@/lib/study/bank-info";
 import { QuestionCard } from "./question-card";
 import { ProgressSidebar } from "./progress-sidebar";
 import { BackupDialog } from "./backup-dialog";
@@ -180,7 +181,7 @@ export function DumpsPage({ embedded = null, route = null }) {
         />
         <main id="main" ref={main}>
           <div className="crumb">
-            <span className="exam-tag">PRACTICE / 684</span>
+            <span className="exam-tag">PRACTICE / {QUESTION_COUNT}</span>
             <span id="position">
               {view?.q
                 ? `${view.index + 1} / ${view.ids.length} · PDF ${view.q.page}쪽`
@@ -221,8 +222,7 @@ export function DumpsPage({ embedded = null, route = null }) {
           <p className="footnote">
             문제·선택지: 제공 PDF · 원문 답안·해설: 제공 TXT
             <br />
-            ChatGPT 보충·정정은 원문과 구분해 표시합니다. 검토가 필요한 답안은
-            자동채점에서 제외합니다.
+            ChatGPT 보충·정정은 원문과 구분해 표시합니다.
           </p>
         </main>
       </div>

@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { backendConfig as config } from "./config";
 import { ProgressStore } from "../study/progress-store";
+import { BANK_ID } from "../study/bank-info";
 
 let account;
 export function getAccount() {
@@ -9,7 +10,7 @@ export function getAccount() {
 function createAccount() {
   "use strict";
   const home = new URL("/", location.href).href;
-  const bankId = "saa-c03-684-20260926-v1";
+  const bankId = BANK_ID;
   const configured =
     /^https:\/\//.test(config.supabaseUrl || "") &&
     !!config.supabasePublishableKey;

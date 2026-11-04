@@ -38,72 +38,63 @@
     "correction": "MFA Delete protects permanent deletion of object versions and changes to the bucket's versioning state. It does not require MFA for an ordinary DeleteObject request that adds a delete marker. Versioning enables recovery from that apparent deletion."
   },
   "46": {
-    "correction": "B identifies the appropriate PII discovery service, but an SNS notification asking administrators to remove files is not automated remediation. Macie also has file-format and object-size analysis limits, so the 200-GB-plus inputs require a supported preprocessing or partitioning strategy. A generic quota-increase request does not remove every analysis limit.",
-    "answerReview": true
-  },
-  "47": {
     "correction": "An On-Demand Capacity Reservation is specific to one Availability Zone, instance type, platform, and other matching attributes. Create matching reservations in each of the three required zones rather than one reservation spanning all three. A reservation cannot guarantee capacity beyond what AWS successfully reserves."
   },
-  "49": {
+  "48": {
     "correction": "The suggested Glacier Select query path is a legacy feature and should not be assumed available for a new deployment. Restore archived S3 objects before querying them with Athena, and distinguish S3 Glacier storage classes from the older Glacier vault APIs. Confirm current feature availability before implementing the original retrieval design."
   },
-  "50": {
+  "49": {
     "correction": "Patch Manager can install eligible third-party packages on supported Linux systems through configured repositories; it is not universally limited to operating-system patches. Run Command is appropriate for a custom immediate patch command, and maintenance windows can schedule such commands. Support depends on the software package, OS, and patch baseline."
   },
-  "51": {
+  "50": {
     "explanation": "Correct (B, D): An EventBridge schedule invokes Lambda to fetch the statistics, and SES sends the formatted HTML report.\nNot A: Firehose delivers streaming data rather than fetching and emailing a daily API report.\nNot C: A Glue job adds unnecessary ETL infrastructure for a small scheduled API request.\nNot E: S3 event notifications through SNS do not generate a scheduled, formatted HTML report.",
     "sourceAnswerOnly": true
   },
-  "52": {
-    "correction": "C matches the intended shared, automatically growing file-system design, but EFS file-system capacity must not be confused with its per-file size limit. The stated individual files of hundreds of terabytes need a supported file-size check or partitioning strategy. None of the choices establishes that requirement without clarification.",
-    "answerReview": true,
-    "sourceAnswerOnly": true
-  },
-  "53": {
+  "51": {
     "explanation": "Correct (C): S3 Standard provides first-year access, Deep Archive reduces later storage costs, and compliance-mode Object Lock enforces ten-year retention.\nNot A: Glacier archival storage can require restoration, and an access policy is not immutable retention.\nNot B: Administrators can change an IAM policy, so it cannot guarantee protection from privileged deletion.\nNot D: Governance retention can be bypassed with permission, and One Zone-IA does not provide maximum AZ resiliency.",
     "sourceAnswerOnly": true
   },
-  "54": {
+  "52": {
     "explanation": "Correct (C): Multi-AZ FSx for Windows File Server preserves SMB file access and provides managed failover.\nNot A: S3 object access does not preserve the existing Windows file-share interface.\nNot B: An S3 File Gateway does not by itself provide the proposed highly available managed Windows file-server replacement.\nNot D: EFS provides NFS rather than the Windows SMB shares required by these workloads.",
     "sourceAnswerOnly": true
   },
-  "55": {
+  "53": {
     "explanation": "Correct (C): The RDS security group can allow the database port only from the private application instances’ security group.\nNot A: Omitting a public-subnet route does not remove the VPC local route or provide the required access control.\nNot B: Security groups support allow rules rather than explicit deny rules.\nNot D: VPC peering connects VPCs, not individual subnets within the same VPC.",
     "sourceAnswerOnly": true
   },
-  "56": {
+  "54": {
     "explanation": "Correct (C): A Regional API Gateway custom domain uses an ACM certificate in the API’s Region and a matching Route 53 alias.\nNot A: Stage variables do not create a custom domain or bind its TLS certificate.\nNot B: A certificate in us-east-1 cannot serve this ca-central-1 Regional custom domain.\nNot D: The certificate is in the wrong Region, and an A record cannot use a domain name as an IP address.",
     "sourceAnswerOnly": true
   },
-  "57": {
+  "55": {
     "explanation": "Correct (B): Rekognition provides managed image moderation with human review for uncertain results.\nNot A: Comprehend analyzes text rather than moderating image content.\nNot C: Developing and training a SageMaker model requires more effort than a managed moderation API.\nNot D: Hosting a custom model on Fargate adds model development and deployment work.",
     "sourceAnswerOnly": true
   },
-  "58": {
+  "56": {
     "explanation": "Correct (C): ECS on Fargate runs containers without requiring the company to provision or maintain EC2 worker hosts.\nNot A: Installing Docker on EC2 leaves host provisioning and maintenance to the company.\nNot B: ECS orchestrates containers but EC2 worker nodes still require customer management.\nNot D: An ECS-optimized AMI simplifies setup but does not remove EC2 host management.",
     "sourceAnswerOnly": true
   },
-  "59": {
+  "57": {
     "explanation": "Correct (D): Kinesis ingests the clickstream, Data Firehose delivers it to S3, and Redshift supports large-scale analytical queries.\nNot A: Data Pipeline schedules workflows rather than providing the proposed managed streaming ingestion path.\nNot B: A custom EC2 ingestion fleet adds scaling and operational work.\nNot C: CloudFront caches delivered content rather than collecting a continuous clickstream for analysis.",
     "sourceAnswerOnly": true
   },
-  "60": {
+  "58": {
     "explanation": "Correct (C): An ALB HTTP listener redirect action tells clients to reconnect using HTTPS.\nNot A: Blocking HTTP rejects requests instead of redirecting them.\nNot D: NLB SNI selects TLS certificates and does not perform HTTP-to-HTTPS redirects.",
     "sourceAnswerOnly": true
   },
-  "61": {
+  "59": {
     "explanation": "Correct (C): Secrets Manager supports scheduled RDS credential rotation and lets the EC2 role retrieve credentials at runtime.\nNot A: Instance metadata is not a managed credential-rotation store, and this design requires custom synchronization.\nNot B: An S3 configuration file and scheduled rotation function require a custom credential-management workflow.\nNot D: Parameter Store does not offer the native automatic database-credential rotation switch described.",
     "sourceAnswerOnly": true
   },
-  "62": {
+  "60": {
     "explanation": "Correct (D): An externally issued certificate must be imported into ACM and renewed externally before the replacement is reimported.\nNot A: An ACM-issued certificate does not satisfy the external-CA requirement.\nNot B: Issuing an ACM certificate and importing its key material does not make it an externally issued certificate.\nNot C: A private CA certificate is not the required externally issued, publicly trusted web certificate.",
     "sourceAnswerOnly": true
   },
-  "63": {
+  "61": {
     "explanation": "Correct (A): S3 stores both file types while upload-triggered Lambda conversions scale on demand without an idle server fleet.\nNot B: A 5-MB PDF exceeds DynamoDB’s 400-KB item limit.\nNot C: EC2 conversion servers and instance-attached EBS storage add operating cost and scaling complexity.\nNot D: The server fleet and file-system layer add overhead that this event-driven conversion workflow does not require.",
     "sourceAnswerOnly": true
   },
-  "64": {
+  "62": {
     "explanation": "Intended answer (D): The legacy FSx File Gateway design caches SMB files locally while cloud workloads access managed FSx storage.\nNot A: On-premises file access still crosses the VPN because there is no local cache.\nNot B: Cloud workloads would access the on-premises gateway rather than a nearby managed Windows file system.\nNot C: Direct S3 access changes the existing SMB file-access model.",
     "correction": "FSx File Gateway is no longer available to new customers, although existing customers can continue using it. Treat D as a legacy hybrid-storage answer and evaluate a supported FSx for Windows File Server access or caching design for a new deployment.",
     "references": [
@@ -114,185 +105,175 @@
     ],
     "sourceAnswerOnly": true
   },
-  "65": {
+  "63": {
     "explanation": "Correct (C): Textract extracts document text, and Comprehend Medical identifies PHI without a custom model.\nNot A: Maintaining custom OCR and medical-language detection code requires more operational effort.\nNot B: A SageMaker model requires training and management that Comprehend Medical already provides.\nNot D: Rekognition text detection is not a replacement for Textract’s PDF and document-processing capabilities.",
     "sourceAnswerOnly": true
   },
-  "66": {
+  "64": {
     "explanation": "Correct (C): Standard-IA provides immediate, multi-AZ access for rarely read files, and lifecycle expiration removes them after four years.\nNot A: The archival Glacier tier requires restoration instead of immediate access.\nNot B: One Zone-IA does not protect difficult-to-recreate files against loss of an Availability Zone.\nNot D: Archiving after four years retains storage costs instead of deleting eligible files.",
     "sourceAnswerOnly": true
   },
-  "67": {
+  "65": {
     "explanation": "Correct (D): A longer visibility timeout prevents a second worker receiving the message before processing finishes, although retries still require idempotent writes.\nNot A: Creating another queue does not change the processing timeout causing redelivery.\nNot B: Queue permissions control access rather than concurrent processing of an outstanding message.\nNot C: ReceiveMessage wait time controls polling, not how long a received message stays hidden.",
     "sourceAnswerOnly": true
   },
-  "68": {
+  "66": {
     "explanation": "Correct (A): Direct Connect provides the primary consistent-latency path, with a less expensive VPN backup when slower failover is acceptable.\nNot B: Both paths depend on internet conditions and do not provide the requested dedicated primary connection.\nNot C: A second Direct Connect circuit costs more than the acceptable VPN backup.\nNot D: The proposed CLI failover attribute does not automatically provision a replacement connection.",
     "sourceAnswerOnly": true
   },
-  "69": {
+  "67": {
     "explanation": "Correct (B): Multi-AZ application instances and an Aurora failover reader improve availability, while RDS Proxy reduces connection disruption.\nNot A: A multi-Region deployment adds replication and failover complexity beyond the least-effort requirement.\nNot C: A single AZ and hourly snapshot recovery create greater downtime and potential data loss.\nNot D: An Auto Scaling group cannot span Regions, and S3-triggered database writes add unnecessary complexity.",
     "sourceAnswerOnly": true
   },
-  "70": {
+  "68": {
     "explanation": "Correct (C): HTTP health checks combined with Auto Scaling using ELB health checks detect application failures and replace unhealthy instances.\nNot A: HTTP checks detect errors but do not by themselves configure Auto Scaling to replace affected instances.\nNot B: A custom cron-based restart mechanism violates the no-custom-code requirement.\nNot D: An alarm on the existing health checks cannot detect HTTP failures that those checks miss.",
     "sourceAnswerOnly": true
   },
-  "71": {
+  "69": {
     "explanation": "Correct (B): DynamoDB PITR restores a new table to a time before corruption, with restore duration verified against the one-hour RTO.\nNot A: Global tables replicate corrupt writes rather than retain an independent historical recovery point.\nNot C: Daily exports cannot meet a fifteen-minute RPO, and Glacier adds restoration delay.\nNot D: DynamoDB tables cannot be backed up using EBS snapshots.",
     "sourceAnswerOnly": true
   },
-  "72": {
+  "70": {
     "explanation": "Correct (D): An S3 gateway endpoint avoids NAT processing charges for same-Region S3 traffic without an additional endpoint fee.\nNot A: API Gateway is not a subnet routing appliance for S3 requests.\nNot B: A NAT gateway adds processing charges and does not accept a VPC endpoint policy.",
     "sourceAnswerOnly": true
   },
-  "73": {
+  "71": {
     "explanation": "Correct (C, D): Internet traffic reaches the bastion from the company’s public IP range, while the internal SSH hop uses the bastion’s private IP.\nNot A: Allowing only application instances blocks the administrator’s initial connection.\nNot B: The company’s private IP range is not the source address seen across its internet connection.\nNot E: The bastion uses its private address when reaching application instances inside the VPC.",
     "sourceAnswerOnly": true
   },
-  "74": {
+  "72": {
     "explanation": "Correct (A, C): The web tier needs inbound HTTPS, and SQL Server needs inbound port 1433 only from the web-tier security group.\nNot B: An outbound HTTPS rule does not allow incoming customer connections.\nNot D: Database egress rules do not authorize incoming SQL connections, and response traffic is statefully allowed.\nNot E: Allowing port 443 to the database opens an unnecessary port beyond SQL Server’s requirement.",
     "sourceAnswerOnly": true
   },
-  "75": {
+  "73": {
     "explanation": "Correct (A): SQS buffers work between tiers, while API Gateway and Lambda minimize the infrastructure needed to process it.\nNot B: Larger instances do not durably buffer requests when a downstream tier is overloaded.\nNot C: SNS is a publish/subscribe service without the consumer-controlled queue backlog described.\nNot D: SQS helps, but managing EC2 worker fleets requires more operational effort than Lambda.",
     "sourceAnswerOnly": true
   },
-  "76": {
+  "74": {
     "explanation": "Correct (B): DataSync securely transfers file data to S3 over Direct Connect’s dedicated network path.\nNot A: Public-internet throughput is less predictable for this sustained, high-volume transfer.\nNot C: DMS migrates databases rather than JSON files from a SAN.\nNot D: A dedicated connection does not make DMS an appropriate file-transfer service.",
     "sourceAnswerOnly": true
   },
-  "77": {
+  "75": {
     "explanation": "Correct (C): API Gateway and Kinesis ingest records, while Data Firehose uses Lambda transformations before delivering them to S3.\nNot A: Hosting the ingestion API on EC2 adds server maintenance.\nNot B: Disabling source/destination checks does not create a managed streaming-ingestion integration with Glue.\nNot D: Glue is not the direct API Gateway streaming-ingestion destination described.",
     "sourceAnswerOnly": true
   },
-  "78": {
+  "76": {
     "explanation": "Correct (B): AWS Backup centrally schedules DynamoDB backups and applies seven-year retention without custom orchestration.\nNot A: PITR’s recovery window is far shorter than seven years.\nNot C: A managed DynamoDB on-demand backup is not a backup file placed in the customer’s S3 bucket.\nNot D: A custom Lambda export and lifecycle workflow adds maintenance compared with managed backup policies.",
     "sourceAnswerOnly": true
   },
-  "79": {
+  "77": {
     "explanation": "Correct (A): On-demand capacity charges for actual requests and suits idle periods followed by unpredictable bursts within throughput limits.\nNot B: A global secondary index adds an access path rather than solving the table’s capacity-mode decision.\nNot C: Provisioned auto scaling can react too slowly to abrupt spikes and retains provisioned-capacity costs.\nNot D: Global tables add regional replicas and cost without removing provisioned-capacity planning.",
     "sourceAnswerOnly": true
   },
-  "80": {
+  "78": {
     "explanation": "Correct (B): Private AMI launch permissions and cross-account authorization for the customer-managed KMS key securely enable partner access.\nNot A: Encrypted AMIs cannot be shared publicly, and public access would not meet least privilege.\nNot C: KMS key policies authorize principals rather than establish trust in another encryption key.\nNot D: The proposed export does not support this encrypted EBS-backed AMI sharing workflow.",
     "sourceAnswerOnly": true
   },
-  "81": {
+  "79": {
     "explanation": "Correct (C): SQS durably stores jobs while queue-based Auto Scaling adjusts the stateless worker fleet to pending work.\nNot A: An SNS topic is not a worker-pulled job queue, and CPU usage does not directly measure pending jobs.\nNot B: Network utilization does not reliably represent the number of jobs waiting in SQS.\nNot D: SNS publication counts measure incoming events rather than the outstanding durable work backlog.",
     "sourceAnswerOnly": true
   },
-  "83": {
+  "81": {
     "explanation": "Correct (C): CloudFront accelerates delivery through edge locations while keeping the existing US servers as a custom origin.\nNot A: Moving to a US EC2 instance does not add European edge delivery and requires a migration.\nNot B: S3 static hosting cannot directly replace the dynamic application backend.\nNot D: DNS geoproximity routing does not cache content or improve the delivery path to the same US origin.",
     "sourceAnswerOnly": true
   },
-  "84": {
+  "82": {
     "explanation": "Correct (B): Reserved Instances discount steady production usage, while On-Demand development and test instances incur no compute charges while stopped.\nNot A: Spot interruptions risk production availability, and Reserved Instance charges continue during development downtime.\nNot C: Spot blocks are discontinued, and reserving intermittently used development capacity wastes the commitment.\nNot D: On-Demand production misses steady-usage discounts, and Spot blocks are no longer available.",
     "sourceAnswerOnly": true
   },
-  "85": {
+  "83": {
     "explanation": "Correct (A): Versioning and correctly configured Object Lock retention protect the original document versions from modification and deletion.\nNot B: Lifecycle archiving changes storage class but does not make documents immutable.\nNot C: Read-only access controls can be changed and do not enforce immutable retention.\nNot D: A read-only mount limits that client rather than preventing privileged changes to the underlying files.",
     "sourceAnswerOnly": true
   },
-  "86": {
+  "84": {
     "explanation": "Correct (A): Secrets Manager securely stores RDS credentials and supports automatic rotation while authorized server roles retrieve them.\nNot B: OpsCenter manages operational issues rather than rotating database credentials.\nNot C: An encrypted S3 object does not provide managed database-credential rotation.\nNot D: KMS-encrypted local files still require custom distribution and credential rotation.",
     "sourceAnswerOnly": true
   },
-  "87": {
+  "85": {
     "explanation": "Correct (D): SQS durably buffers accepted customer records until Lambda can successfully write them after the database upgrade.\nNot A: RDS Proxy manages connections but does not durably queue writes during database unavailability.\nNot B: A longer Lambda timeout cannot safely retain records through an upgrade of uncertain duration.\nNot C: Lambda local storage is neither durable shared storage nor accessible to other function execution environments.",
     "sourceAnswerOnly": true
   },
-  "88": {
+  "86": {
     "explanation": "Correct (A): Requester Pays bills eligible request and download charges to the authenticated marketing firm instead of the bucket owner.\nNot B: Cross-Region Replication creates additional transfer and replica-storage charges.\nNot C: Cross-account permissions authorize access without shifting eligible transfer charges to the requester.\nNot D: Intelligent-Tiering optimizes storage costs, while synchronization still transfers and duplicates the data.",
     "sourceAnswerOnly": true
   },
-  "89": {
+  "87": {
     "explanation": "Correct (A): Versioning preserves recoverable copies, and MFA Delete protects permanent version deletion and versioning-state changes.\nNot B: Enabling user MFA alone does not enforce MFA on every S3 deletion request.\nNot C: Lifecycle policies apply to buckets and objects rather than attaching denial rules to IAM users.\nNot D: Restricting KMS decryption does not prevent deletion and would also block legitimate document access.",
     "sourceAnswerOnly": true
   },
-  "90": {
+  "88": {
     "explanation": "Correct (B): Running the reporting script on a read replica removes its query load from the primary database.\nNot A: A traditional Multi-AZ standby is a failover target rather than a reporting reader.\nNot C: Manual end-of-day exports add work and miss the business-hours reporting requirement.\nNot D: A cache requires invalidation and application changes, whereas a replica directly offloads the reporting queries.",
     "sourceAnswerOnly": true
   },
-  "91": {
+  "89": {
     "explanation": "Correct (A): An S3 gateway endpoint supplies a VPC route to S3 without traversing an internet or NAT gateway.\nNot B: S3 buckets are regional resources and cannot be placed inside private subnets.\nNot C: Using the same Region does not enforce a private network path.\nNot D: A NAT gateway provides outbound connectivity rather than a private S3 endpoint.",
     "sourceAnswerOnly": true
   },
-  "92": {
+  "90": {
     "explanation": "Correct (A, C): The gateway endpoint provides private S3 connectivity, while a restrictive bucket policy limits access to the application’s principals and path.\nNot B: Public access exposes sensitive objects beyond the application tier.\nNot D: Copying long-lived IAM user credentials onto instances is less secure than using instance-role credentials.\nNot E: A NAT instance adds internet routing and server administration instead of a direct private S3 path.",
     "sourceAnswerOnly": true
   },
-  "93": {
+  "91": {
     "explanation": "Correct (B): Aurora readers offload production queries, and copy-on-write cloning creates staging databases without a full export and reload.\nNot A: Repeated mysqldump operations preserve the export load and staging delay.\nNot C: A traditional RDS Multi-AZ standby is not available as a writable staging database.\nNot D: Read replicas help queries, but mysqldump-based staging still requires an export and restore workflow.",
     "sourceAnswerOnly": true
   },
-  "94": {
+  "92": {
     "explanation": "Correct (C): S3 events and SQS feed serverless Lambda processing, with DynamoDB storing the small JSON results without worker-fleet management.\nNot A: EMR and Aurora add unnecessary infrastructure for simple, sporadic file processing.\nNot B: EC2 consumers require server provisioning and maintenance that Lambda avoids.\nNot D: Kinesis and Aurora add stream and relational-database management beyond this queued, one-time transformation.",
     "sourceAnswerOnly": true
   },
-  "95": {
+  "93": {
     "explanation": "Correct (D): Read replicas offload queries, and initially matching the source capacity reduces the risk of a new processing or replication bottleneck.\nNot A: Keeping reads on the primary does not separate them from writes.\nNot B: The standby in a traditional RDS Multi-AZ DB instance deployment cannot serve reporting reads.\nNot C: Halving replica resources without workload evidence risks inadequate read capacity and replication lag.",
     "sourceAnswerOnly": true
   },
-  "96": {
+  "94": {
     "explanation": "Correct (C): The source IP 10.100.100.254 matches the allowed /24 range, and us-east-1 is excluded from the explicit regional deny.\nNot A: The explicit deny blocks EC2 actions in Regions other than us-east-1.\nNot B: The condition checks the caller’s source IP, not the target instance’s IP address.\nNot D: The stated source IP and Region satisfy the allow without matching the deny.",
     "sourceAnswerOnly": true
   },
-  "97": {
+  "95": {
     "explanation": "Correct (D): FSx for Windows File Server supports SMB and Active Directory, with Multi-AZ deployment providing managed high availability.\nNot A: EFS provides NFS rather than the required Windows SMB file service.\nNot B: Two independently deployed file gateways do not form the proposed managed Multi-AZ Windows file system.\nNot C: S3 object storage does not provide a native Windows shared-file volume with these application semantics.",
     "sourceAnswerOnly": true
   },
-  "98": {
+  "96": {
     "explanation": "Correct (C): A visibility timeout of at least six times the function timeout plus the batching window reduces premature redelivery, while idempotency remains necessary for retries.\nNot A: SQS long polling has a twenty-second maximum and does not control processing visibility.\nNot B: S3 notifications cannot directly target a FIFO queue, so replacing the queue alone is not a valid integration.\nNot D: Deleting before processing succeeds risks permanently losing work after a function failure.",
     "sourceAnswerOnly": true
   },
-  "99": {
+  "97": {
     "explanation": "Correct (D): FSx for Lustre provides a managed Lustre file system that on-premises clients can reach through suitable private connectivity.\nNot A: File Gateway exposes SMB or NFS shares rather than Lustre.\nNot B: A self-managed Windows file server provides SMB rather than a managed Lustre service.\nNot C: EFS uses NFS and cannot be reconfigured into a Lustre file system.",
     "sourceAnswerOnly": true
   },
-  "100": {
+  "98": {
     "explanation": "Correct (C): KMS-controlled encryption and S3 provide managed cryptographic access controls and highly available encrypted storage.\nNot B: A custom cryptography function adds maintenance and does not specify highly available storage for the encrypted certificate data.\nNot D: EBS volumes are AZ-scoped and require additional infrastructure to provide the shared, highly available object storage S3 supplies.",
     "sourceAnswerOnly": true
   },
-  "101": {
+  "99": {
     "explanation": "Correct (A): A public NAT gateway in each AZ gives the corresponding private subnet outbound IPv4 access without a cross-AZ dependency.\nNot B: NAT instances in private subnets lack the required public internet path.\nNot C: Internet gateways attach to VPCs rather than subnets, and a second gateway cannot be attached this way.\nNot D: An egress-only internet gateway supports IPv6 rather than the stated IPv4 workload.",
     "sourceAnswerOnly": true
   },
-  "102": {
+  "100": {
     "explanation": "Intended answer (B, E): An on-premises DataSync agent copies the underlying NFS file system to an EFS destination using configured source and destination locations.\nNot A: Selecting an AZ for EC2 does not configure or automate the existing data transfer.\nNot C: An EBS volume does not migrate the files to the required EFS file system.\nNot D: A manual copy command does not provide the requested managed transfer automation.",
     "sourceAnswerOnly": true
   },
-  "103": {
+  "101": {
     "explanation": "Correct (A): Glue job bookmarks track previously processed source data so later runs can process new or changed inputs.\nNot B: Deleting source data is unnecessarily destructive and replaces tracking with a separate cleanup process.\nNot C: Reducing workers changes processing capacity rather than which files the job has already processed.\nNot D: FindMatches identifies similar records rather than tracking completed input files across runs.",
     "sourceAnswerOnly": true
   },
-  "104": {
+  "102": {
     "explanation": "Correct (A, C): CloudFront distributes traffic through AWS edge infrastructure, while Shield Advanced adds enhanced DDoS protection and response support.\nNot B: GuardDuty detects threats but does not automatically block attacking requests by itself.\nNot D: Maintaining thousands of attacker addresses in network ACLs encounters rule limits and adds reactive custom logic.\nNot E: Interruptible Spot capacity and CPU-based scaling do not provide DDoS mitigation or guaranteed availability.",
     "sourceAnswerOnly": true
   },
-  "105": {
+  "103": {
     "explanation": "Correct (D): A Lambda resource policy grants events.amazonaws.com the specific InvokeFunction permission, ideally scoped to the intended rule ARN.\nNot A: An execution role controls the function’s runtime permissions, and a wildcard principal is unnecessarily broad.\nNot B: The Lambda execution role does not authorize EventBridge to invoke the function.\nNot C: Granting lambda:* allows more operations than the single invocation permission required.",
     "sourceAnswerOnly": true
   },
-  "106": {
+  "104": {
     "explanation": "Correct (D): SSE-KMS with automatic annual rotation of a customer-managed symmetric key provides encryption and CloudTrail-auditable key usage.\nNot A: SSE-C leaves key rotation and key-use auditing to the customer.\nNot B: SSE-S3 does not expose customer-controlled KMS keys or corresponding KMS key-use audit records.\nNot C: Manual rotation creates additional operational work when automatic rotation meets the requirement.",
     "sourceAnswerOnly": true
   },
-  "107": {
-    "correction": "The supplied D answer is incomplete because Kinesis Data Analytics is a stream-processing service, not a general-purpose REST datastore. API Gateway with Lambda can implement ingestion and retrieval, but the question also needs a persistent datastore to specify a complete solution. None of the supplied choices fully describes that storage architecture.",
-    "answerReview": true,
-    "sourceAnswerOnly": true
-  },
-  "108": {
-    "correction": "D has the intended SNS-to-multiple-SQS fan-out topology, but RDS event notifications do not report individual sold-listing row changes. Publish sales from the application, a transactional outbox, or a supported CDC mechanism before fan-out. The source answer should not be read as a native row-change trigger for an ordinary RDS database.",
-    "answerReview": true,
-    "sourceAnswerOnly": true
-  },
-  "109": {
+  "105": {
     "explanation": "Correct (D): A legal hold protects each object version indefinitely until an authorized user removes the hold before deletion.\nNot A: A Glacier vault lock is not the requested S3 object-level legal hold with selectively removable protection.\nNot B: A hundred-year retention period is an arbitrary fixed duration rather than an indefinite legal hold.\nNot C: Detecting changes and restoring backups allows prohibited changes to occur before remediation.",
     "sourceAnswerOnly": true
   },
-  "110": {
+  "106": {
     "correction": "C and D best satisfy the stated goals: browsers upload directly to S3 with presigned URLs, then an S3 event invokes Lambda to resize the image asynchronously. B removes resizing from the request path but still makes the web servers proxy every upload. The source B,D key therefore misses the more decoupled direct-upload option.",
     "answerOverride": [
       "C",
@@ -300,182 +281,158 @@
     ],
     "sourceAnswerOnly": true
   },
-  "111": {
+  "107": {
     "explanation": "Correct (D): Multi-AZ Amazon MQ, an Auto Scaling consumer fleet, and RDS Multi-AZ provide managed recovery across all three application tiers.\nNot A: Self-managed brokers and database replication require more failover administration.\nNot B: The database remains self-managed, and fixed consumers lack automatic fleet replacement.\nNot C: A fixed additional consumer lacks the Auto Scaling group’s automated replacement and capacity management.",
     "sourceAnswerOnly": true
   },
-  "112": {
+  "108": {
     "explanation": "Correct (A): ECS on Fargate reuses the containers, scales task count, and distributes requests through an ALB without managing worker servers.\nNot B: Two fixed EC2 instances neither remove host management nor automatically match growing demand.\nNot C: Rewriting the application as Lambda functions conflicts with minimum code changes.\nNot D: An HPC cluster adds infrastructure intended for parallel computing rather than ordinary web-request scaling.",
     "sourceAnswerOnly": true
   },
-  "113": {
+  "109": {
     "explanation": "Intended answer (C): The legacy Snowball transfer avoids unavailable WAN bandwidth, and Glue runs the transformation as a managed cloud job.\nNot A: DataSync needs network bandwidth that the data center does not have available.\nNot B: A single Snowcone cannot hold the stated fifty-terabyte dataset, and device execution does not establish the ongoing cloud job.\nNot D: Extra edge compute is unnecessary, and a self-managed EC2 transformation server adds operational work.",
     "sourceAnswerOnly": true
   },
-  "114": {
+  "110": {
     "explanation": "Correct (C): Lambda scales photo processing while S3 stores image objects and DynamoDB retains the existing metadata.\nNot A: Storing photos in DynamoDB risks its 400-KB item limit and inefficient large-object storage.\nNot B: Data Firehose delivers streams rather than providing the proposed photo-processing and image-storage application.\nNot D: A fixed three-instance fleet does not automatically match variable demand, and EBS storage is instance/AZ-oriented.",
     "sourceAnswerOnly": true
   },
-  "115": {
+  "111": {
     "explanation": "Correct (C): Private subnets with an S3 gateway endpoint route file transfers to S3 without using an internet gateway.\nNot A: A NAT gateway provides an outbound internet path rather than a private S3 endpoint.\nNot B: A security-group destination restriction does not change the network route.\nNot D: Direct Connect connects external networks to AWS and is unnecessary for VPC-to-S3 access.",
     "sourceAnswerOnly": true
   },
-  "116": {
+  "112": {
     "explanation": "Correct (A, D): S3 hosts the static files without CMS servers, and CloudFront supplies viewer HTTPS and scalable edge delivery.\nNot B: WAF filters web requests rather than providing a TLS endpoint by itself.\nNot C: A custom Lambda content server adds code and maintenance for files S3 can serve directly.\nNot E: EC2 web servers retain patching and fleet-management work that static hosting avoids.",
     "sourceAnswerOnly": true
   },
-  "117": {
+  "113": {
     "correction": "The CloudWatch Logs console's OpenSearch subscription setup uses a Lambda function to transform and forward the logs. It is not a direct OpenSearch subscription destination with no forwarding component. Account for that function's permissions, capacity, and failures."
   },
-  "118": {
+  "114": {
     "explanation": "Correct (D): S3 provides scalable shared object storage for the document repository without provisioning storage servers or disks.\nNot A: EBS volumes are AZ-scoped block devices and require server and capacity management for this shared repository.\nNot B: EFS provides file-system semantics that are unnecessary for an object repository and generally cost more.\nNot C: OpenSearch requires index and cluster resources for search rather than economical primary object storage.",
     "sourceAnswerOnly": true
   },
-  "119": {
+  "115": {
     "explanation": "Correct (B): Firewall Manager centrally applies WAF protections against SQL injection and cross-site scripting across the organization’s accounts and Regions.\nNot A: Separate WAF configurations require more per-account administration than centralized policies.\nNot C: Shield addresses DDoS attacks rather than replacing WAF’s SQL-injection and cross-site-scripting rules.\nNot D: Shield in one Region neither supplies the application-layer rules nor centrally covers both regional API deployments.",
     "sourceAnswerOnly": true
   },
-  "121": {
+  "117": {
     "explanation": "Correct (A): Copying a snapshot with encryption and restoring a new DB instance encrypts the replacement database and its future snapshots.\nNot B: RDS storage encryption cannot be enabled by attaching a customer-created EBS volume.\nNot C: A snapshot restore creates a new DB instance rather than overwriting an existing instance.\nNot D: Encrypting an S3 copy does not enable encryption on the running RDS database or its future snapshots.",
     "sourceAnswerOnly": true
   },
-  "122": {
+  "118": {
     "explanation": "Correct (B): KMS manages encryption keys, access controls, and cryptographic operations without a customer-operated key-management platform.\nNot A: MFA strengthens authentication but does not supply scalable key storage and cryptographic APIs.\nNot C: ACM manages TLS certificates rather than general-purpose application data-encryption keys.\nNot D: IAM policies restrict access but do not store keys or perform encryption operations.",
     "sourceAnswerOnly": true
   },
-  "123": {
+  "119": {
     "explanation": "Correct (D): An ALB HTTPS listener uses the imported ACM certificate to offload client TLS processing from the application servers.\nNot A: Replacing certificates on the same servers leaves TLS processing on those servers.\nNot B: S3 stores objects and cannot perform TLS termination for the EC2 application.\nNot C: A single self-managed proxy adds an operational burden and potential bottleneck compared with a managed ALB.",
     "sourceAnswerOnly": true
   },
-  "124": {
+  "120": {
     "explanation": "Correct (A): Spot Instances reduce compute cost for interruptible, stateless batch jobs that can retry when capacity is reclaimed.\nNot B: Reserved commitments are less suited to highly variable, interruption-tolerant batch demand.\nNot C: On-Demand capacity costs more when the workload can safely use Spot interruptions.\nNot D: A single Lambda invocation cannot run the stated hour-long job because its maximum duration is fifteen minutes.",
     "sourceAnswerOnly": true
   },
-  "125": {
+  "121": {
     "explanation": "Correct (A, E): Private application and Multi-AZ database tiers sit behind a public multi-AZ ALB, with NAT gateways providing outbound payment-service access.\nNot B: An ALB confined to private subnets does not provide the required public website entry point.\nNot C: Public application subnets do not provide the requested private application-tier architecture.\nNot D: One public subnet cannot provide the required two-AZ public ALB and zonal NAT placement.",
     "sourceAnswerOnly": true
   },
-  "126": {
+  "122": {
     "explanation": "Correct (B): Keeping two years in S3 Standard and then transitioning to Deep Archive preserves recent access while reducing long-term storage cost.\nNot A: Immediate archiving makes recent data require restoration.\nNot C: Enabling optional archive tiers alone does not ensure two full years of immediate access.\nNot D: One Zone-IA sacrifices multi-AZ resilience for the recent data that must remain highly available.",
     "sourceAnswerOnly": true
   },
-  "128": {
+  "124": {
     "explanation": "Correct (B): Spot-based EKS managed node groups reduce compute expense and automate more node lifecycle work for disruption-tolerant containers.\nNot A: A standalone EC2 fleet requires more container-orchestration and node-management work.\nNot C: On-Demand EC2 adds host management and misses the savings available to interruptible workloads.\nNot D: On-Demand managed nodes reduce administration but cost more than suitable Spot capacity.",
     "sourceAnswerOnly": true
   },
-  "129": {
+  "125": {
     "explanation": "Correct (A, E): Fargate removes container-host management, while Aurora PostgreSQL moves database infrastructure and availability operations to a managed service.\nNot B: Moving containers to EC2 retains server maintenance and capacity-planning responsibilities.\nNot C: CloudFront can improve delivery but does not remove application-host or database management.\nNot D: ElastiCache adds a cache tier without replacing the operationally burdensome application and database infrastructure.",
     "sourceAnswerOnly": true
   },
-  "130": {
+  "126": {
     "explanation": "Correct (B): Target tracking adjusts group capacity to keep average CPU utilization near the configured forty-percent target.\nNot A: Simple scaling requires manually designed thresholds and adjustments rather than maintaining a utilization target automatically.\nNot C: A custom Lambda scaling controller adds code and maintenance for a built-in Auto Scaling capability.\nNot D: Scheduled actions follow times rather than responding to actual CPU utilization.",
     "sourceAnswerOnly": true
   },
-  "131": {
+  "127": {
     "explanation": "Correct (D): The offered OAI configuration authorizes CloudFront to read private S3 objects while removing unintended direct access.\nNot B: An IAM user cannot be assigned to CloudFront as its S3 origin access identity.\nNot C: A distribution ID is not a valid IAM principal, and object reads require object-resource permissions.",
     "sourceAnswerOnly": true
   },
-  "132": {
+  "128": {
     "explanation": "Correct (A): S3 stores downloadable reports while CloudFront serves cached copies near global users without a web-server fleet.\nNot B: Lambda and DynamoDB add processing and database components without providing edge caching for report files.\nNot C: EC2 and an ALB require fleet management and do not by themselves provide global edge caching.\nNot D: Internal ALBs are not public download endpoints, and DNS does not cache report content.",
     "sourceAnswerOnly": true
   },
-  "133": {
-    "correction": "RDS Custom does not support managed cross-Region read replicas, so C does not provide the stated DR configuration. RDS Custom can supply operating-system access, but cross-Region DR needs a separately supported replication design. A self-managed Oracle deployment can provide OS access and replication, but the least-overhead comparison is not fully specified.",
-    "answerReview": true,
-    "references": [
-      {
-        "label": "AWS RDS API model: CreateDBInstanceReadReplica",
-        "url": "https://github.com/aws/aws-sdk-js-v3/blob/main/codegen/sdk-codegen/aws-models/rds.json"
-      }
-    ],
-    "sourceAnswerOnly": true
-  },
-  "134": {
-    "correction": "Athena supplies the serverless SQL layer, but these requirements do not establish a need for a new bucket or a multi-Region KMS key rather than SSE-S3. CRR does not automatically backfill existing objects, so use an appropriate copy workflow or S3 Batch Replication for historical data. The distinction between A and C is underspecified as written.",
-    "answerReview": true,
-    "sourceAnswerOnly": true
-  },
-  "135": {
+  "129": {
     "explanation": "Intended answer (D): PrivateLink connects the consumer’s interface endpoint to a provider endpoint service, exposing only the intended service.\nNot A: VPC peering creates general routed connectivity rather than a service-specific PrivateLink connection.\nNot B: A virtual private gateway is a VPN or Direct Connect component, not a PrivateLink endpoint service.\nNot C: A public NAT gateway does not establish private access to a service inside another VPC.",
     "sourceAnswerOnly": true
   },
-  "136": {
+  "130": {
     "explanation": "Correct (A, C): A DMS replication instance and ongoing CDC task keep Aurora synchronized while the source database remains online.\nNot B: A one-time backup does not capture later source changes.\nNot D: Schema conversion alone does not replicate ongoing writes between the PostgreSQL databases.\nNot E: Monitoring synchronization does not create the replication mechanism itself.",
     "sourceAnswerOnly": true
   },
-  "137": {
+  "131": {
     "explanation": "Correct (B): Unique account email distribution lists and alternate contacts deliver notifications to multiple authorized administrators.\nNot A: Forwarding to every employee violates the requirement to limit notifications to account administrators.\nNot C: Relying on one administrator preserves the original single-inbox failure risk.\nNot D: Each AWS account requires its own unique root email address.",
     "sourceAnswerOnly": true
   },
-  "138": {
+  "132": {
     "explanation": "Intended answer (B): Managed MQ, multi-AZ application workers, and RDS provide the intended architecture, but RabbitMQ requires its supported cluster deployment rather than an ActiveMQ-style standby pair.\nNot A: An Auto Scaling group does not automatically implement PostgreSQL replication and database failover.\nNot C: Self-managed RabbitMQ nodes require broker clustering and recovery administration.\nNot D: Self-managed broker and database fleets retain the highest replication and failover burden.",
     "sourceAnswerOnly": true
   },
-  "139": {
-    "correction": "S3 replication must not be assumed to emit ordinary ObjectCreated notifications for replica writes in the destination bucket. That assumption is essential to D's downstream trigger chain, and the rule must also use EventBridge's actual S3 event pattern rather than a classic notification event name. B's explicit copy workflow is a safer candidate when processing depends on a destination object-creation event.",
-    "answerReview": true
-  },
-  "140": {
+  "133": {
     "explanation": "Correct (A, C): Spot fits interruptible ingestion, while a one-year Compute Savings Plan discounts predictable Fargate and Lambda usage.\nNot B: On-Demand ingestion costs more when interruptions are acceptable.\nNot D: A fixed Reserved Instance commitment is a poor match for sporadic, unpredictable ingestion.\nNot E: EC2 Instance Savings Plans do not cover Fargate or Lambda usage.",
     "sourceAnswerOnly": true
   },
-  "141": {
+  "134": {
     "explanation": "Correct (B): Regional backends and latency-based DNS reduce personalized-content origin latency by selecting the lower-latency regional endpoint.\nNot A: A single origin Region still requires distant users’ uncached personalized requests to reach that backend.\nNot C: Serving dynamic content directly from one Region leaves global users on longer backend paths.\nNot D: Geolocation chooses by geographic rules rather than measured network latency.",
     "sourceAnswerOnly": true
   },
-  "142": {
+  "135": {
     "explanation": "Correct (C): Global Accelerator supplies static anycast entry IPs, while an NLB carries UDP to EC2 instances running the modified kernel.\nNot A: ALBs do not forward arbitrary UDP, and Lambda does not allow a custom host kernel.\nNot B: CloudFront does not proxy arbitrary UDP traffic, and Lambda cannot supply the required kernel.\nNot D: API Gateway and ALB provide application-layer HTTP APIs rather than this UDP transport path.",
     "sourceAnswerOnly": true
   },
-  "143": {
+  "136": {
     "explanation": "Correct (D): ECS lets teams deploy and scale containerized services independently while an ALB routes requests to their registered targets.\nNot A: Reworking the monolith into Lambda handlers can require more code changes.\nNot B: The Amplify-and-Lambda design introduces a larger hosting and backend rewrite than containerizing existing services.\nNot C: A general EC2 fleet leaves more server and service-deployment management to the company.",
     "sourceAnswerOnly": true
   },
-  "144": {
+  "137": {
     "explanation": "Correct (B): An Aurora Replica gives reporting its own compute resources and offloads queries from the transaction-processing writer.\nNot A: Introducing Redshift requires data movement and a separate analytics platform for a problem a replica can address.\nNot C: A larger writer increases cost without isolating reporting from transactional queries.\nNot D: Aurora does not use the proposed manually provisioned IOPS setting, and extra storage throughput would not remove CPU contention.",
     "sourceAnswerOnly": true
   },
-  "146": {
+  "139": {
     "explanation": "Correct (B): Reserved baseline capacity and interruptible Spot bursts reduce cost, provided reliable capacity or On-Demand fallback protects availability.\nNot A: Running everything on Spot exposes the entire application to capacity interruptions.\nNot C: On-Demand baseline instances miss the discounts available for steady usage.\nNot D: Dedicated Instances add isolation cost that the workload does not require.",
     "sourceAnswerOnly": true
   },
-  "147": {
+  "140": {
     "explanation": "Correct (B): S3 Lifecycle automatically archives older logs in Deep Archive while recent logs remain readily accessible.\nNot A: AWS Backup is not the mechanism for transitioning existing S3 objects between storage classes.\nNot C: AWS Backup does not directly move CloudWatch log events into S3 Glacier Deep Archive.\nNot D: S3 Lifecycle rules apply to S3 objects, not directly to CloudWatch log groups.",
     "sourceAnswerOnly": true
   },
-  "148": {
+  "141": {
     "explanation": "Correct (D): An SQS on-failure destination retains exhausted asynchronous Lambda failures for monitored recovery processing before queue retention expires.\nNot A: Lambda already manages regional execution infrastructure, and AZ placement does not retain failed events.\nNot B: More CPU and memory do not recover data lost after network-related processing failures.\nNot C: SNS delivery retries do not recover Lambda execution failures after Lambda has accepted the invocation.",
     "sourceAnswerOnly": true
   },
-  "149": {
+  "142": {
     "explanation": "Correct (A): SQS FIFO and Lambda preserve processing order within a message group without a managed worker-server fleet.\nNot B: The described SNS-to-Lambda subscription does not guarantee ordered processing.\nNot C: A standard queue offers best-effort ordering rather than strict arrival order.\nNot D: The SNS-to-SQS design does not specify FIFO components or an ordered processing consumer.",
     "sourceAnswerOnly": true
   },
-  "150": {
+  "143": {
     "explanation": "Correct (A): A composite alarm combines CPU and disk alarms with an AND condition to suppress alerts when only one condition occurs.\nNot B: Dashboards visualize metrics but do not implement the required conditional alert.\nNot C: Synthetics tests application endpoints rather than directly combining the specified infrastructure metric alarms.\nNot D: An ordinary single-metric alarm does not provide the proposed independent CPU-and-IOPS threshold combination.",
     "sourceAnswerOnly": true
   },
-  "151": {
-    "explanation": "Best answer (A, C): Preventive Control Tower controls and organization SCPs can restrict Regions and internet-gateway operations when supported by the landing zone configuration.\nNot B: WAF filters HTTP requests rather than controlling account-wide Region use or VPC internet connectivity.\nNot D: A network ACL does not prevent administrators from creating internet gateways or changing network controls.\nNot E: Config detection and alerts report violations after they occur rather than preventing them.",
-    "sourceAnswerOnly": true
-  },
-  "152": {
+  "144": {
     "explanation": "Correct (D): Scheduled Lambda calls to the RDS start and stop APIs avoid database-instance charges during unused hours while storage charges continue.\nNot A: Session Manager provides managed host sessions rather than a database scheduling mechanism.\nNot B: Adding Redis introduces cache management and cost without needing to serve users during the idle period.\nNot C: The stated cron job starts and stops the EC2 instance rather than the RDS database.",
     "sourceAnswerOnly": true
   },
-  "153": {
+  "145": {
     "explanation": "Correct (D): A ninety-day lifecycle transition matches the known access pattern and retains immediate access without per-object tiering-monitoring charges.\nNot A: Starting in Standard-IA imposes retrieval charges during the frequently downloaded initial period.\nNot B: Intelligent-Tiering adds monitoring charges and uses access-driven tiers rather than the stated object-age lifecycle rule.\nNot C: S3 Inventory reports objects but does not transition them between storage classes.",
     "sourceAnswerOnly": true
   },
-  "154": {
+  "146": {
     "explanation": "Correct (B): Compliance-mode Object Lock with default 365-day retention protects existing versions from deletion even by privileged users.\nNot A: Legal holds have no automatic one-year expiry, and governance retention can be bypassed by authorized users.\nNot C: IAM permissions can be changed and do not establish immutable retention.\nNot D: Hash-based detection identifies changes after they happen rather than preventing modification or deletion.",
     "sourceAnswerOnly": true
   },
-  "155": {
+  "147": {
     "explanation": "Correct (C): CloudFront caches S3 media near viewers, with private origins and signed access controls protecting confidential content.\nNot A: DataSync transfers datasets rather than serving globally distributed viewers from caches.\nNot B: Global Accelerator provides network routing rather than an S3-backed content cache.\nNot D: SQS queues work messages rather than delivering cached media to viewers.",
     "sourceAnswerOnly": true
   },
-  "156": {
+  "148": {
     "correction": "A and E best match the S3 data lake design: Glue prepares cataloged Parquet data, Athena runs ad hoc SQL, and QuickSight presents dashboards. C adds a custom per-record Redshift pipeline instead of the requested low-overhead S3 staging approach, so the source A,C key is inconsistent with the requirements. Streaming sources still need a suitable ingestion path into the lake.",
     "answerOverride": [
       "A",
@@ -483,350 +440,223 @@
     ],
     "sourceAnswerOnly": true
   },
-  "158": {
-    "explanation": "Best answer (A): CloudFront distributes live HTTP streaming segments and on-demand video through edge locations close to viewers.\nNot B: Global Accelerator accelerates network connections but does not cache and distribute video objects.\nNot C: Route 53 resolves and routes DNS queries rather than delivering video content.\nNot D: S3 Transfer Acceleration accelerates object transfers without providing a streaming content-distribution cache.",
-    "sourceAnswerOnly": true
-  },
-  "159": {
-    "explanation": "Conditional choice (C, E): WAF filters malicious requests, and IAM authorization rejects unauthorized calls only if legitimate clients can assume roles and sign requests.\nNot A: Usage-plan API keys meter and throttle clients but are not an authentication mechanism.\nNot B: Filtering inside Lambda still invokes the backend and does not establish caller authorization.\nNot D: Changing DNS does not give public clients the private connectivity required by a private API.",
-    "sourceAnswerOnly": true
-  },
-  "160": {
-    "explanation": "Best answer (C): S3 Standard provides millisecond access to a small JSON backup collection without database infrastructure or archival minimum-duration penalties.\nNot A: An OpenSearch deployment adds search infrastructure and cost for simple backup storage.\nNot B: Archival Glacier tiers require restoration, while Instant Retrieval has a longer minimum storage duration than this thirty-day use case.\nNot D: A running PostgreSQL database adds unnecessary compute and database management for JSON backup files.",
-    "sourceAnswerOnly": true
-  },
-  "161": {
+  "150": {
     "explanation": "Correct (B): S3-triggered Lambda runs the Python processing on demand, while Aurora provides managed relational storage for the results.\nNot A: An EC2 processing fleet adds host provisioning, scaling, and maintenance.\nNot C: EBS Multi-Attach requires compatible same-AZ instances and file-system coordination rather than a simple scalable document pipeline.\nNot D: ECS with EC2 launch type still requires management of the container-host fleet.",
     "sourceAnswerOnly": true
   },
-  "162": {
+  "151": {
     "explanation": "Correct (A): FSx for Lustre provides shared parallel file access and integrates with S3 for importing durable inputs and exporting results.\nNot B: FSx for Windows supplies SMB rather than the Lustre-oriented Linux HPC file system and S3 repository integration.\nNot C: Glacier restoration and EBS volumes do not provide a shared parallel file system for hundreds of workers.\nNot D: An S3 endpoint and gp2 volume do not create a shared high-performance file system for the worker fleet.",
     "sourceAnswerOnly": true
   },
-  "163": {
+  "152": {
     "explanation": "Correct (A): ECR and ECS on Fargate provide managed image storage and scalable container execution without operating EC2 worker hosts.\nNot B: The EC2 launch type retains worker-node provisioning and maintenance.\nNot C: A self-hosted image repository and manually expanded EC2 fleet add operational responsibilities.\nNot D: Embedding containers in AMIs still requires EC2 host and image lifecycle management.",
     "sourceAnswerOnly": true
   },
-  "164": {
+  "153": {
     "explanation": "Correct (C): SQS buffers work and a DLQ isolates repeated failures, with sufficient retention and checkpointing for jobs longer than the visibility limit.\nNot A: A self-managed Redis instance adds operations work and is a single point of failure as described.\nNot B: Kinesis and KCL add stream-consumer and failure-isolation work compared with a managed job queue.\nNot D: An SNS subscription does not provide the consumer-controlled work backlog and failure queue specified.",
     "sourceAnswerOnly": true
   },
-  "165": {
+  "154": {
     "explanation": "Correct (D): Restricting the S3 origin to the WAF-protected CloudFront distribution prevents direct-origin bypass, using OAI here or OAC for new deployments.\nNot A: AWS WAF is not an S3 access principal that retrieves origin objects.\nNot B: WAF attaches to the distribution; merely describing request forwarding does not prevent direct S3 access.\nNot C: S3 buckets cannot be assigned security groups to restrict their public endpoint.",
     "sourceAnswerOnly": true
   },
-  "166": {
+  "155": {
     "explanation": "Correct (D): CloudFront caches the S3 reports near global viewers and reduces repeated origin requests.\nNot A: Presigned URLs authorize direct object access but do not create global edge caches.\nNot B: Replication to every Region adds storage and coordination without CloudFront’s managed edge delivery.\nNot C: Geoproximity DNS routing does not distribute or cache the HTML files.",
     "sourceAnswerOnly": true
   },
-  "167": {
+  "156": {
     "explanation": "Correct (C): Reserved baseline workers maintain processing while Spot workers economically drain buffered bursts, with fallback capacity if peak throughput must be uninterrupted.\nNot A: An all-Spot fleet can lose all processing capacity during interruptions.\nNot B: Reserving peak capacity wastes committed spend during low-volume periods.\nNot D: On-Demand burst capacity costs more when the queued workload can tolerate Spot interruptions.",
     "sourceAnswerOnly": true
   },
-  "168": {
+  "157": {
     "explanation": "Correct (D): An organization-root SCP centrally denies actions in member accounts, with management-account and service-linked-role exceptions.\nNot A: ACLs do not provide organization-wide control of AWS service API permissions.\nNot B: Security groups filter network traffic and cannot be attached to IAM groups for account-wide permissions.\nNot C: Cross-account roles govern sessions using those roles rather than every identity in each account.",
     "sourceAnswerOnly": true
   },
-  "169": {
+  "158": {
     "explanation": "Correct (C): Shield Advanced provides enhanced DDoS mitigation and response support for the protected ALB.\nNot A: Inspector assesses vulnerabilities and cannot be installed as an ALB DDoS-filtering agent.\nNot B: Macie discovers sensitive data in S3 rather than mitigating attacks on a web application.\nNot D: GuardDuty detects suspicious activity rather than acting as an inline ALB DDoS mitigation service.",
     "sourceAnswerOnly": true
   },
-  "170": {
+  "159": {
     "explanation": "Correct (C): A WAF geographic match rule on the ALB can allow the designated country and block requests classified elsewhere.\nNot A: EC2 security groups do not provide managed country-based request matching.\nNot B: ALB security groups use network addresses and ports rather than geographic classifications.\nNot D: Network ACLs lack the application-layer country classification provided by WAF.",
     "sourceAnswerOnly": true
   },
-  "171": {
+  "160": {
     "explanation": "Correct (B): API Gateway and Lambda elastically handle short tax calculations without a fixed server fleet sized for seasonal peaks.\nNot A: A single EC2 instance remains a capacity bottleneck during spikes.\nNot C: Two fixed EC2 instances do not automatically increase capacity with seasonal demand.\nNot D: API Gateway does not remove the scaling bottleneck of a single EC2 backend.",
     "sourceAnswerOnly": true
   },
-  "173": {
+  "162": {
     "explanation": "Correct (B): CloudFront serves shared media from global edge caches, reducing latency and requests to the S3 origin.\nNot A: Global Accelerator routes connections but does not cache S3 media objects.\nNot C: Redis requires application integration and is not a globally distributed viewer-facing CDN.\nNot D: Memcached provides application caching rather than global media delivery from S3.",
     "sourceAnswerOnly": true
   },
-  "174": {
+  "163": {
     "explanation": "Correct (B): Distributing the six instances across two AZs prevents one AZ failure from removing the entire web tier.\nNot A: An EC2 Auto Scaling group cannot span multiple Regions.\nNot C: A template for later recovery does not provide running redundant capacity during an AZ failure.\nNot D: Changing load-balancing behavior does not remove the single-AZ dependency.",
     "sourceAnswerOnly": true
   },
-  "175": {
+  "164": {
     "explanation": "Correct (B): RDS Proxy pools and reuses database connections, reducing Lambda connection pressure with a small endpoint configuration change.\nNot A: Provisioned Lambda concurrency and cross-Region database replication do not solve the connection-pooling problem.\nNot C: A read replica cannot accept the order writes, and API query parameters do not provide database connection pooling.\nNot D: Moving from PostgreSQL to DynamoDB requires a substantial data-model and application rewrite.",
     "sourceAnswerOnly": true
   },
-  "176": {
+  "165": {
     "explanation": "Correct (A): A DynamoDB gateway endpoint provides a private AWS network path with endpoint-policy and IAM access controls.\nNot B: A public NAT gateway adds an outbound public-service path and processing cost instead of an endpoint-restricted route.\nNot C: A NAT instance in a private subnet does not establish the required private DynamoDB service connection.\nNot D: An internet gateway does not provide the explicitly private service-access path required.",
     "sourceAnswerOnly": true
   },
-  "177": {
+  "166": {
     "explanation": "Correct (B): DAX provides a managed DynamoDB-compatible read cache, although the application still needs DAX client and endpoint integration.\nNot A: Redis requires a separate cache-aside integration and cache-management logic.\nNot C: Global tables add regional replicas rather than a low-latency cache for repeated reads.\nNot D: Memcached Auto Discovery locates cache nodes but does not remove application caching integration.",
     "sourceAnswerOnly": true
   },
-  "178": {
-    "explanation": "Best answer (A): AWS Backup centrally schedules and copies supported EC2 and RDS backups across Regions with minimal custom orchestration.\nNot B: DLM manages EBS snapshots and AMIs rather than RDS backup policies.\nNot C: A read replica replicates unwanted changes and is not an independent historical backup.\nNot D: Separate snapshot exports and replication add coordination, and an RDS S3 export is not a directly restorable DB snapshot.",
-    "sourceAnswerOnly": true
-  },
-  "179": {
-    "explanation": "Best answer (A): An EC2 instance role supplies temporary credentials to read the secure parameter and decrypt it with the permitted KMS key.\nNot B: IAM permission policies attach to a role or identity rather than directly to an EC2 instance.\nNot C: A Parameter Store parameter does not establish an IAM trust relationship with EC2, and RDS is not the caller.\nNot D: A database-to-instance trust relationship does not authorize Parameter Store reads or KMS decryption.",
-    "sourceAnswerOnly": true
-  },
-  "180": {
+  "167": {
     "explanation": "Correct (B, C): Shield Advanced protects the NLB from supported DDoS threats, while WAF on API Gateway filters HTTP exploits.\nNot A: A WAF web ACL cannot be attached directly to an NLB.\nNot D: GuardDuty detection and Shield Standard do not provide the offered WAF filtering and enhanced Shield protection.\nNot E: Shield Standard does not supply SQL-injection filtering or Shield Advanced response capabilities.",
     "sourceAnswerOnly": true
   },
-  "181": {
+  "168": {
     "explanation": "Correct (A): SQS durably buffers jobs between producers and independently scaled consumers without requiring result ordering.\nNot B: SNS fan-out does not provide the same consumer-pulled, durable work backlog by itself.\nNot C: A message-forwarding Lambda is not a durable job queue and adds custom dispatch logic.\nNot D: A DynamoDB-backed queue requires additional stream-consumer and work-state management compared with SQS.",
     "sourceAnswerOnly": true
   },
-  "182": {
+  "169": {
     "explanation": "Correct (B): RDS MySQL Multi-AZ DB instance deployment synchronously replicates to another AZ and provides managed failover.\nNot A: A DB instance does not provide the claimed three-node synchronous setup; Multi-AZ DB clusters are a different deployment model.\nNot C: Cross-Region RDS MySQL read replicas use asynchronous rather than synchronous replication.\nNot D: A Lambda trigger does not establish supported synchronous MySQL replication between these databases.",
     "sourceAnswerOnly": true
   },
-  "183": {
+  "170": {
     "explanation": "Correct (A): Managed static hosting and serverless APIs remove web-server maintenance, while DynamoDB on-demand capacity adapts both reads and writes.\nNot B: Aurora Auto Scaling adjusts reader count rather than independently scaling write throughput in the same way.\nNot C: EC2 hosts require patching, and fixed provisioned writes need additional capacity management.\nNot D: EC2 retains server maintenance, while Aurora reader scaling does not directly solve rapid write-capacity changes.",
     "sourceAnswerOnly": true
   },
-  "184": {
-    "explanation": "Best answer (A): Attaching Lambda to the routed VPC subnets and security groups lets it reach the on-premises database through existing Direct Connect connectivity.\nNot B: A new VPN is unnecessary and does not by itself attach Lambda to the VPC.\nNot C: Changing routes alone does not connect a non-VPC Lambda function to those routes.\nNot D: Lambda cannot be assigned an Elastic IP directly without the supporting VPC networking path.",
-    "sourceAnswerOnly": true
-  },
-  "185": {
+  "171": {
     "explanation": "Correct (B): The ECS task role supplies temporary S3 permissions to application code inside the running container.\nNot A: An unspecified S3 role is not automatically assumed by the application’s ECS task.\nNot C: A security group provides network filtering rather than authorization for S3 API operations.\nNot D: The IAM identity that launches an EC2 instance does not automatically become the container’s runtime identity.",
     "sourceAnswerOnly": true
   },
-  "187": {
+  "173": {
     "explanation": "Correct (A, D): RDS Multi-AZ provides managed database failover, while multi-AZ Fargate tasks avoid container-host administration.\nNot B: Ordinary RDS read replicas do not provide the same automatic failover configuration as Multi-AZ.\nNot C: An EC2-based Docker cluster requires host provisioning, patching, and cluster management.\nNot E: ECS on EC2 still requires management of the worker instances.",
     "sourceAnswerOnly": true
   },
-  "191": {
-    "explanation": "Best answer (A): A reporting read replica isolates employee queries from the primary database handling orders.\nNot B: Sending order-processing writes to a read replica is not supported.\nNot C: Migrating to DynamoDB requires a substantial database and application redesign.\nNot D: Restricting reports to off-peak hours prevents the required business-hours queries.",
-    "sourceAnswerOnly": true
-  },
-  "192": {
-    "explanation": "Best answer (B, E): Textract and Comprehend Medical extract structured medical data, which Athena can query after it is stored in S3.\nNot A: A self-managed MySQL server adds maintenance and capacity management.\nNot C: Custom extraction software on EC2 adds development and server operations compared with managed document services.\nNot D: Transcribe Medical processes audio rather than extracted document text, and Rekognition is not the document OCR service required.",
-    "sourceAnswerOnly": true
-  },
-  "193": {
-    "explanation": "Best answer (B): A multi-AZ Redis replication group serves cached results and supports failover, reducing repeated reads against the databases.\nNot A: Read replicas distribute database reads but do not reduce the total number of queries reaching databases.\nNot C: DNS caching stores name-resolution answers rather than application database results.",
-    "sourceAnswerOnly": true
-  },
-  "194": {
-    "explanation": "Best answer (A): A replicated database cluster across AZs provides the basis for automatic failover when quorum, fencing, and client reconnection are configured.\nNot B: Recreating a single server from an AMI is recovery work rather than failover to a running replicated database.\nNot C: Cross-Region replication alone does not configure the automatic cluster failover required.\nNot D: EC2 automatic recovery addresses supported infrastructure failures rather than providing a redundant database across AZs.",
-    "sourceAnswerOnly": true
-  },
-  "195": {
-    "explanation": "Best answer (C): SQS durably retains orders while Auto Scaling workers recover, allowing retries until each database write succeeds.\nNot A: Auto Scaling and an unrelated ECS trigger do not retain unprocessed order requests.\nNot B: An ALB distributes requests but does not durably queue orders during an outage.\nNot D: SNS, Lambda, and Run Command add a fragile dispatch workflow without the worker queue’s durable acknowledgement model.",
-    "sourceAnswerOnly": true
-  },
-  "196": {
-    "explanation": "Best answer (D): DynamoDB TTL asynchronously removes items after their expiry timestamp without a cleanup server or repeated table scans.\nNot A: Replacing the whole stack every thirty days disrupts the application and can delete still-needed data.\nNot B: A monitoring server and custom deletion script add operating cost and maintenance.\nNot C: An insert-triggered Lambda still needs custom discovery and deletion of older items.",
-    "sourceAnswerOnly": true
-  },
-  "197": {
-    "explanation": "Best answer (B, E): Multi-AZ Windows Elastic Beanstalk and RDS for Oracle preserve the application technologies while providing managed availability.\nNot A: Refactoring into Lambda functions conflicts with minimizing development changes.\nNot C: Moving a Windows .NET workload to Amazon Linux can require platform and dependency changes.\nNot D: Migrating Oracle data to DynamoDB changes the database model and requires substantial application work.",
-    "sourceAnswerOnly": true
-  },
-  "198": {
-    "explanation": "Conditional choice (D): EKS preserves Kubernetes while Fargate and DocumentDB reduce administration, provided the existing pod requirements and MongoDB features are compatible.\nNot A: ECS changes the Kubernetes deployment model and self-managed MongoDB retains database operations.\nNot B: Both ECS orchestration and DynamoDB require changes to the existing deployment and data-access model.\nNot C: DynamoDB is not a drop-in MongoDB replacement, and EC2 workers add host management.",
-    "sourceAnswerOnly": true
-  },
-  "199": {
-    "explanation": "Best answer (B): Transcribe labels speakers and produces transcripts for Athena queries over S3, with seven-year retention configured separately.\nNot A: Rekognition analyzes images and video rather than transcribing spoken audio.\nNot C: Translate translates text rather than transcribing and separating speakers in audio.\nNot D: Rekognition does not provide speech transcription, and Textract extracts document text rather than querying transcripts.",
-    "sourceAnswerOnly": true
-  },
-  "200": {
-    "explanation": "Best answer (D): The built-in Cognito user-pool authorizer validates signed user tokens before invoking the REST API integration.\nNot A: A custom Lambda authorizer requires code that the built-in Cognito integration avoids.\nNot B: API keys are not user authentication credentials, and custom validation adds development work.\nNot C: A caller-supplied email address is not trustworthy proof of identity.",
-    "sourceAnswerOnly": true
-  },
-  "201": {
+  "177": {
     "correction": "Amazon Pinpoint journeys are a legacy service path whose current availability and support status must be checked before a new deployment. For a replacement SMS design, evaluate AWS End User Messaging SMS with supported two-way messaging and an explicit inbound-message storage pipeline. Publishing campaign events alone does not guarantee that reply text is captured and retained for a year."
   },
-  "207": {
-    "explanation": "Best answer (D): SQS durably buffers requests while controlled Lambda consumers write to DynamoDB at a sustainable rate.\nNot A: Throttling rejects user requests rather than retaining them for later processing.\nNot B: DAX caches reads and does not provide a durable buffer for excess writes.\nNot C: A secondary index adds write work rather than relieving the table’s write-capacity shortage.",
-    "sourceAnswerOnly": true
-  },
-  "208": {
+  "183": {
     "correction": "A is the valid listed endpoint configuration: an S3 interface endpoint uses subnet network interfaces and can have security groups. A gateway endpoint uses route tables and has no endpoint security group, making B internally inconsistent. Restrict role assumption and bucket access as well if access must belong to this instance rather than every principal that can use the role.",
     "answerOverride": [
       "A"
     ]
   },
-  "210": {
-    "explanation": "Best answer (D): Separate durable queues and backlog-per-instance scaling let each worker tier match its own processing rate and latency target.\nNot A: Keeping minimum capacity at peak levels wastes resources and does not durably preserve requests.\nNot B: SNS does not automatically create worker groups, and CPU alarms do not establish a durable work buffer.\nNot C: SQS does not directly send the scaling notifications described or define a workload-per-instance scaling target.",
-    "sourceAnswerOnly": true
-  },
-  "212": {
+  "186": {
     "correction": "S3 Intelligent-Tiering includes three low-latency access tiers and optional archive tiers, rather than only frequent and infrequent tiers. It is not automatically cheaper for every object because monitoring charges and object sizes matter. Optional archive tiers require restoration and should remain disabled when all data needs immediate access."
   },
-  "217": {
+  "191": {
     "explanation": "Correct (A): A prepared active-passive environment with supported cross-Region Aurora replication reduces recovery work, subject to validating the thirty-minute targets.\nNot B: Active-active traffic handling is unnecessary when the recovery environment need not serve normal traffic.\nNot C: A snapshot-restored database is not continuously synchronized, and active-active duplicate infrastructure adds cost.\nNot D: Building the recovery environment after an outage does not establish the required recovery time or recent data availability.",
     "sourceAnswerOnly": true
   },
-  "218": {
+  "192": {
     "explanation": "Intended answer (A, E): The security group permits HTTPS and the NACL allows inbound requests plus return traffic, but its outbound range must cover clients’ actual ephemeral ports.\nNot B: An outbound security-group rule does not authorize inbound HTTPS connections.\nNot C: A stateless NACL also needs an outbound rule for response traffic.\nNot D: HTTPS responses go to clients’ ephemeral destination ports rather than necessarily to destination port 443.",
     "sourceAnswerOnly": true
   },
-  "219": {
-    "explanation": "Best answer (D): Memory-optimized R5 instances address the suspected in-memory bottleneck, with agent-published metrics supporting capacity validation.\nNot A: Burstable T3 instances are not the proposed memory-capacity improvement, and console changes create CloudFormation drift.\nNot B: Manual horizontal scaling adds intervention and does not address stateful workload placement or a per-instance memory bottleneck.\nNot C: Default EC2 metrics do not include the guest memory measurements claimed by this option.",
-    "sourceAnswerOnly": true
-  },
-  "224": {
-    "explanation": "Intended answer (C, E): Health-checked multivalue DNS and balanced multi-AZ capacity provide the intended resilient distribution, although DNS cannot guarantee equal request-level balancing.\nNot A: Failover routing primarily selects an active endpoint rather than distributing requests among multiple healthy addresses.\nNot B: Weighted routing selects by configured weights rather than returning a set of healthy addresses for client selection.\nNot D: Uneven AZ placement leaves less surviving capacity in one failure scenario than the balanced four-instance design.",
-    "sourceAnswerOnly": true
-  },
-  "227": {
+  "199": {
     "correction": "Current-version expiration in a versioned bucket normally creates a delete marker rather than permanently deleting every version. Configure NoncurrentVersionExpiration separately, with its age measured from when a version becomes noncurrent. A single 'older than three years' current-version rule does not automatically remove all historical data on that date."
   },
-  "232": {
-    "correction": "VPC Flow Logs can identify accepted network traffic on SSH or RDP ports, but they do not prove a user successfully authenticated or established a logged-in session. C is the closest network-monitoring option; successful-login auditing requires host authentication logs or a managed session audit path. The SSM instance policy alone does not generate the requested access alerts."
-  },
-  "234": {
+  "205": {
     "correction": "An ACM certificate on the ALB encrypts the client-to-ALB connection only. If the requirement covers traffic all the way to EC2 or the database, also configure HTTPS target connections and database TLS as appropriate."
   },
-  "235": {
-    "explanation": "Intended answer (C): Schema conversion and DMS full load plus CDC support the heterogeneous migration, but concurrent writes to both databases still need a bidirectional strategy.\nNot A: DataSync transfers files and objects rather than performing an Oracle-to-PostgreSQL database migration.\nNot B: DataSync is not the appropriate initial database-migration mechanism.\nNot D: Replicating only the largest tables omits other tables that the applications must keep synchronized.",
-    "sourceAnswerOnly": true
-  },
-  "240": {
+  "210": {
     "correction": "Co-locating the visualization tier reduces the amount of data sent off AWS, and Direct Connect can reduce the applicable egress rate. Same-Region placement does not make every transfer free: cross-AZ paths, public addresses, and service-specific charges can still apply. The comparison should use the actual network path and pricing."
   },
-  "242": {
+  "212": {
     "correction": "A simple Route 53 record can contain multiple IP address values, so 'simple routing gives one IP address' is not generally correct. Multivalue answer routing adds health checks and returns up to eight healthy records, but it is not a substitute for a load balancer."
   },
-  "245": {
-    "correction": "Removing an instance from an ALB target group does not stop or terminate it and therefore does not directly reduce EC2 charges. Reduce the development Auto Scaling group's desired and minimum capacity as appropriate, and adjust its maximum to limit future scale-out. None of the choices fully states that necessary capacity change.",
-    "answerReview": true
-  },
-  "246": {
+  "215": {
     "correction": "An internet-facing ALB needs subnets with a default route to an internet gateway. Communication with private targets in the same VPC normally uses the existing local route, so adding a special route to private subnets is not the key fix. Check ALB and target security groups as well."
   },
-  "247": {
-    "explanation": "Best answer (C, E): Completing long transactions and enabling automated backups prepare RDS MySQL for managed read-replica creation.\nNot A: RDS configures the necessary replication logging through its managed backup and replica workflow rather than a separate manual replication setup.\nNot B: A source-instance failover priority is not a prerequisite for creating this RDS MySQL read replica.\nNot D: Global tables are a DynamoDB feature rather than an RDS MySQL replica configuration.",
-    "sourceAnswerOnly": true
-  },
-  "252": {
+  "220": {
     "explanation": "Correct (A): Regional EFS provides concurrently mounted file storage with capacity growth and redundancy across Availability Zones.\nNot B: EBS is AZ-scoped block storage rather than a managed multi-AZ shared file system.\nNot C: Deep Archive requires restoration and cannot act as a live shared file system.\nNot D: AWS Backup manages recovery copies rather than active file access by application servers.",
     "sourceAnswerOnly": true
   },
-  "253": {
+  "221": {
     "explanation": "Correct (C): The ec2:* allow includes instance termination, while the explicit deny applies only to directory-service deletion actions.\nNot A: The shown IAM permissions allow Get and List operations but do not allow user deletion.\nNot B: The explicit ds:Delete* deny overrides the broader ds:* allow.\nNot D: The shown CloudWatch Logs permissions allow Get and Describe operations rather than deletion.",
     "sourceAnswerOnly": true
   },
-  "255": {
+  "223": {
     "correction": "An SQS FIFO queue does not make a database payment operation exactly once by itself; processing can be retried after a failure or visibility timeout. Use a durable idempotency key for payments and address the database-write/message-publish gap, for example with a transactional outbox. FIFO ordering and send deduplication solve different parts of the problem."
   },
-  "256": {
+  "224": {
     "correction": "MFA Delete protects permanent deletion of object versions and changes to the bucket's versioning state. It does not require MFA for an ordinary DeleteObject request that creates a delete marker. Versioning supplies recovery for that case."
   },
-  "257": {
-    "explanation": "Closest listed choice (C): Scheduled Lambda collection writes status to S3 without startup work, although polling frequency limits freshness and can miss transient events.\nNot A: CloudWatch metric streams carry metric measurements rather than the requested Auto Scaling event records.\nNot B: An EMR cluster is not the requested serverless collection solution.\nNot D: Installing an agent in the bootstrap path adds work to instance launches.",
-    "sourceAnswerOnly": true
-  },
-  "259": {
+  "226": {
     "explanation": "Correct (A): An AWS Backup plan creates daily RDS recovery points and retains them in a vault for two years.\nNot B: Native RDS automated-backup retention does not extend to two years, and DLM does not manage RDS snapshots.\nNot C: Transaction logs in CloudWatch are not a complete, consistently restorable database backup.\nNot D: A DMS change stream is not a managed RDS snapshot and requires a separate reconstruction and consistency strategy.",
     "sourceAnswerOnly": true
   },
-  "265": {
+  "232": {
     "correction": "The explanation reverses the subnet placement: the internet-facing ALB belongs in public subnets, while its EC2 targets can remain private. If using a supported private CloudFront VPC origin instead, explicitly configure that different architecture rather than calling a private ALB public."
   },
-  "267": {
+  "234": {
     "explanation": "Intended answer (D): Data Firehose provides encrypted Parquet delivery to S3 and managed analytics supplies processing, with a supported streaming-source integration required.\nNot A: A Kinesis data stream does not directly deliver S3 Parquet files without additional delivery and conversion components.\nNot B: An EMR cluster adds administration and the option omits a defined encrypted Parquet delivery path.\nNot C: Operating EMR for analytics adds more infrastructure management than a suitable managed stream-processing service.",
     "sourceAnswerOnly": true
   },
-  "269": {
+  "236": {
     "correction": "A read replica has a separate endpoint, and reporting clients must be configured to query it. Ordinary RDS read replicas do not transparently reroute the application's existing connection or accept its writes. Replication lag also needs to be acceptable for the reports."
   },
-  "270": {
+  "237": {
     "explanation": "Correct (A): Client-side encryption protects the payload before upload, while HTTPS separately protects transport and request metadata.\nNot B: Server-side encryption occurs after S3 receives the data.\nNot C: An SSE-S3 requirement controls S3-side encryption rather than encrypting the payload before upload.\nNot D: Default SSE-KMS encrypts received objects rather than performing encryption at the sender.",
     "sourceAnswerOnly": true
   },
-  "272": {
+  "239": {
     "explanation": "Correct (B): CloudFront uses the existing ALB origin and language-aware cache keys to accelerate global delivery without duplicating the application stack.\nNot A: Static S3 hosting cannot directly replace the existing dynamic application.\nNot C: A regional API cache does not provide CloudFront’s global edge distribution.\nNot D: Regional NGINX servers add infrastructure and cache-management overhead that CloudFront handles as a service.",
     "sourceAnswerOnly": true
   },
-  "275": {
+  "242": {
     "correction": "A best addresses the predictable morning surge by setting desired capacity before staff arrive, while allowing normal scaling afterward. Target tracking reacts after load increases and does not guarantee prewarmed capacity; D also pins maximum capacity unnecessarily. The source C key misses the stated predictable start-of-day pattern.",
     "answerOverride": [
       "A"
     ],
     "sourceAnswerOnly": true
   },
-  "283": {
-    "explanation": "Best answer (D): FSx for ONTAP provides multiprotocol NFS and SMB access to the same files with correctly configured identities and permissions.\nNot A: Lambda and S3 require changes to the applications’ existing execution and file-system interfaces.\nNot B: FSx File Gateway does not supply the required shared NFS-and-SMB multiprotocol file system.\nNot C: SQS messages do not preserve the applications’ file-share interfaces.",
-    "sourceAnswerOnly": true
-  },
-  "284": {
-    "correction": "Cost Explorer does not automatically attribute every AWS charge to the IAM user who created or accessed a resource. Department or owner reporting requires suitable accounts, activated cost-allocation tags, or other allocation data first. B can report available cost dimensions, but the requested per-user breakdown is underspecified.",
-    "answerReview": true
-  },
-  "291": {
+  "256": {
     "explanation": "Correct (A, B): Signed URLs support clients without cookies, while signed cookies protect content for clients that must keep unchanged URLs.\nNot C: AppSync introduces a different application API rather than native CloudFront viewer authorization.\nNot D: JWT validation would require additional request-processing logic rather than the offered CloudFront access mechanisms.\nNot E: Secrets Manager stores credentials rather than authorizing viewer requests for CloudFront objects.",
     "sourceAnswerOnly": true
   },
-  "292": {
+  "257": {
     "correction": "The Kinesis Data Analytics name includes legacy offerings and should not be treated as a current SQL service without checking availability. For a new streaming application, evaluate Amazon Managed Service for Apache Flink with supported sources and sinks. Firehose is now named Amazon Data Firehose."
   },
-  "293": {
+  "258": {
     "explanation": "Correct (D): Stored Volume Gateway retains the complete primary dataset locally and asynchronously uploads encrypted backups to AWS.\nNot A: Snowball provides bulk data transfer rather than a permanent local volume-backup gateway.\nNot B: A Snowball Edge transfer device is not the ongoing stored-volume backup solution required.\nNot C: Cached volumes retain only a subset locally while the complete dataset resides in AWS.",
     "sourceAnswerOnly": true
   },
-  "295": {
+  "260": {
     "correction": "S3 Object Lambda is a legacy access path whose availability to new customers must be checked before adoption. For new designs without access, apply the transformation behind an authorized API or another supported delivery path. Continue protecting the original S3 objects so clients cannot bypass PII filtering."
   },
-  "298": {
-    "explanation": "Best answer (C): Separate AZ-specific subnets distribute application instances, and RDS Multi-AZ provides managed database failover.\nNot A: Adding network connections does not create a standby database or Multi-AZ failover.\nNot B: A subnet belongs to one AZ and cannot span both zones.\nNot D: One subnet cannot extend across two Availability Zones.",
-    "sourceAnswerOnly": true
-  },
-  "299": {
+  "263": {
     "correction": "Choosing persistent SSD does not by itself guarantee 6 GB/s of FSx for Lustre throughput. Size the file system and its configured throughput capacity, and verify client and network limits against the aggregate workload."
   },
-  "301": {
+  "265": {
     "correction": "DataSync can control bandwidth but cannot guarantee the deadline without enough usable link capacity. Moving 30 TB in five days requires roughly 556 Mbps of sustained payload throughput before protocol overhead, so the shared 1-Gbps link must leave sufficient capacity available."
   },
-  "302": {
+  "266": {
     "correction": "Amazon Elastic Transcoder is a legacy service and should not be chosen for a new transcoding pipeline without checking its support status. AWS Elemental MediaConvert is the managed service to evaluate for file-based video conversion, with CloudFront for delivery. The original option names should be read in that historical context."
   },
-  "308": {
-    "explanation": "Intended answer (A, C): Account-scoped RDS Reserved Instance recommendations identify potential savings for sustained future usage, which must justify the commitment.\nNot B: Consolidated billing alone does not automatically aggregate every Trusted Advisor resource check.\nNot D: The databases are actively used, so an idle-instance check does not address their purchase-option costs.\nNot E: Redshift reserved-node recommendations do not apply to RDS for Oracle.",
-    "sourceAnswerOnly": true
-  },
-  "311": {
-    "explanation": "Best answer (C): SNS filters route quote types to durable SQS queues so independent consumers can process retained requests within the required deadline.\nNot A: Kinesis and KCL introduce stream-processing and checkpoint management instead of a straightforward task queue.\nNot B: Direct SNS-to-Lambda invocation does not provide the described consumer-controlled durable backlog for each backend group.\nNot D: Firehose and OpenSearch add delivery and search infrastructure rather than managed work-queue acknowledgements.",
-    "sourceAnswerOnly": true
-  },
-  "314": {
+  "276": {
     "correction": "Aurora Serverless v1 and v2 have different scaling and pause behavior. For v2, scaling to zero requires a supported engine version and a minimum capacity of zero; it is not automatic for every Serverless cluster. Verify connection and feature constraints before assuming idle compute charges disappear."
   },
-  "315": {
-    "explanation": "Intended answer (D): Inspector produces EC2 vulnerability findings for automated reporting, using supported Systems Manager-agent or agentless scanning rather than requiring a legacy Classic agent.\nNot A: Shield mitigates DDoS attacks rather than scanning instance software vulnerabilities.\nNot B: Macie discovers sensitive S3 data rather than scanning EC2 software.\nNot C: GuardDuty detects suspicious activity and runtime threats rather than replacing Inspector’s vulnerability inventory.",
-    "sourceAnswerOnly": true
-  },
-  "317": {
+  "278": {
     "explanation": "Correct (A): A scheduled Glue ETL job loads the CSV data into Redshift tables that the COTS application can query.\nNot B: Creating .sql files does not by itself make S3 data queryable by the application and requires EC2 maintenance.\nNot C: DynamoDB is not one of the application’s supported data sources.\nNot D: Provisioning and managing an EMR cluster adds work compared with a managed Glue transformation job.",
     "sourceAnswerOnly": true
   },
-  "320": {
+  "281": {
     "correction": "The original Kinesis Data Analytics SQL description refers to a legacy offering. A current stream-processing design should select a supported engine, such as Amazon Managed Service for Apache Flink, and explicitly configure its source, processing logic, and output. Do not assume legacy SQL applications remain available for new use."
   },
-  "321": {
+  "282": {
     "correction": "All new S3 object uploads receive baseline server-side encryption even when the client omits that header. A policy that denies a missing header enforces an explicit request convention, not the only way to achieve encryption. Match the required algorithm or key separately if SSE-KMS is mandatory."
   },
-  "323": {
+  "284": {
     "explanation": "Correct (B): API Gateway, Lambda, and DynamoDB provide managed HTTPS ingestion, processing, and storage without a single EC2 server dependency.\nNot A: One EC2 instance is a single point of failure.\nNot C: DNS routing alone cannot turn a Lambda function into the required HTTPS request-processing endpoint.\nNot D: An S3 gateway endpoint cannot be extended to on-premises clients over VPN, and the design omits message processing.",
     "sourceAnswerOnly": true
   },
-  "324": {
+  "285": {
     "correction": "Stored volumes provide local-disk access to the full dataset, not literally zero-latency storage. Local disk, network, gateway capacity, and application behavior still determine access time."
   },
-  "326": {
+  "287": {
     "correction": "S3 Intelligent-Tiering is not limited to two access tiers: it includes Archive Instant Access and optional asynchronous archive tiers. Select optional tiers only if restore delays are acceptable. Objects smaller than 128 KB are not automatically tiered."
   },
-  "327": {
-    "explanation": "Best answer (A): Network Firewall domain rules can allow approved HTTP Host or TLS SNI names when all outbound traffic follows the inspected route.\nNot B: WAF protects supported web application entry points rather than serving as the VPC’s general outbound firewall.\nNot C: Security-group rules cannot specify repository URLs or domain allowlists.\nNot D: An ALB is not an outbound internet proxy and cannot provide the proposed egress routing configuration.",
-    "sourceAnswerOnly": true
-  },
-  "329": {
+  "289": {
     "explanation": "Correct (D): Inspector identifies software vulnerabilities, while Systems Manager Patch Manager schedules approved patches and reports compliance.\nNot A: Macie scans sensitive S3 data rather than EC2 vulnerabilities, and per-host cron jobs add administration.\nNot B: GuardDuty is not the vulnerability inventory service, and Session Manager is not a scheduled patch-management service.\nNot C: Detective supports security investigations rather than vulnerability scanning, and an EventBridge rule alone does not patch hosts.",
     "sourceAnswerOnly": true
   },
-  "338": {
+  "298": {
     "correction": "B can meet the stated replication-only requirement with an Aurora global database secondary cluster that has no DB instances, reducing secondary compute cost. Such a headless secondary cannot serve queries or be promoted until suitable compute is provisioned, so recovery time must be considered. D is justified when a ready-to-promote secondary is required, but that requirement is absent here.",
     "answerOverride": [
       "B"
@@ -839,15 +669,11 @@
     ],
     "sourceAnswerOnly": true
   },
-  "341": {
-    "explanation": "Best answer (D): Lake Formation governs ingested data at column level, and Athena provides the governed query path for QuickSight.\nNot A: An EMR-to-SPICE workflow does not implement the requested Lake Formation column authorization.\nNot B: IAM policies alone do not filter individual columns inside S3 data files.\nNot C: An S3 bucket policy cannot enforce column-level access within an object.",
-    "sourceAnswerOnly": true
-  },
-  "343": {
+  "302": {
     "explanation": "Correct (C): Aurora Global Database provides managed cross-Region replication and a prepared secondary cluster for regional recovery.\nNot A: Self-managed EC2 databases require custom replication, maintenance, and failover operations.\nNot B: A Multi-AZ deployment and same-Region replicas do not satisfy multi-Region disaster recovery.\nNot D: Cross-Region backups retain data but require database provisioning and restoration during recovery.",
     "sourceAnswerOnly": true
   },
-  "344": {
+  "303": {
     "correction": "The current native SQS message-size limit is 1 MiB rather than the historical 256 KB stated in the option. The extended client still supports storing larger payloads in S3, but payloads between those limits no longer require offloading solely because of message size. Check library compatibility and payload cleanup behavior.",
     "references": [
       {
@@ -856,246 +682,189 @@
       }
     ]
   },
-  "353": {
+  "312": {
     "explanation": "Correct (B): RDS Multi-AZ provides managed failover, while the offered 1-TB gp2 volume supplies baseline IOPS without provisioned-IOPS pricing.\nNot A: Provisioned io2 storage adds cost when the offered gp2 baseline meets the intended workload.\nNot C: S3 storage tiers cannot replace a running, highly available relational database.\nNot D: Two self-managed EC2 database servers do not meet the fully managed requirement.",
     "sourceAnswerOnly": true
   },
-  "356": {
+  "315": {
     "correction": "S3 Standard-IA and S3 Standard have the same designed durability but different published availability targets and pricing characteristics. Standard-IA also has retrieval charges and minimum billable object size and duration. It is suitable when infrequent access makes those tradeoffs economical."
   },
-  "366": {
-    "explanation": "Answer review: No listed option fully implements subscription authorization; validate Cognito tokens and check entitlement in an authorizer or backend.\nNot B: WAF request filtering does not automatically know a user’s verified subscription entitlement.\nNot C: Table IAM permissions used by a shared Lambda role do not automatically enforce each Cognito user’s subscription.\nNot D: Usage plans and API keys provide metering and throttling rather than secure user-level authorization.",
-    "sourceAnswerOnly": true
-  },
-  "367": {
+  "325": {
     "correction": "A can retain the application on premises because NLB IP target groups can route to reachable private on-premises addresses over supported private connectivity. Global Accelerator then uses the regional NLBs as endpoints. The original explanation incorrectly rejects its own selected answer merely because NLBs run in AWS."
   },
-  "371": {
+  "329": {
     "correction": "Permission for encrypted EBS volumes must reach the identities that create and attach them, including the relevant Auto Scaling service-linked role for managed node groups. Merely assigning a generic KMS-capable role to the EKS control plane is not sufficient for every node-volume operation. Key policy and grant permissions must match the actual provisioning path."
   },
-  "377": {
+  "335": {
     "explanation": "Correct (B): Lifecycle hooks pause launch or termination so event-driven automation can submit audit data before completing the transition.\nNot A: Periodic polling is not aligned with every launch and termination and can miss short-lived instances.\nNot C: User data handles initialization rather than providing an Auto Scaling termination lifecycle hook.\nNot D: An arbitrary operating-system script is not automatically invoked by Auto Scaling without the required lifecycle integration.",
     "sourceAnswerOnly": true
   },
-  "382": {
+  "340": {
     "correction": "A TLS listener terminates the client TLS connection at the NLB. Encrypting the NLB-to-instance connection also requires a TLS target group and appropriately configured targets. The listener certificate alone does not encrypt that backend hop."
   },
-  "385": {
+  "343": {
     "explanation": "Correct (C): Web servers accept HTTPS only from the load balancer, and MySQL accepts port 3306 only from the web-server security group.\nNot A: Allowing all internet sources to reach the web tier is broader than permitting only the load balancer.\nNot B: Network ACL rules cannot reference a security group as the source.\nNot D: Network ACLs cannot use the proposed security-group references for tier-specific access.",
     "sourceAnswerOnly": true
   },
-  "387": {
+  "345": {
     "correction": "For the CloudFormation service-role pattern, CloudFormation assumes a role trusted by cloudformation.amazonaws.com rather than giving the deployment engineer direct resource-management credentials. The engineer needs narrowly scoped CloudFormation permissions and iam:PassRole for that service role. Restrict which stacks and roles can be used to prevent privilege escalation."
   },
-  "390": {
-    "explanation": "Intended answer (B, D): DynamoDB and Redis provide shared session stores, but ordinary Redis replication can lose recent writes and does not establish strict durability.\nNot A: Sticky routing keeps a user on one instance without durably preserving that instance’s session data.\nNot C: Cognito manages authentication sessions rather than arbitrary application transaction-session storage.\nNot E: Application Manager manages application resources rather than storing customer session state.",
-    "sourceAnswerOnly": true
-  },
-  "391": {
+  "348": {
     "correction": "EBS snapshots protect persistent volume data regardless of whether the data is described as temporary. An EBS-backed AMI already references snapshots for its included volumes; omit separate backups only when the required state is covered or reproducibly rebuilt. Verify the AMI and database recovery points together against the RPO."
   },
-  "392": {
+  "349": {
     "explanation": "Correct (A): Public HTTPS accommodates changing client IP addresses, while the database accepts MySQL connections only from the web-tier security group.\nNot B: A fixed customer IP allowlist fails when legitimate users’ addresses change.\nNot C: Customers should not connect directly to MySQL, and fixed IP rules do not support changing client addresses.\nNot D: Opening MySQL to every IPv4 address grants substantially more access than required.",
     "sourceAnswerOnly": true
   },
-  "402": {
-    "explanation": "Best answer (A): Retention longer than the two-day consumption interval prevents records expiring under Kinesis’s default twenty-four-hour window.\nNot B: Changing the producer library does not extend how long records remain available.\nNot C: Additional shards increase throughput rather than the record-retention period.\nNot D: S3 Versioning cannot preserve stream records that expired before they reached S3.",
-    "sourceAnswerOnly": true
-  },
-  "405": {
+  "361": {
     "correction": "Scaling EC2 capacity to zero removes running instance compute charges, but ALB, storage, backup, and other provisioned-resource charges can continue. The complete environment therefore does not necessarily incur costs only while the application is active."
   },
-  "414": {
-    "explanation": "Best answer (B): S3 File Gateway presents a network share and asynchronously uploads completed files without a custom transfer program.\nNot A: An end-of-day schedule cannot provide near-real-time delivery.\nNot C: A custom DataSync orchestration application requires more administration than writing to a gateway share.\nNot D: A polling and SFTP upload script adds custom scheduling, transfer, and retry maintenance.",
-    "sourceAnswerOnly": true
-  },
-  "415": {
+  "370": {
     "correction": "Intelligent-Tiering includes Frequent, Infrequent, and Archive Instant Access tiers, plus optional asynchronous archive tiers. It is not limited to two tiers, and monitoring charges mean savings depend on object sizes and access behavior. Keep optional archive tiers disabled when immediate access is required."
   },
-  "417": {
-    "explanation": "Best answer (C): Compute Savings Plans cover eligible EC2 and Lambda usage, while VPC attachment enables private access to the EC2 instances.\nNot A: EC2 Instance Savings Plans do not discount Lambda compute.\nNot B: The savings plan excludes Lambda, and a public subnet offers no advantage for private instance access.\nNot D: A Lambda function without customer-VPC attachment cannot directly use the private EC2 network path.",
-    "sourceAnswerOnly": true
-  },
-  "418": {
+  "372": {
     "correction": "The trust policy defines who may assume the role; it does not define which S3 objects that role may access. Scope the role's permission policy to the required bucket and operations, and authorize the caller to assume it. Trusting an entire account is broader than trusting a specific approved principal."
   },
-  "420": {
+  "374": {
     "correction": "An RDS Multi-AZ DB cluster has a writer and two readable standby instances across three Availability Zones. This differs from a traditional Multi-AZ DB instance deployment, whose standby cannot serve reporting reads. The reader endpoint is the relevant feature in D."
   },
-  "421": {
+  "375": {
     "explanation": "Correct (B): A VPC-hosted Transfer Family endpoint supports trusted-source security groups and Elastic IPs, while EFS preserves POSIX permissions with a supported identity provider.\nNot A: Transfer Family does not use EBS volumes as its storage backend.\nNot C: A public endpoint does not support the proposed VPC security-group source restrictions.\nNot D: An internal-only endpoint is not reachable by the trusted internet clients described.",
     "sourceAnswerOnly": true
   },
-  "422": {
+  "376": {
     "correction": "AWS App Mesh is not an Auto Scaling mechanism and does not scale ECS capacity from SQS queue length. Configure ECS Service Auto Scaling for task count and, for EC2-backed clusters, a capacity provider or other node-scaling arrangement. Queue-consuming workers also do not require an ALB simply to poll SQS."
   },
-  "423": {
-    "explanation": "Best answer (A, B): IAM roles and groups can receive the shown identity-based permissions policy, with role trust configured separately.\nNot C: An AWS organization receives organizational policies such as SCPs rather than this IAM identity policy.\nNot D: An ECS resource uses task or execution roles rather than receiving this policy as an IAM identity.\nNot E: An EC2 instance uses an instance-profile role rather than receiving an identity policy directly.",
-    "sourceAnswerOnly": true
-  },
-  "429": {
-    "explanation": "Best answer (D): The regional allow permits EC2 actions in us-east-1, while an explicit deny blocks stopping or terminating without MFA.\nNot A: Policy statements are evaluated together, so a later explicit deny still overrides an allow.\nNot B: The MFA-related deny covers stopping and terminating rather than every EC2 action.\nNot C: MFA does not extend the allow statement beyond us-east-1.",
-    "sourceAnswerOnly": true
-  },
-  "430": {
+  "382": {
     "explanation": "Correct (B, C): Upload-triggered Lambda promptly generates images, while lifecycle rules expire images and archive CSV data for scheduled retrieval.\nNot A: Hourly polling delays processing and maintains a worker instance unnecessarily.\nNot D: A Standard-to-One Zone-IA lifecycle transition cannot occur after only one day.\nNot E: Standard-IA cannot be selected as a day-one lifecycle transition, and retaining images in RRS does not expire them.",
     "sourceAnswerOnly": true
   },
-  "434": {
-    "explanation": "Best answer (A): Prepared regional application capacity and DynamoDB global tables allow health-checked DNS failover without waiting for infrastructure creation.\nNot B: Provisioning everything after failure adds recovery time and does not provide a replicated database.\nNot C: Although data is replicated, creating the application tier after failure still delays recovery.\nNot D: A custom alarm-and-Lambda DNS update adds another recovery step compared with built-in DNS failover.",
-    "sourceAnswerOnly": true
-  },
-  "440": {
+  "391": {
     "correction": "Aurora's native restore-from-S3 workflow expects supported physical backup formats, not an arbitrary mysqldump SQL file. C is workable only with an additional client-driven logical import, such as downloading the dump and piping it into a MySQL client connected to Aurora. A snapshot migration and a logical SQL import are different restore paths."
   },
-  "443": {
+  "394": {
     "explanation": "Correct (A): S3 Transfer Acceleration can speed large long-distance object uploads and downloads through AWS edge entry points, with benefit and added cost measured for actual clients.\nNot B: Cache-Control headers do not accelerate uploads or create a global transfer network for unique data.\nNot C: CloudFront caching offers less reuse for unique files, while EC2 adds infrastructure beyond direct S3 object transfers.\nNot D: ElastiCache does not provide global large-object upload acceleration and requires application integration.",
     "sourceAnswerOnly": true
   },
-  "446": {
+  "397": {
     "explanation": "Correct (D): Compliance-mode Object Lock protects new versions for seven years, while Batch Operations applies the required retention dates to existing versions without recopying them.\nNot A: Versioning, lifecycle expiration, and MFA Delete do not provide immutable legal retention.\nNot B: Governance retention permits authorized bypass, and recopying adds unnecessary work.\nNot C: Compliance retention is suitable, but recopying every object requires more work than applying retention in bulk.",
     "sourceAnswerOnly": true
   },
-  "447": {
+  "398": {
     "correction": "Active-active DNS can use health-checked latency, weighted, or other suitable records. Route 53's specific failover routing policy is active-passive, so do not configure both active endpoints as a conventional primary-secondary failover pair. DNS caching also means failover is not instantaneous."
   },
-  "449": {
+  "400": {
     "explanation": "Correct (B): RDS Custom for Oracle permits supported privileged customizations while retaining managed database operations within its support perimeter.\nNot A: Standard RDS restricts the privileged access required, and replacing features adds migration work.\nNot C: Oracle on EC2 leaves database administration, backups, and maintenance to the company.\nNot D: Changing database engines and rewriting Oracle-dependent features conflicts with a quick migration.",
     "sourceAnswerOnly": true
   },
-  "454": {
+  "405": {
     "correction": "Workload Discovery on AWS is a separately deployable AWS Solutions implementation, not a built-in component of the AWS Well-Architected Tool. It discovers and visualizes supported resources through its own deployed architecture. Distinguish it from the Well-Architected workload review service."
   },
-  "455": {
+  "406": {
     "explanation": "Correct (B, D, F): AWS Budgets can alert and assume an IAM role to apply a provisioning-deny SCP, although billing delays prevent this from being a real-time spending cap.\nNot A: Cost and Usage Reports provide billing data rather than the configuration location for budget amounts.\nNot C: Budgets actions assume an IAM role rather than authenticating as an IAM user.\nNot E: AWS Config evaluates resource compliance rather than acting as an SCP that denies provisioning API calls.",
     "sourceAnswerOnly": true
   },
-  "457": {
+  "408": {
     "correction": "Transfer Family supports AS2, but AS2 partner authentication uses configured profiles, agreements, and certificates rather than the Lambda custom identity-provider flow used for SFTP-style user logins. Authenticate users to the application with the company's IdP separately from the AS2 partner transfer. C combines concepts that need those distinct integrations."
   },
-  "459": {
+  "410": {
     "correction": "Activating a cost-allocation tag makes existing resource tag values available for billing analysis; it does not apply the tag to resources. Teams must first tag supported resources, and reporting activation and data availability can take time."
   },
-  "461": {
+  "412": {
     "explanation": "Correct (B): Global Accelerator carries traffic over the AWS network, while an NLB supports both TCP and UDP at the regional application endpoint.\nNot A: An ALB does not forward arbitrary UDP application traffic.\nNot C: CloudFront does not provide generic TCP and UDP forwarding to the NLB.\nNot D: Neither CloudFront nor an ALB provides the required generic UDP forwarding.",
     "sourceAnswerOnly": true
   },
-  "466": {
+  "417": {
     "explanation": "Correct (A): A multi-AZ Auto Scaling group behind an ALB removes the compute tier’s single-AZ dependency and complements the existing Multi-AZ database.\nNot B: Snapshots provide recovery copies rather than continuously available application capacity in another AZ.\nNot C: Latency-based DNS routing does not create application instances in additional Availability Zones.\nNot D: A multi-AZ load balancer cannot keep the application available if all its backend instances remain in one failed AZ.",
     "sourceAnswerOnly": true
   },
-  "467": {
+  "418": {
     "explanation": "Correct (B): The Organizations management account enables eligible Savings Plans discount sharing so other participating accounts can use the unused benefit.\nNot A: The purchasing member account does not control the organization’s discount-sharing preferences.\nNot C: Moving workloads adds operational effort when discount sharing can apply benefits without migration.\nNot D: Savings Plans cannot be resold in the Reserved Instance Marketplace.",
     "sourceAnswerOnly": true
   },
-  "468": {
+  "419": {
     "explanation": "Correct (B): A REST API with a VPC link can reach a supported load balancer serving ECS containers in private subnets.\nNot A: A WebSocket API does not meet the REST API requirement.\nNot C: A WebSocket API is the wrong API type, and a security group does not establish a private integration.\nNot D: A security group alone does not provide the private network integration between API Gateway and ECS.",
     "sourceAnswerOnly": true
   },
-  "469": {
+  "420": {
     "correction": "S3 Intelligent-Tiering includes Archive Instant Access and optional asynchronous archive tiers in addition to Frequent and Infrequent Access. The two-tier description is outdated. Objects smaller than 128 KB are not automatically tiered."
   },
-  "472": {
+  "423": {
     "correction": "The final sentences about an EC2 static website belong to a different problem and are unrelated to this DynamoDB question. DAX accelerates eligible cached reads after the application is configured to use its client and endpoint. It does not accelerate strongly consistent reads through its cache."
   },
-  "475": {
+  "426": {
     "explanation": "Correct (C): Regional EFS provides per-AZ mount targets, and scheduled AWS Backup cross-Region copies can meet the RPO when copy completion is monitored.\nNot A: FSx for Windows provides SMB storage rather than the EFS-style mount target in each application AZ.\nNot B: FSx for ONTAP uses its own storage endpoints rather than EFS-style per-AZ mount targets.\nNot D: FSx for OpenZFS does not expose the requested EFS-style mount target in each application AZ.",
     "sourceAnswerOnly": true
   },
-  "477": {
-    "explanation": "Best answer (D): Allowing only s3:DeleteObject on arn:aws:s3:::bucket-name/* adds the missing object-level permission while retaining least privilege.\nNot A: The s3:*Object action wildcard grants additional object operations beyond deletion.\nNot B: The s3:* action wildcard grants more permissions than object deletion requires.\nNot C: The bucket-name* resource wildcard can match other bucket names instead of limiting deletion to objects in the specified bucket.",
-    "sourceAnswerOnly": true
-  },
-  "485": {
+  "435": {
     "explanation": "Intended answer (A): Glacier Flexible Retrieval with expedited restores offers low archive storage cost and typical one-to-five-minute retrieval, but does not guarantee every restore within five minutes.\nNot B: Standard Glacier Flexible Retrieval restores typically take hours rather than five minutes.\nNot C: Standard-IA offers immediate access but higher ongoing storage cost for rarely retrieved archives.\nNot D: One Zone-IA offers immediate access but is not the lowest-cost archival choice and lacks multi-AZ resilience.",
     "sourceAnswerOnly": true
   },
-  "490": {
+  "440": {
     "explanation": "Correct (B): Native DynamoDB export uses PITR data without consuming RCUs, but recurring S3 delivery still requires scheduled exports rather than enabling PITR alone.\nNot A: An EMR Hive extraction reads the live table and adds cluster administration.\nNot C: Streams and Lambda require a custom change-processing pipeline and do not independently export the initial table contents.\nNot D: The proposed custom Lambda export adds implementation work beyond using the native PITR-based export feature.",
     "sourceAnswerOnly": true
   },
-  "491": {
-    "explanation": "Best answer (A): SQS standard queues provide economical at-least-once delivery, while the Lambda role needs KMS decryption access and processing must tolerate duplicates.\nNot B: SSE-SQS does not require the proposed encryption-key invocation permission, and FIFO ordering is unnecessary.\nNot C: FIFO ordering adds unnecessary queue cost when at-least-once processing is sufficient.\nNot D: The consumer needs kms:Decrypt permission rather than a generic encryption-key invocation permission.",
-    "sourceAnswerOnly": true
-  },
-  "493": {
+  "442": {
     "correction": "Transcribe and Translate support documented languages and language pairs, not literally any language. Confirm support for the recordings, transcription mode, and translation direction before adopting the pipeline. Comprehend sentiment analysis also has its own supported-language limits."
   },
-  "494": {
+  "443": {
     "explanation": "Correct (D): A request outside both permitted CIDR ranges matches the explicit deny, which overrides the allow for terminating instances.\nNot A: EC2 instances do not support the proposed attached resource-based policy.\nNot B: An identity-based permissions policy attached to a role does not require a Principal field.\nNot C: The allow statement already includes ec2:TerminateInstances.",
     "sourceAnswerOnly": true
   },
-  "496": {
+  "445": {
     "explanation": "Correct (B, D): File Gateway provides cached NFS access, while cached Volume Gateway provides iSCSI block storage backed by AWS without changing application interfaces.\nNot A: S3 object storage does not directly replace both existing NFS and block interfaces with the required local cache.\nNot C: Snowball Edge is not the ongoing cloud-backed cached storage extension described.\nNot E: Mounting EFS remotely does not provide the required on-premises caching or block-storage interface.",
     "sourceAnswerOnly": true
   },
-  "497": {
+  "446": {
     "explanation": "Correct (C): An S3 gateway endpoint routes same-Region S3 traffic around the NAT gateway without endpoint hourly or data-processing charges.\nNot A: A NAT instance still incurs compute and administration costs that the gateway endpoint avoids.\nNot B: A private-subnet NAT instance and a public-subnet route change do not establish the required path for the application’s S3 traffic.\nNot D: Another NAT gateway retains the same type of hourly and per-GB processing charges.",
     "sourceAnswerOnly": true
   },
-  "499": {
+  "448": {
     "explanation": "Correct (D): A partner-provided 200-Mbps hosted connection can reduce unused capacity cost while preserving private connectivity, subject to peak-load and existing encryption requirements.\nNot A: Another 1-Gbps connection does not rightsize the capacity to the workload.\nNot B: A 200-Mbps hosted connection must be ordered through a Direct Connect Partner rather than as a dedicated console connection.\nNot C: Keeping 1-Gbps capacity and arranging account sharing adds complexity instead of rightsizing the connection.",
     "sourceAnswerOnly": true
   },
-  "500": {
+  "449": {
     "explanation": "Intended answer (A, D): DataSync’s SMB transfers preserve supported Windows permissions, whether the agent runs on premises or on the legacy Snowcone host whose ordering availability must be checked.\nNot B: Copying SMB shares into S3 with the CLI does not preserve their NTFS access-control metadata for restoration.\nNot C: Shipping ordinary server drives for S3 import is not the proposed supported transfer workflow and does not preserve NTFS permissions.\nNot E: The CLI-to-S3 object-copy path does not preserve the Windows file permissions required at the destination.",
     "sourceAnswerOnly": true
   },
-  "501": {
+  "450": {
     "correction": "The SQL-oriented Kinesis Data Analytics integration is a legacy architecture whose availability must be checked before new use. For a current implementation, evaluate a supported stream-processing engine such as Amazon Managed Service for Apache Flink with explicitly supported sources and sinks. Amazon Kinesis Data Firehose is now named Amazon Data Firehose."
   },
-  "503": {
+  "452": {
     "explanation": "Correct (A): A narrowly scoped customer-owned role supplies temporary STS credentials, with a unique external ID added to its trust conditions to prevent confused-deputy access.\nNot B: A custom token-vending service adds credential-handling complexity and does not replace the required customer-account trust.\nNot C: Storing long-lived customer IAM access keys increases credential exposure and rotation responsibility.\nNot D: Storing Cognito usernames and passwords adds unnecessary credentials instead of using direct cross-account role assumption.",
     "sourceAnswerOnly": true
   },
-  "505": {
+  "454": {
     "correction": "EC2 Spot does not use the old competitive bidding model described here. Select an appropriate maximum price and interruption-tolerant capacity strategy, and diversify instance types and Availability Zones where possible. Spot capacity can be interrupted or unavailable even when the price is acceptable."
   },
-  "507": {
+  "456": {
     "correction": "DynamoDB global tables do not automatically mean globally strong consistency: multi-Region eventual consistency and supported multi-Region strong consistency configurations have different behavior and constraints. Do not assume a legacy eventually consistent table prevents concurrent double bookings. Select and validate the consistency mode and reservation-write design explicitly."
   },
-  "508": {
+  "457": {
     "explanation": "Correct (B, D): Both managed approaches schedule backups and cross-Region copies before a disaster, with twice-daily runs providing margin for the twenty-four-hour RPO.\nNot A: On-demand copying may be impossible after the source Region becomes unavailable.\nNot C: Custom Lambda copy scheduling adds administration that AWS Backup’s copy rules already handle.\nNot E: Scheduled local backups without scheduled regional copies do not ensure a recent recovery point survives a regional outage.",
     "sourceAnswerOnly": true
   },
-  "509": {
+  "458": {
     "explanation": "Correct (B): An inbound deny placed before broader network ACL allows on the public ALB subnets blocks the offending source IPs before load balancing.\nNot A: Security groups support allow rules rather than explicit deny rules.\nNot C: Application security groups cannot express the proposed deny rules.\nNot D: The application subnet sees connections from the ALB rather than the original client IP as the network-layer source.",
     "sourceAnswerOnly": true
   },
-  "514": {
-    "correction": "The EKS service's interface VPC endpoint exposes EKS management APIs, not the cluster's Kubernetes API endpoint. A private Kubernetes endpoint requires working VPC DNS, routes, cluster and node security groups, and node IAM authorization; private AWS service endpoints may be needed separately. The stated error does not identify which of those is missing, so B cannot be accepted solely from the symptoms.",
-    "answerReview": true
-  },
-  "515": {
-    "correction": "A is a genuine Redshift use case because the Redshift Data API supports application access without managing persistent database connections. E's globally scaled, tens-of-millions-of-requests wording describes a different access pattern and is not a general Redshift throughput guarantee. The supplied B,C,E selection should be reviewed rather than memorized as three unqualified Redshift capabilities.",
-    "answerReview": true
-  },
-  "517": {
+  "464": {
     "correction": "A is supported through Session Manager preferences, which can send supported interactive session input and output to S3. This is distinct from Run Command output logging. Session content logging is not available for SSH or port-forwarding sessions, so 'all logs' must account for those documented exceptions."
   },
-  "521": {
+  "468": {
     "explanation": "Correct (C): The application assumes each trusted business-account role with temporary STS credentials and permissions limited to the required DynamoDB reads.\nNot A: Secrets Manager stores secrets rather than directly authenticating DynamoDB requests without IAM credentials.\nNot B: Separate long-lived user keys create unnecessary distribution and rotation risk across accounts.\nNot D: ACM certificates are not client credentials for authenticating DynamoDB API requests.",
     "sourceAnswerOnly": true
   },
-  "522": {
+  "469": {
     "correction": "Metrics Server supplies CPU and memory resource metrics to the Horizontal Pod Autoscaler. Application-specific custom metrics require an appropriate custom or external metrics adapter; installing Metrics Server alone does not supply them. Cluster Autoscaler primarily reacts to scheduling feasibility rather than simply scaling nodes on average CPU."
   },
-  "526": {
+  "473": {
     "correction": "RDS Proxy pools connections and can expose supported reader endpoints, but it does not inspect SQL and automatically split reads and writes on one application connection. Configure clients to use the appropriate endpoint for the intended workload. Connection pooling does not add database compute capacity."
   },
-  "528": {
-    "explanation": "Best answer (D): Transfer Family uploads to S3 can trigger Lambda immediately, with three-to-eight-minute processing fitting its runtime limit and deletion occurring only after successful processing.\nNot A: Nightly jobs delay processing, and archived objects are unsuitable for immediate access without restoration.\nNot B: A self-managed FTP server and nightly batch processing add administration and delay.\nNot C: Transfer Family does not use EBS as a storage backend, and EBS writes do not generate S3 object notifications.",
-    "sourceAnswerOnly": true
-  },
-  "531": {
+  "477": {
     "correction": "A Lambda function URL is a native Lambda HTTPS endpoint and does not require API Gateway integration. Configure its authentication and validate the webhook provider's signature before trusting requests. API Gateway is a separate optional frontend."
   },
-  "534": {
-    "correction": "In B, expiration and a Glacier transition on day 90 are redundant because the object is due for deletion then. Transitioning to Standard-IA on day 30 and expiring on day 90 is coherent; C can also be evaluated, but 60 days in Glacier Flexible Retrieval incurs its 90-day minimum storage charge and additional object overhead. Object sizes and restore needs are missing, so a universal cheapest choice cannot be established from the storage-class names alone.",
-    "answerReview": true,
-    "sourceAnswerOnly": true
-  },
-  "535": {
+  "480": {
     "correction": "EKS clusters running Kubernetes 1.28 or later now encrypt all Kubernetes API data with envelope encryption by default. A customer managed KMS key remains relevant when control of that key is required, but explicit secrets-only setup is not the baseline for every current cluster. Verify the cluster version and key-management requirement before applying the historical instructions.",
     "references": [
       {
@@ -1104,92 +873,46 @@
       }
     ]
   },
-  "539": {
-    "explanation": "Best answer (C): Elastic Disaster Recovery continuously replicates disks into low-cost staging and launches recovery servers when needed, with actual RPO and RTO verified through drills.\nNot A: An active/active duplicate and SQL Server Enterprise licensing add cost beyond the recovery requirements.\nNot B: A continuously running RDS standby costs more and DMS replicates database changes rather than the entire application VM.\nNot D: Nightly backups permit many hours of data loss, exceeding the thirty-second RPO.",
-    "sourceAnswerOnly": true
-  },
-  "540": {
-    "correction": "D mixes Aurora clusters with the different RDS Multi-AZ DB instance deployment model; a traditional instance standby is not a reporting reader. C also assumes an Oracle Multi-AZ DB cluster with readable standby instances, which must not be inferred from MySQL or PostgreSQL cluster support. No listed choice clearly describes the required supported HA database and separate reporting capacity.",
-    "answerReview": true
-  },
-  "543": {
-    "explanation": "Best answer (A, E): Using the existing account as the organization’s management account and enabling discount sharing lets eligible consolidated-billing usage consume unused Savings Plans benefits.\nNot B: The purchasing account’s billing preferences alone cannot share discounts across accounts that remain individually billed.\nNot C: Savings Plans discounts are shared through consolidated billing rather than as AWS RAM resources.",
-    "sourceAnswerOnly": true
-  },
-  "552": {
+  "494": {
     "correction": "Compute Savings Plans allow eligible instance-family, size, and Region changes during either a one-year or a three-year term. A one-year term shortens the financial commitment; it does not uniquely enable changes every few months. No Upfront still requires payment for the hourly commitment throughout the term."
   },
-  "562": {
+  "504": {
     "explanation": "Correct (A, B): A DynamoDB gateway endpoint and its associated route-table entry route table requests privately without an internet gateway or NAT path.\nNot C: An EC2 interface endpoint reaches EC2 APIs rather than DynamoDB tables.\nNot D: Gateway endpoints do not create per-subnet elastic network interfaces.\nNot E: Gateway endpoints use endpoint policies and route tables rather than endpoint security groups.",
     "sourceAnswerOnly": true
   },
-  "563": {
+  "505": {
     "correction": "EKS Connector provides a console view of registered external Kubernetes clusters and workloads. It does not turn EKS into a central engine for deploying, upgrading, or operating all those clusters. B fits this question's viewing requirement, while the explanation overstates it as management."
   },
-  "565": {
+  "507": {
     "correction": "Aurora Auto Scaling changes the number of reader instances and does not automatically scale the writer's transaction-processing capacity. If the demand increase is write-heavy, evaluate Aurora Serverless v2 or an appropriate writer-sizing strategy. Migration compatibility and scaling behavior need validation for the actual workload."
   },
-  "569": {
-    "explanation": "Best answer (A): CloudWatch metrics in AWS/Events show rule matches, target invocation attempts, and delivery failures without requiring a separate logging target.\nNot B: A dead-letter queue shows failed deliveries only when configured and populated, rather than all matches and invocations.\nNot C: A CloudWatch log group does not automatically contain every rule match or target invocation.\nNot D: CloudTrail API auditing is not the primary source of rule-match and target-delivery metrics.",
-    "sourceAnswerOnly": true
-  },
-  "571": {
+  "512": {
     "explanation": "Intended answer (A): Importing the third-party certificate into ACM supports the custom domain, but the endpoint’s supported TLS policy must separately satisfy the TLSv1.3 requirement.\nNot B: ACM cannot issue a public certificate signed by an arbitrary third-party CA.\nNot C: ACM cannot issue the specified third-party certificate, and a Lambda function URL cannot directly use that custom certificate.\nNot D: A function URL does not directly support the proposed custom certificate, and ACM issuance cannot select an arbitrary public CA.",
     "sourceAnswerOnly": true
   },
-  "573": {
+  "514": {
     "correction": "SnapStart reduces initialization latency by restoring execution environments from a prepared snapshot; it is different from provisioned concurrency. It is no longer exclusively a Java feature, with supported Python and .NET runtimes also available. Check the runtime's support, pricing, and snapshot-safety constraints."
   },
-  "574": {
+  "515": {
     "correction": "Aurora Serverless v2 pauses only on supported engine versions and configurations with a minimum capacity of zero. A nonzero minimum continues to incur compute charges during idle periods. Check auto-pause eligibility and resume latency before estimating savings for a weekly workload."
   },
-  "575": {
+  "516": {
     "correction": "RDS Multi-AZ DB clusters use one writer and two readable standby instances across three Availability Zones. They differ from traditional Multi-AZ DB instance deployments, which have one non-readable standby. The distinction matters when the question requires both availability and read scaling."
   },
-  "576": {
+  "517": {
     "correction": "An edge-optimized API Gateway endpoint uses a service-managed CloudFront distribution. It does not also enable the separate AWS Global Accelerator service. API execution still occurs in the API's Region rather than being moved to every edge location."
   },
-  "581": {
-    "explanation": "Best answer (B): Four On-Demand instances split evenly across two AZs leave two after an AZ failure, provided application state is also replicated or externalized.\nNot A: Losing either AZ leaves only one instance until replacement capacity is available.\nNot C: A single AZ remains a failure domain, and Spot capacity can be interrupted.\nNot D: The remaining Spot instances may be interrupted after the AZ containing On-Demand capacity fails.",
-    "sourceAnswerOnly": true
-  },
-  "582": {
-    "correction": "Latency-based routing is the appropriate policy when minimizing measured latency is the requirement; geographic proximity is not the same measurement. Configure latency records for both the on-premises endpoint associated with us-west-1 and the eu-central-1 endpoint. C names the intended policy but omits the second record, while A does not guarantee the lowest latency.",
-    "answerReview": true
-  },
-  "583": {
-    "correction": "Tape Gateway is no longer available on Snow Family devices, so C is not a current deployment option. D is a Tape Gateway architecture, but moving 5 PB in six months exceeds a continuously saturated 1-Gbps link before overhead. Recheck supported physical migration options and network capacity because the choices do not establish a complete feasible plan.",
-    "answerReview": true,
-    "references": [
-      {
-        "label": "AWS Storage Gateway API model: HostEnvironment",
-        "url": "https://github.com/aws/aws-sdk-js-v3/blob/main/codegen/sdk-codegen/aws-models/storage-gateway.json"
-      }
-    ]
-  },
-  "585": {
+  "523": {
     "correction": "On-Demand Capacity Reservations reserve matching instance capacity in a specific Availability Zone. They are not an arbitrary pool that permits any instance type or size across a whole Region. Reserve the actual failover configuration and account for the cost while capacity is reserved."
   },
-  "586": {
+  "524": {
     "explanation": "Correct (B): After leaving the original organization, the existing R&D account can accept the new organization’s invitation without moving its resources to another account.\nNot A: An AWS account cannot belong to two organizations simultaneously.\nNot C: Creating a replacement account and migrating resources adds unnecessary work when the existing account can move.\nNot D: The new organization’s management account cannot simultaneously join the prior organization as a member.",
     "sourceAnswerOnly": true
   },
-  "589": {
+  "527": {
     "correction": "A Redis replication group improves session availability, but asynchronous replica promotion can lose recent writes. An ordinary ElastiCache cache is not an unconditional durable system of record. Choose backups and a stronger durable store if every accepted session update must survive failure."
   },
-  "599": {
-    "explanation": "Best answer (A, C, F): Customers provide resilient site utilities, physical facility security, and spare workload capacity, while AWS operates and maintains the supplied Outposts infrastructure.\nNot B: AWS manages the underlying hypervisor, storage infrastructure, and managed AWS services.\nNot D: AWS manages the hardware inside the racks, while the customer supplies the site power and network connections.\nNot E: AWS is responsible for physical maintenance of the supplied Outposts components.",
-    "sourceAnswerOnly": true
-  },
-  "601": {
-    "correction": "B assumes that the Aurora migration read-replica workflow is supported for this PostgreSQL source, which must not be inferred from the similarly named MySQL migration path. Verify the exact engine and version support before relying on it for minimal downtime. Snapshot migration is a different supported-style approach but does not continuously capture later source writes.",
-    "answerReview": true
-  },
-  "608": {
-    "explanation": "Best answer (A): A WAF web ACL on the ALB can allow registered IPs and block others, splitting the large address list across IP sets within service quotas.\nNot B: Firewall Manager manages policies such as WAF policies rather than supplying standalone ALB firewall rules.\nNot C: ALBs do not provide an API Gateway-style Lambda authorizer for checking a DynamoDB IP allowlist.\nNot D: Thousands of individual source-IP entries exceed practical network ACL quotas and add substantial management work.",
-    "sourceAnswerOnly": true
-  },
-  "613": {
+  "548": {
     "correction": "EKS clusters running Kubernetes 1.28 or later now encrypt all Kubernetes API data with envelope encryption by default. A customer managed KMS key remains relevant when control of that key is required, but explicit secrets-only setup is not the baseline for every current cluster. Verify the cluster version and key-management requirement before applying the historical instructions.",
     "references": [
       {
@@ -1198,69 +921,65 @@
       }
     ]
   },
-  "621": {
+  "556": {
     "correction": "Enabling S3 Cross-Region Replication does not automatically backfill objects that already existed before the rule. Use S3 Batch Replication or an appropriate copy workflow for historical photos, and configure live replication for new objects. Monitor replication completion rather than assuming both buckets are immediately identical."
   },
-  "629": {
+  "564": {
     "explanation": "Correct (D): RDS Blue/Green Deployments maintain a synchronized staging environment for supported upgrade testing before a controlled production switchover.\nNot A: A snapshot protects recovery data but does not provide a synchronized environment for testing the upgrade before production changes.\nNot B: Manual backup and restore add migration work and can miss writes made after the backup.\nNot C: DMS replication requires more migration configuration and cutover management than the supported managed Blue/Green workflow.",
     "sourceAnswerOnly": true
   },
-  "636": {
+  "571": {
     "explanation": "Correct (C): An SNS-to-SQS subscription buffers S3 events so Lambda can scale consumption independently and retry failures with idempotent processing.\nNot A: ECS is not a direct SNS subscription endpoint, and adding container processing is unnecessary for this Lambda workflow.\nNot B: EKS is not a direct SNS subscription endpoint, and adding a Kubernetes cluster increases operational overhead.\nNot D: Server Migration Service is not an event queue or a source that Lambda polls for S3 notifications.",
     "sourceAnswerOnly": true
   },
-  "638": {
-    "explanation": "Best answer (A): After employee authorization, Lambda can issue short-lived, operation-specific S3 presigned URLs without provisioning individual AWS credentials or transfer servers.\nNot B: Separate IAM users and policies add credential provisioning, rotation, and access-management work.\nNot C: File Gateway adds gateway and network-share administration for globally distributed employees.\nNot D: Transfer Family with a custom identity provider and stored credentials adds infrastructure and identity integration beyond scoped URL access.",
-    "sourceAnswerOnly": true
-  },
-  "640": {
+  "574": {
     "explanation": "Correct (B, E): The Lambda execution role receives kms:Decrypt access authorized by the KMS key policy, alongside the S3 read permissions needed to retrieve the objects.\nNot A: A Lambda resource policy controls access to the function rather than its outbound KMS permissions.\nNot C: The KMS policy must authorize the execution-role principal rather than a Lambda resource-policy document.\nNot D: An IAM permissions policy must be attached to the execution role rather than directly to the function.",
     "sourceAnswerOnly": true
   },
-  "644": {
+  "578": {
     "correction": "An ACM public wildcard certificate can be validated by DNS or email; DNS is preferred for automated renewal, but it is not the only validation method. A wildcard such as *.example.com does not cover the apex domain or deeper nested subdomains. Include the required names explicitly."
   },
-  "645": {
+  "579": {
     "explanation": "Correct (B): A KMS external key store integrates supported external key managers while retaining key material outside AWS, subject to the external system’s availability and latency.\nNot A: CloudHSM keeps key material in AWS-hosted hardware rather than the required on-premises key manager.\nNot C: The default KMS key store retains key material within AWS.\nNot D: A CloudHSM-backed custom key store still uses AWS-hosted HSMs rather than external vendor key managers.",
     "sourceAnswerOnly": true
   },
-  "651": {
+  "585": {
     "correction": "The gp3 and 15,000-IOPS paragraph at the end belongs to another question and is unrelated to this S3 lifecycle design. Deep Archive standard restoration typically takes around 12 hours, rather than providing an absolute 12-hour guarantee for every request. Control auditor-only access with permissions separately from lifecycle transitions."
   },
-  "654": {
+  "588": {
     "correction": "PHP applications can run on Lambda through custom runtimes or containers, with sessions in an external store; sessions do not make Lambda categorically unsuitable. Fargate can still reduce migration changes for an existing PHP server application. Elastic Beanstalk can also use decoupled storage and session services, so the original elimination reasons are too broad."
   },
-  "656": {
+  "590": {
     "correction": "EBS and Regional EFS are durable services; the reason to prefer S3 here is the object-access pattern and cost tradeoff, not an absence of durability elsewhere. Standard-IA also has retrieval charges and minimum billable object size and storage duration. Ensure the website's access controls match the intended audience."
   },
-  "659": {
+  "593": {
     "correction": "Direct Connect is not inherently too slow for data migration; throughput and provisioning lead time are separate considerations. Offline Snowball may fit a short deadline when an adequate network path is unavailable. Check current device ordering availability and real delivery and import times before adopting the legacy option."
   },
-  "667": {
+  "601": {
     "correction": "C is correct: S3 interface endpoints can be reached from on-premises networks through appropriately routed Direct Connect connectivity. S3 gateway endpoints cannot be extended to on-premises clients through Direct Connect. The original explanation incorrectly says that S3 does not support interface endpoints.",
     "answerOverride": [
       "C"
     ]
   },
-  "668": {
+  "602": {
     "correction": "A tag policy must have enforcement enabled for supported resource types to block noncompliant tag values; listing values alone is not universal creation-time enforcement. Tag policies do not require an absent tag to be present, and IAM policies can validate request tag values using condition keys. Combine suitable preventive controls when every resource must carry an approved application tag."
   },
-  "669": {
+  "603": {
     "correction": "Secrets Manager automates scheduled credential rotation, but configuration, monitoring, permissions, and recovery still require operational work. Confirm that the rotation mechanism actually updates the database account as well as the stored secret. 'Zero operational effort' is not a service guarantee."
   },
-  "670": {
+  "604": {
     "correction": "Provisioned capacity can be economical for the four-hour test only when capacity is adjusted for the active window and minimized while idle. Leaving the test's peak RCU and WCU allocation in place all week changes that cost comparison substantially. On-demand mode does not use manually configured RCU and WCU reservations as A implies."
   },
-  "671": {
+  "605": {
     "correction": "CloudWatch does have metric anomaly detection, but AWS Cost Anomaly Detection is purpose-built for unusual cost and usage patterns. Its notifications do not prevent charges or impose a hard spending limit. Add separately designed guardrails if provisioning must be restricted."
   },
-  "673": {
+  "607": {
     "correction": "Deep Archive objects need restoration before File Gateway can serve data that is no longer in its local cache. Configure an explicit restore workflow and suitable retrieval tier to meet the 24-hour objective. A lifecycle transition alone does not make the gateway restore archived files transparently."
   },
-  "675": {
+  "609": {
     "correction": "EBS Snapshot Lock can prevent deletion during its configured lock period. Recycle Bin also supports Region-wide retention rules without per-snapshot tagging, so tagging is not an inherent requirement of that alternative. Recycle Bin enables recovery after deletion, while Snapshot Lock blocks the protected deletion itself."
   },
-  "679": {
+  "613": {
     "correction": "A, C, and E are the intended combination: Object Lock supplies default retention, and a lifecycle rule expires eligible objects afterward. Versioning alone cannot define a protected 30-day retention period, so the source B,C,E key is incomplete. Object Lock enables versioning, and permanent cleanup of retained versions may also require a noncurrent-version expiration rule after retention ends.",
     "answerOverride": [
       "A",
@@ -1268,13 +987,13 @@
       "E"
     ]
   },
-  "680": {
+  "614": {
     "correction": "DataSync copies changed data during individual task executions, not as an always-on event stream. Schedule repeated tasks or trigger them through supported automation for ongoing synchronization, with separate destination tasks as needed. Verify that the resulting delay meets the intended meaning of 'continuously'."
   },
-  "682": {
+  "616": {
     "correction": "Config and Systems Manager provide detection and configured remediation after noncompliance, rather than blocking creation by themselves. An existing unencrypted EBS volume cannot simply have encryption switched on in place; remediation normally creates an encrypted replacement through a snapshot workflow. Enable default encryption and preventive controls when new unencrypted resources must be blocked."
   },
-  "684": {
+  "618": {
     "correction": "A Local Zone helps only when its physical location meets the regulation and its distance and connectivity meet the latency target. It remains associated with a parent Region, and some services or management operations still depend on that Region. Validate data residency and service availability rather than assuming any Local Zone near eu-central-1 is automatically compliant."
   }
 }

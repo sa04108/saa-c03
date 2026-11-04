@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { exportJSON, exportHTML } from "@/lib/study/backup";
+import { QUESTION_COUNT } from "@/lib/study/bank-info";
 
 export function BackupDialog({ dialog, view, actions, notify }) {
   const [exporting, setExporting] = useState(false),
@@ -152,19 +153,11 @@ export function BackupDialog({ dialog, view, actions, notify }) {
       <h3>원본 자료 확인</h3>
       <p id="source-summary" className="small muted">
         {view &&
-          `전체 684문제 · 답안 연결 ${684 - view.missing.length}문제 · 답안 확인 필요 ${view.missing.length}문제 · 원본 이미지 ${view.imageCount}개`}
+          `전체 ${QUESTION_COUNT}문제 · 원본 이미지 ${view.imageCount}개`}
       </p>
       <p className="small muted">
-        125번: PDF의 마지막 D 선택지를 E로 표시했습니다.
-        <br />
-        315번: TXT에서 중복된 215번을 문제 내용으로 연결했습니다.
+        121번: PDF의 마지막 D 선택지를 E로 표시했습니다.
       </p>
-      <details>
-        <summary className="small">답안 확인이 필요한 문제 번호</summary>
-        <p id="missing-list" className="small muted" style={{ marginTop: 10 }}>
-          {view?.missing.join(", ")}
-        </p>
-      </details>
       <hr className="divider" />
       <button
         id="reset"
@@ -172,7 +165,7 @@ export function BackupDialog({ dialog, view, actions, notify }) {
         onClick={() => {
           if (
             !confirm(
-              "684문제의 선택, 채점, 별표 기록을 모두 초기화할까요? 필요하면 먼저 백업하세요.",
+              `${QUESTION_COUNT}문제의 선택, 채점, 별표 기록을 모두 초기화할까요? 필요하면 먼저 백업하세요.`,
             )
           )
             return;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AccountControls } from "@/components/account-provider";
 import { ThemeToggle } from "@/components/theme-provider";
+import { QUESTION_COUNT } from "@/lib/study/bank-info";
 export default function HomePage() {
   return (
     <div data-page="home">
@@ -19,7 +20,7 @@ export default function HomePage() {
           </Link>
           <Link href="/dumps/">
             <h2>문제집 →</h2>
-            <p>684문제를 풀고 정답과 해설을 확인하세요.</p>
+            <p>{QUESTION_COUNT}문제를 풀고 정답과 해설을 확인하세요.</p>
           </Link>
         </nav>
         <p className="note">

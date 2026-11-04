@@ -1,4 +1,5 @@
 "use client";
+import { QUESTION_COUNT } from "@/lib/study/bank-info";
 export function ProgressSidebar({ view, actions, expanded, setExpanded, go }) {
   const state = view?.state;
   return (
@@ -11,15 +12,15 @@ export function ProgressSidebar({ view, actions, expanded, setExpanded, go }) {
       <div className="progress-title">
         <div>
           <strong id="done">{view?.reviewed || 0}</strong>{" "}
-          <span>/ 684문제</span>
+          <span>/ {QUESTION_COUNT}문제</span>
         </div>
         <span id="percent">
-          {Math.round(((view?.reviewed || 0) / 684) * 100)}%
+          {Math.round(((view?.reviewed || 0) / QUESTION_COUNT) * 100)}%
         </span>
       </div>
       <progress
         id="progress"
-        max="684"
+        max={QUESTION_COUNT}
         value={view?.reviewed || 0}
         aria-label="확인한 문제 수"
       />
@@ -31,7 +32,7 @@ export function ProgressSidebar({ view, actions, expanded, setExpanded, go }) {
           <strong id="wrong">{view?.wrong || 0}</strong>오답
         </div>
         <div>
-          <strong id="remaining">{view?.remaining ?? 684}</strong>미완료
+          <strong id="remaining">{view?.remaining ?? QUESTION_COUNT}</strong>미완료
         </div>
       </div>
       <button
@@ -58,7 +59,6 @@ export function ProgressSidebar({ view, actions, expanded, setExpanded, go }) {
           <option value="unanswered">미채점 문제</option>
           <option value="wrong">틀린 문제</option>
           <option value="flagged">별표 문제</option>
-          <option value="missing">답안 확인 필요</option>
         </select>
         <label className="field-label" htmlFor="search">
           내용 검색
@@ -87,9 +87,9 @@ export function ProgressSidebar({ view, actions, expanded, setExpanded, go }) {
             name="jump"
             type="number"
             min="1"
-            max="684"
+            max={QUESTION_COUNT}
             inputMode="numeric"
-            placeholder="번호 1–684"
+            placeholder={`번호 1–${QUESTION_COUNT}`}
             required
           />
           <button type="submit">이동</button>

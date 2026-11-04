@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAccount } from "@/lib/backend/account";
+import { QUESTION_COUNT } from "@/lib/study/bank-info";
 
 const AccountContext = createContext(null);
 export function AccountProvider({ children, offline = false }) {
@@ -54,7 +55,7 @@ export function AccountControls({ compact = false }) {
     service
       .summary()
       .then((count) => {
-        if (active) setSummary(`계정에 저장된 풀이: ${count} / 684문제`);
+        if (active) setSummary(`계정에 저장된 풀이: ${count} / ${QUESTION_COUNT}문제`);
       })
       .catch(() => {
         if (active)
