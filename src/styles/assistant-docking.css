@@ -1,0 +1,40 @@
+/* Desktop chat consumes the existing right margin before moving study content. */
+:root {
+  --ai-min-width: 360px;
+  --ai-max-width: 480px;
+  --ai-edge: 24px;
+  --ai-content-gap: 24px;
+  --ai-content-width: calc(var(--study-width) - 2 * var(--study-gutter));
+  --ai-width: clamp(var(--ai-min-width), calc((100% - var(--ai-content-width)) / 2 - var(--ai-edge) - var(--ai-content-gap)), var(--ai-max-width));
+  --ai-content-right: calc(100% - var(--ai-width) - var(--ai-edge) - var(--ai-content-gap));
+}
+:root:has([data-page="concepts"] .dictionary-intro) { --ai-content-width: min(1050px, calc(var(--study-width) - 2 * var(--study-gutter))); }
+:root:has([data-page="concepts"] .quiz-page) { --ai-content-width: min(970px, calc(var(--study-width) - 2 * var(--study-gutter))); }
+@media (min-width: 761px) {
+  body.saa-ai-open :is([data-page="concepts"] > .shell, [data-page="dumps"] > .layout) {
+    container: assistant-study / inline-size;
+    /* Keep the natural wrapper and its centered content while they fit.
+       Narrow index/quiz cards can also use the space inside that wrapper. */
+    width: min(var(--study-width), 100%, max(calc(var(--ai-content-right) + var(--study-gutter)), calc(2 * var(--ai-content-right) - var(--ai-content-width))));
+    margin-left: max(0px, min(calc((100% - var(--study-width)) / 2), calc(var(--ai-content-right) - (var(--study-width) + var(--ai-content-width)) / 2)));
+    margin-right: 0;
+  }
+  @container assistant-study (max-width: 900px) {
+    .saa-ai-open .wiki-layout { grid-template-columns: minmax(0, 1fr); }
+    .saa-ai-open .wiki-toc { display: none; }
+    .saa-ai-open .layout > :is(.side, main) { grid-column: 1 / -1; }
+    .saa-ai-open .layout > .side { position: static; max-height: none; }
+    .saa-ai-open .layout > .side .map-wrap { display: none; }
+    .saa-ai-open .layout > .side.expanded .map-wrap { display: block; }
+    .saa-ai-open .layout > .side .mobile-map { display: flex; }
+    .saa-ai-open .layout > .side .navigator { max-height: 140px; overflow: auto; }
+  }
+  @container assistant-study (max-width: 600px) {
+    .saa-ai-open .term-article { padding: 22px; }
+    .saa-ai-open .term-article h1 { font-size: 2rem; }
+    .saa-ai-open .qtitle { flex-wrap: wrap; }
+    .saa-ai-open .qhead { gap: 10px; }
+    .saa-ai-open .qhead .flag { font-size: 11px; padding: 6px; }
+    .saa-ai-open .qbody { padding: 18px; }
+  }
+}
