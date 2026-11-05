@@ -53,8 +53,9 @@
 .saa-ai .saa-ai-title-tools button{display:grid;place-items:center;width:32px;height:32px;min-height:32px;margin:0;padding:0;border:0;border-radius:8px;background:transparent;color:var(--theme-muted)}
 .saa-ai .saa-ai-title-tools svg{width:18px;height:18px}
 .saa-ai .saa-ai-title-tools button:hover:not(:disabled){background:var(--theme-raised);color:var(--theme-ink)}
-.saa-ai .saa-ai-title-tools .saa-ai-title-confirm{background:var(--theme-blue);color:var(--theme-surface)}
-.saa-ai .saa-ai-title-tools .saa-ai-title-confirm:hover:not(:disabled){background:var(--theme-blue);color:var(--theme-surface);filter:brightness(1.08)}
+/* Keep the accent background above shared dark-theme button surfaces. */
+.saa-ai .saa-ai-title-tools button.saa-ai-title-confirm{background:var(--theme-blue);color:var(--theme-surface)}
+.saa-ai .saa-ai-title-tools button.saa-ai-title-confirm:hover:not(:disabled){background:var(--theme-blue);color:var(--theme-surface);filter:brightness(1.08)}
 .saa-ai .saa-ai-title-tools button:disabled{opacity:.45;cursor:default}
 .saa-ai .saa-ai-title-input{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:24px;margin:0;padding:0 3px;border:1px solid var(--theme-line);border-radius:5px;background:transparent;color:var(--theme-ink);font:600 13px/1.65 system-ui,sans-serif;letter-spacing:-.02em;resize:none;overflow:hidden;pointer-events:auto}
 .saa-ai .saa-ai-title-input:focus-visible{outline:2px solid var(--theme-blue);outline-offset:1px}
