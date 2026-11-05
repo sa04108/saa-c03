@@ -4,8 +4,18 @@ import { memo, useId, useMemo } from "react";
 import ReactMarkdown, { defaultUrlTransform } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
-const plugins = [remarkGfm, remarkBreaks];
+const plugins = [remarkGfm, remarkBreaks, remarkMath];
+const rehypePlugins = [[rehypeKatex, {
+  trust: false,
+  strict: "ignore",
+  errorColor: "currentColor",
+  maxExpand: 1000,
+  maxSize: 10,
+}]];
 
 function safeUrl(url) {
   const safe = defaultUrlTransform(url);
@@ -43,6 +53,11 @@ const components = {
   pre({ node, children, ...props }) {
     return <pre {...props} tabIndex={0} aria-label="코드 블록">{children}</pre>;
   },
+  span({ node, className, ...props }) {
+    const displayMath = className?.split(" ").includes("katex-display");
+    return <span {...props} className={className}
+      {...(displayMath ? { role: "region", "aria-label": "수식", tabIndex: 0 } : {})} />;
+  },
 };
 
 // Mounted by the browser-only chat slots. Finished messages skip parsing again
@@ -68,7 +83,7 @@ export const ChatMarkdown = memo(function ChatMarkdown({ text }) {
     footnoteBackLabel: "본문으로 돌아가기",
   }), [id]);
   return <div className="saa-ai-markdown">
-    <ReactMarkdown remarkPlugins={plugins} remarkRehypeOptions={options}
+    <ReactMarkdown remarkPlugins={plugins} rehypePlugins={rehypePlugins} remarkRehypeOptions={options}
       components={messageComponents} urlTransform={safeUrl}>{text}</ReactMarkdown>
   </div>;
 });

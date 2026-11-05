@@ -32,3 +32,7 @@
 .saa-ai .saa-ai-markdown .footnotes { padding-top: 10px; border-top: 1px solid var(--theme-line); color: var(--theme-muted); font-size: .9em; }
 .saa-ai .saa-ai-markdown .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .saa-ai .saa-ai-markdown :is(pre,.saa-ai-markdown-table):focus-visible { outline: 2px solid var(--theme-blue); outline-offset: 2px; }
+.saa-ai .saa-ai-markdown .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0 8px; }
+.saa-ai .saa-ai-markdown :not(.katex-display) > .katex { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; padding-block: 3px; margin-block: -3px; }
+.saa-ai .saa-ai-markdown .katex-error { color: inherit; font: .92em/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.saa-ai .saa-ai-markdown .katex-display:focus-visible { outline: 2px solid var(--theme-blue); outline-offset: 2px; }
