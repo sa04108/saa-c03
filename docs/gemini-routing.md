@@ -1,6 +1,6 @@
 # Gemini 무료 모델 라우팅
 
-2026-10-31 기준 [공식 모델 목록](https://ai.google.dev/gemini-api/docs/models), [요금표](https://ai.google.dev/gemini-api/docs/pricing), [종료 일정](https://ai.google.dev/gemini-api/docs/deprecations)을 확인했습니다. 웹의 Gemini 앱 무료 이용과 Gemini API의 무료 등급은 별개이며, 여기서는 **API 텍스트 입력·출력이 무료인 모델**을 사용합니다.
+2026-11-16 기준 [공식 모델 목록](https://ai.google.dev/gemini-api/docs/models), [요금표](https://ai.google.dev/gemini-api/docs/pricing), [종료 일정](https://ai.google.dev/gemini-api/docs/deprecations)과 API 모델 목록을 확인했습니다. 웹의 Gemini 앱 무료 이용과 Gemini API의 무료 등급은 별개이며, 여기서는 **API 텍스트 입력·출력이 무료인 모델**을 사용합니다.
 
 ## 우선순위
 
@@ -8,20 +8,27 @@
 
 | 순서 | 모델 ID | 선정 이유 |
 | --- | --- | --- |
-| 1 | `gemini-3.8-flash` | Google이 가장 지능적인 Flash 모델로 소개하는 최신 정식 모델 |
-| 2 | `gemini-3.6-flash` | 이전 세대 정식 Flash, 복잡한 추론·에이전트 작업에 적합 |
-| 3 | `gemini-3-flash-preview` | 무료로 사용 가능한 일반 Flash 모델, 설명·추론을 우선해 Lite보다 앞에 배치 |
-| 4 | `gemini-3.5-flash-lite` | 최신 정식 Lite, 고속·대량 작업에 적합 |
-| 5 | `gemini-3.1-flash-lite` | 이전 세대 정식 Lite, 마지막 대체 모델 |
+| 1 | `gemini-4-hydrogen` | Google이 3.8 Flash의 업그레이드로 권장하는 최신 모델, 추론·사실 정확도·도구 활용 개선 |
+| 2 | `gemini-3.8-flash` | 이전 세대의 고성능 Flash, 복잡한 추론·에이전트 작업에 적합 |
+| 3 | `gemini-3.6-flash` | 정식 Flash, 범용 설명·추론과 속도의 균형 |
+| 4 | `gemini-3-flash-preview` | 무료 일반 Flash, 설명·추론을 우선해 Lite보다 앞에 배치 |
+| 5 | `gemini-3.5-flash-lite` | 최신 정식 Lite, 고속·대량 작업에 적합 |
 
-이는 공식 설명을 바탕으로 **이 사이트의 학습 설명·추론을 우선한 운영 순서**입니다. Google이 발표한 모든 과제에 공통인 성능 순위는 아닙니다. 3 Flash는 preview이므로 동작·제공 조건이 바뀔 수 있으며, 3.1 Flash-Lite의 공지된 가장 이른 종료일은 2027-05-07입니다. 변경 시 모델 목록과 공식 공지를 함께 확인합니다.
+이는 공식 설명을 바탕으로 **이 사이트의 학습 설명·추론을 우선한 운영 순서**입니다. Google이 발표한 모든 과제에 공통인 성능 순위는 아닙니다. [Hydrogen 업그레이드 안내](https://ai.google.dev/gemini-api/docs/whats-new-gemini-4-hydrogen)는 3.8 Flash 대비 사실 정확도 개선과 무료 등급의 GenerateContent API 지원을 명시합니다. 3 Flash는 preview이므로 동작·제공 조건이 바뀔 수 있습니다. 확인일 기준 위 5개 모델의 종료일은 공지되지 않았습니다.
 
-- `gemini-4-argon`, `gemini-3.1-pro-preview`: API 무료 입력·출력 미제공으로 제외
+- `gemini-4-carbon`, `gemini-4-argon`, `gemini-3.1-pro-preview`: API 무료 입력·출력 미제공으로 제외
+- `gemini-3.1-flash-lite`: 무료 지원은 유지되지만 상위 5개 답변 후보에서 제외. 세션 압축 전용 후보인 `3.5 Flash-Lite → 3.1 Flash-Lite`는 계속 사용
 - Gemini 2.5 계열: 요금표에는 무료 등급이 있지만 현재 기존 사용 이력이 있는 사용자로 접근이 제한되어 기본 후보에서 제외
 - `gemini-3.7-flash`, `gemini-3.5-flash`: 각각 3.8 Flash, 3.6 Flash로 자동 라우팅되는 별칭이므로 별도 fallback 후보로 중복 등록하지 않음
 - 음성·이미지·영상 전용 모델: 현재 텍스트 학습 대화 용도에 맞지 않아 제외
 
-모든 후보는 구조화 출력을 지원합니다. 공통으로 지원하는 `thinkingLevel: low`를 사용하며, 3.8 Flash가 지원하지 않는 `minimal`은 사용하지 않습니다. 추론 토큰 공간을 포함해 예상 질문은 최대 2,048 출력 토큰, 대화는 4,096 출력 토큰을 요청하며 화면에 반환할 텍스트의 기존 길이 검증은 유지합니다.
+모든 후보는 구조화 출력을 지원합니다. 공통으로 지원하는 `thinkingLevel: low`를 사용하며, Hydrogen과 3.8 Flash가 지원하지 않는 `minimal`은 사용하지 않습니다. Hydrogen의 기본 추론 단계는 `high`이지만 현재의 응답 시간 정책에 맞춰 `low`를 명시합니다. 추론 토큰 공간을 포함해 예상 질문은 최대 2,048 출력 토큰, 대화는 4,096 출력 토큰을 요청하며 화면에 반환할 텍스트의 기존 길이 검증은 유지합니다.
+
+## 모델 갱신 검증
+
+2026-11-16에 설정된 API 키로 5개 모델의 토큰 계산과 짧은 한국어 SSE 응답을 확인했습니다. Hydrogen·3.6 Flash·3 Flash Preview·3.5 Flash-Lite는 응답했고, 3.8 Flash는 이 호출에서 일시적 혼잡을 뜻하는 HTTP 503을 반환했습니다. Hydrogen은 `thinkingLevel: low`에서 첫 본문까지 약 2.6초, 3.6 Flash는 약 25.3초가 걸렸습니다. 단일 짧은 요청의 결과이며 성능 순위나 운영 지연을 보장하는 측정은 아닙니다.
+
+Hydrogen의 예상 질문 4개 구조화 출력, `search_web` 함수 호출, 모의 검색 결과를 전달한 뒤의 SSE 답변도 통과했습니다. 실제 Tavily 검색이나 운영 DB 저장은 이 검증에 포함하지 않았습니다. 별도로 실제 Edge Function 핸들러에 모의 HTTP 응답을 연결해 Hydrogen 우선 호출, 제외 중인 모델 건너뛰기, 429 발생 시 5개 후보 순회, 예상 질문 캐시에 선택된 모델을 저장하는 동작을 확인했습니다.
 
 ## 스트리밍과 5초 간격 호출
 

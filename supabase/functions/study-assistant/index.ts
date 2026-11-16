@@ -29,15 +29,15 @@ class ModelFailure extends Error {
   constructor(public reason: string, public elapsedMs: number) { super(reason); }
 }
 const env = (name: string) => Deno.env.get(name) || '';
-// Free text input/output confirmed against Google's pricing on 2026-10-31.
+// Free text input/output confirmed against Google's pricing on 2026-11-16.
 // Prefer reasoning quality for study explanations; aliases sharing a backend,
 // paid-only models and 2.5 models restricted to existing users are excluded.
 const geminiModels = [
+  'gemini-4-hydrogen',
   'gemini-3.8-flash',
   'gemini-3.6-flash',
   'gemini-3-flash-preview',
   'gemini-3.5-flash-lite',
-  'gemini-3.1-flash-lite',
 ] as const;
 // Bump when the suggestion instructions or response format change.
 const suggestionPromptVersion = 'suggestions-v2';
@@ -475,7 +475,7 @@ export async function handleRequest(req: Request): Promise<Response> {
             ...(input.history || []).map(m => ({ role: m.role, parts: [{ text: m.text }] })),
             { role: 'user', parts: [{ text: input.question }] },
           ];
-        // All selected models support low thinking; 3.8 rejects minimal. Leave room
+        // All selected models support low thinking; Hydrogen and 3.8 reject minimal. Leave room
         // for thinking tokens while keeping the visible answer's existing size bound.
         const generationConfig: Record<string, unknown> = { maxOutputTokens: input.action === 'title' ? 1024 : input.action === 'suggestions' ? 2048 : 4096, thinkingConfig: { thinkingLevel: 'low' } };
         if (input.action === 'suggestions') {

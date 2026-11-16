@@ -43,7 +43,7 @@ Supabase **Authentication → Sign In / Providers → Anonymous Sign-Ins**를 �
 | `ALLOWED_ORIGINS` | `https://saa-c03.hyunbbai.com` |
 | `AI_GUEST_RPD` | 익명 세션별 하루 생성 요청 수, 기본 `10` |
 
-모델은 함수 코드의 `geminiModels` 목록으로 관리합니다. `gemini-3.8-flash` → `gemini-3.6-flash` → `gemini-3-flash-preview` → `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` 순서이며, 모두 현재 요금표에서 텍스트 입출력 무료 등급을 제공합니다. 기존 `GEMINI_MODEL` 비밀값은 읽지 않으므로 삭제해도 됩니다. [모델 선정 근거와 fallback 정책](gemini-routing.md)을 참고하세요. **RPM·RPD·TPM 기본 정책은 Google 프로젝트에 실제 할당된 한도를 그대로 사용하는 것입니다.** 사이트에 별도의 최대 요청 수나 분당 토큰 수를 설정하지 않으며, 모델별 고정 최대치를 추측해서 넣지도 않습니다. 실제 값은 [AI Studio 한도 화면](https://aistudio.google.com/rate-limit?timeRange=last-28-days)에서 프로젝트와 모델을 선택해 확인합니다. Google이 할당량을 변경하면 사이트 설정을 바꾸지 않아도 새 한도가 적용됩니다.
+모델은 함수 코드의 `geminiModels` 목록으로 관리합니다. `gemini-4-hydrogen` → `gemini-3.8-flash` → `gemini-3.6-flash` → `gemini-3-flash-preview` → `gemini-3.5-flash-lite` 순서이며, 모두 2026-11-16에 확인한 공식 요금표에서 텍스트 입출력 무료 등급을 제공합니다. 기존 `GEMINI_MODEL` 비밀값은 읽지 않으므로 삭제해도 됩니다. [모델 선정 근거와 fallback 정책](gemini-routing.md)을 참고하세요. **RPM·RPD·TPM 기본 정책은 Google 프로젝트에 실제 할당된 한도를 그대로 사용하는 것입니다.** 사이트에 별도의 최대 요청 수나 분당 토큰 수를 설정하지 않으며, 모델별 고정 최대치를 추측해서 넣지도 않습니다. 실제 값은 [AI Studio 한도 화면](https://aistudio.google.com/rate-limit?timeRange=last-28-days)에서 프로젝트와 모델을 선택해 확인합니다. Google이 할당량을 변경하면 사이트 설정을 바꾸지 않아도 새 한도가 적용됩니다.
 
 | 항목 | 기본 동작 |
 | --- | --- |

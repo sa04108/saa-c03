@@ -15,17 +15,18 @@
 
 ## Google에서 확인한 모델 한도
 
-2026-10-31에 `GET https://generativelanguage.googleapis.com/v1beta/models/{model}`로 조회한 `inputTokenLimit`·`outputTokenLimit` 값입니다. [공식 Models API](https://ai.google.dev/api/models)를 기준으로 하며, 모델 변경 시 다시 확인해야 합니다.
+2026-11-16에 `GET https://generativelanguage.googleapis.com/v1beta/models`로 조회한 `inputTokenLimit`·`outputTokenLimit` 값입니다. [공식 Models API](https://ai.google.dev/api/models)를 기준으로 하며, 모델 변경 시 다시 확인해야 합니다.
 
 | 모델 | 최대 입력 토큰 | 최대 출력 토큰 |
 | --- | ---: | ---: |
+| `gemini-4-hydrogen` | 1,048,576 | 65,536 |
 | `gemini-3.8-flash` | 1,048,576 | 65,536 |
 | `gemini-3.6-flash` | 1,048,576 | 65,536 |
 | `gemini-3-flash-preview` | 1,048,576 | 65,536 |
 | `gemini-3.5-flash-lite` | 1,048,576 | 65,536 |
 | `gemini-3.1-flash-lite` | 1,048,576 | 65,536 |
 
-이는 모델이 지원하는 최대 크기이며 무료 프로젝트의 TPM·RPM·RPD와는 별개입니다. 현재 앱은 대화 출력 4,096토큰, 예상 질문 출력 2,048토큰을 요청합니다. 큰 입력이 허용된다고 해서 무료 할당량 안에서 빠르게 응답한다는 뜻은 아닙니다. 대화는 첫 모델 호출부터 전체 30초 안에 완료되어야 하며, 답변이 시작되지 않으면 5초 간격으로 다음 모델을 추가 호출합니다.
+앞의 5개는 답변 후보이며, `gemini-3.1-flash-lite`는 세션 압축에만 사용합니다. [Hydrogen 모델 문서](https://ai.google.dev/gemini-api/docs/models/gemini-4-hydrogen)에 따르면 1,048,576토큰은 입력·추론·출력이 공유하는 통합 맥락 한도이고, 65,536토큰은 기본 동기 출력 한도입니다. 앱의 16,000 입력 + 최대 4,096 출력 예산은 이 범위 안에 있습니다. 모델의 최대 크기는 무료 프로젝트의 TPM·RPM·RPD와는 별개입니다. 현재 앱은 대화 출력 4,096토큰, 예상 질문 출력 2,048토큰을 요청합니다. 큰 입력이 허용된다고 해서 무료 할당량 안에서 빠르게 응답한다는 뜻은 아닙니다. 대화는 첫 모델 호출부터 전체 30초 안에 완료되어야 하며, 답변이 시작되지 않으면 5초 간격으로 다음 모델을 추가 호출합니다.
 
 ## 공식 기능과 공개 구현에서 확인한 방식
 
