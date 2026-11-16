@@ -20,6 +20,8 @@ import { createPanelLayout } from "./panel-layout";
 import { createPanelNavigation } from "./panel-navigation";
 import { contextSourceHref } from "@/lib/study/assistant-context";
 
+import { ASSISTANT_CLIENT_TIMEOUT_MS } from "../../../supabase/functions/_shared/assistant-timing.js";
+
 export function createAssistantController({ fab, panel, tooltip, account, navigate }) {
   const lifetime = new AbortController();
   let disposed = false;
@@ -765,9 +767,9 @@ export function createAssistantController({ fab, panel, tooltip, account, naviga
       controller: new AbortController(),
       partialAnswer: "",
     };
-    // Transport watchdog; model requests share a 30s server deadline after launch.
+    // Allow all staggered model attempts plus authentication and transport time.
     request = task;
-    task.timer = setTimeout(() => task.controller.abort("timeout"), 120000);
+    task.timer = setTimeout(() => task.controller.abort("timeout"), ASSISTANT_CLIENT_TIMEOUT_MS);
     return task;
   }
   function failed(error, task) {

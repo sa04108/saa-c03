@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { backendConfig as config } from "./config";
 import { getAccount } from "./account";
 import { readSSE } from "../../../supabase/functions/_shared/sse.js";
+import { ASSISTANT_CLIENT_TIMEOUT_MS } from "../../../supabase/functions/_shared/assistant-timing.js";
 let guestClient, guestSignIn;
 async function accessToken() {
   const signedIn = await getAccount().getAccessToken();
@@ -220,6 +221,6 @@ export function renameConversation(id, title, expectedTitle, signal) {
 }
 export function suggestConversationTitle(id, signal, onProgress) {
   return callAssistant({ action: "title", conversationId: id }, {
-    controller: { signal: AbortSignal.any([signal, AbortSignal.timeout(120000)]) },
+    controller: { signal: AbortSignal.any([signal, AbortSignal.timeout(ASSISTANT_CLIENT_TIMEOUT_MS)]) },
   }, onProgress);
 }

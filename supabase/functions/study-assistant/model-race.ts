@@ -1,5 +1,5 @@
 export class ModelsUnavailable extends Error {
-  constructor(public deadline = false) { super('models_unavailable'); }
+  constructor() { super('models_unavailable'); }
 }
 
 export type ModelAttempt = {
@@ -7,29 +7,32 @@ export type ModelAttempt = {
   startedAt: string;
   signal: AbortSignal;
   sharedSignal: AbortSignal;
-  penalized: boolean;
   remainingMs: () => number;
   text: (text: string) => void;
   reset: () => void;
 };
 
-// Five seconds starts another request; it never cancels the earlier request.
-// Only the first model to produce visible text owns the rest of the stream.
+export const MODEL_START_INTERVAL_MS = 5000;
+
+// Five seconds starts another request; latency alone never records a failure.
+// Every attempt gets its own deadline. The first visible answer owns the stream.
 export async function raceModels<T>(options: {
   models: readonly string[];
+  modelTimeoutMs: number;
   signal: AbortSignal;
   run: (attempt: ModelAttempt) => Promise<T>;
   classify: (error: unknown) => string | null;
   onFailure: (attempt: ModelAttempt, reason: string) => void;
+  onDelay?: (attempt: ModelAttempt) => void;
   emit?: (event: string, data: unknown) => void;
 }): Promise<{ value: T; attempt: ModelAttempt }> {
   options.signal.throwIfAborted();
   if (!options.models.length) throw new ModelsUnavailable();
+  if (!Number.isFinite(options.modelTimeoutMs) || options.modelTimeoutMs <= 0) throw new RangeError('Invalid model timeout');
   const lifetime = new AbortController();
   const sharedSignal = AbortSignal.any([options.signal, lifetime.signal]);
-  const deadlineAt = performance.now() + 30000;
-  const timers = new Set<ReturnType<typeof setTimeout>>();
-  const attempts: Array<{ attempt: ModelAttempt; controller: AbortController; timer: ReturnType<typeof setTimeout>; checkLate: () => void }> = [];
+  const launchTimers = new Set<ReturnType<typeof setTimeout>>();
+  const attempts: Array<{ attempt: ModelAttempt; cancel: () => void }> = [];
   let selected: ModelAttempt | undefined, finished = false, launched = 0, pending = 0;
   let resolve: (value: { value: T; attempt: ModelAttempt }) => void;
   let reject: (reason: unknown) => void;
@@ -39,89 +42,91 @@ export async function raceModels<T>(options: {
   };
   const abort = () => stop(options.signal.reason);
   options.signal.addEventListener('abort', abort, { once: true });
-  const expire = setTimeout(() => stop(new ModelsUnavailable(true)), 30000);
 
   function launch(model: string) {
     if (finished || selected || sharedSignal.aborted) return;
-    if (performance.now() >= deadlineAt) { stop(new ModelsUnavailable(true)); return; }
     launched++; pending++;
-    const started = performance.now(), controller = new AbortController();
-    let received = false, settled = false, prefix = '';
-    const penalize = (reason: string) => {
-      if (attempt.penalized) return;
-      attempt.penalized = true;
+    const deadlineAt = performance.now() + options.modelTimeoutMs;
+    const controller = new AbortController();
+    let settled = false, failed = false, prefix = '';
+    let deadlineTimer: ReturnType<typeof setTimeout>, delayTimer: ReturnType<typeof setTimeout>;
+    const settle = () => {
+      if (settled) return;
+      settled = true; pending--;
+      clearTimeout(deadlineTimer); clearTimeout(delayTimer);
+      if (!finished && launched === options.models.length && !pending) stop(new ModelsUnavailable());
+    };
+    const fail = (reason: string) => {
+      if (failed) return;
+      failed = true;
       options.onFailure(attempt, reason);
+    };
+    const expire = () => {
+      if (settled || finished || attempt.signal.aborted) return;
+      fail('timeout');
+      controller.abort(new DOMException('Model response timeout', 'TimeoutError'));
+      if (selected === attempt) stop(new ModelsUnavailable());
+      settle();
     };
     const choose = () => {
       attempt.signal.throwIfAborted();
-      if (finished) return false;
-      if (performance.now() >= deadlineAt) { stop(new ModelsUnavailable(true)); return false; }
+      if (finished || settled) return false;
+      // Enforce the deadline even if a busy event loop delivers its timer late.
+      if (performance.now() >= deadlineAt) { expire(); return false; }
       if (selected && selected !== attempt) return false;
-      if (!received) {
-        // Account for an event loop that delivered the timer a little late.
-        if (performance.now() - started >= 5000) penalize('timeout');
-        received = true;
-        clearTimeout(timer);
-      }
       if (!selected) {
         selected = attempt;
-        for (const timer of timers) clearTimeout(timer);
-        for (const other of attempts) if (other.attempt !== attempt) {
-          other.checkLate();
-          clearTimeout(other.timer);
-          other.controller.abort(new DOMException('Another model answered first', 'AbortError'));
-        }
+        clearTimeout(delayTimer);
+        for (const timer of launchTimers) clearTimeout(timer);
+        for (const other of attempts) if (other.attempt !== attempt) other.cancel();
       }
       return true;
     };
     const attempt: ModelAttempt = {
       model, startedAt: new Date().toISOString(),
       signal: AbortSignal.any([sharedSignal, controller.signal]), sharedSignal,
-      penalized: false,
       remainingMs: () => Math.max(0, deadlineAt - performance.now()),
       text: text => {
         if (!text) return;
         prefix += text;
-        if (!received && !prefix.trim()) return;
+        if (!prefix.trim()) return;
         if (choose()) { options.emit?.('delta', { text: prefix }); prefix = ''; }
       },
       reset: () => { if (selected === attempt && !finished) options.emit?.('reset', {}); },
     };
-    const checkLate = () => {
-      if (!received && !settled && !finished && !attempt.signal.aborted && performance.now() - started >= 5000) penalize('timeout');
-    };
-    const timer = setTimeout(checkLate, 5000);
-    attempts.push({ attempt, controller, timer, checkLate });
-    // Attach both handlers immediately so late/cancelled requests cannot leak
-    // an unhandled rejection or replace the chosen answer.
+    delayTimer = setTimeout(() => {
+      if (!settled && !finished && !selected && !attempt.signal.aborted) options.onDelay?.(attempt);
+    }, MODEL_START_INTERVAL_MS);
+    deadlineTimer = setTimeout(expire, options.modelTimeoutMs);
+    attempts.push({ attempt, cancel: () => {
+      controller.abort(new DOMException('Model request no longer needed', 'AbortError'));
+      settle();
+    } });
+    // Attach both handlers immediately; aborted losers cannot overwrite a winner.
     void options.run(attempt).then(value => {
       if (attempt.signal.aborted || finished) return;
       if (choose()) { finished = true; resolve({ value, attempt }); }
     }, error => {
       if (attempt.signal.aborted || finished) return;
-      if (performance.now() >= deadlineAt) { stop(new ModelsUnavailable(true)); return; }
+      if (performance.now() >= deadlineAt) { expire(); return; }
       const reason = options.classify(error);
       if (reason === null) { stop(error); return; }
-      penalize(reason);
+      fail(reason);
       if (selected === attempt) stop(new ModelsUnavailable());
-    }).finally(() => {
-      settled = true; pending--; clearTimeout(timer);
-      if (!finished && launched === options.models.length && !pending) stop(new ModelsUnavailable());
-    });
+    }).finally(settle);
   }
 
   try {
     launch(options.models[0]);
     for (let i = 1; i < options.models.length; i++) {
-      timers.add(setTimeout(() => launch(options.models[i]), i * 5000));
+      launchTimers.add(setTimeout(() => launch(options.models[i]), i * MODEL_START_INTERVAL_MS));
     }
     return await result;
   } finally {
     finished = true;
-    clearTimeout(expire);
-    for (const timer of timers) clearTimeout(timer);
-    for (const { timer } of attempts) clearTimeout(timer);
+    for (const timer of launchTimers) clearTimeout(timer);
     options.signal.removeEventListener('abort', abort);
     lifetime.abort(new DOMException('Model request finished', 'AbortError'));
+    for (const other of attempts) other.cancel();
   }
 }
